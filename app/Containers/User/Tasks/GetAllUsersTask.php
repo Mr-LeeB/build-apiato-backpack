@@ -17,44 +17,44 @@ use App\Ship\Parents\Tasks\Task;
 class GetAllUsersTask extends Task
 {
 
-    /**
-     * @var  \App\Containers\User\Data\Repositories\UserRepository
-     */
-    protected $repository;
+  /**
+   * @var  \App\Containers\User\Data\Repositories\UserRepository
+   */
+  protected $repository;
 
-    /**
-     * GetAllUsersTask constructor.
-     *
-     * @param \App\Containers\User\Data\Repositories\UserRepository $repository
-     */
-    public function __construct(UserRepository $repository)
-    {
-        $this->repository = $repository;
-    }
+  /**
+   * GetAllUsersTask constructor.
+   *
+   * @param \App\Containers\User\Data\Repositories\UserRepository $repository
+   */
+  public function __construct(UserRepository $repository)
+  {
+    $this->repository = $repository;
+  }
 
-    public function run()
-    {
-        return $this->repository->paginate();
-    }
+  public function run()
+  {
+    return $this->repository->paginate();
+  }
 
-    public function clients()
-    {
-        $this->repository->pushCriteria(new ClientsCriteria());
-    }
+  public function clients()
+  {
+    $this->repository->pushCriteria(new ClientsCriteria());
+  }
 
-    public function admins()
-    {
-        $this->repository->pushCriteria(new AdminsCriteria());
-    }
+  public function admins()
+  {
+    $this->repository->pushCriteria(new AdminsCriteria());
+  }
 
-    public function ordered()
-    {
-        $this->repository->pushCriteria(new OrderByCreationDateDescendingCriteria());
-    }
+  public function ordered()
+  {
+    $this->repository->pushCriteria(new OrderByCreationDateDescendingCriteria());
+  }
 
-    public function withRole($roles)
-    {
-        $this->repository->pushCriteria(new RoleCriteria($roles));
-    }
+  public function withRole($roles)
+  {
+    $this->repository->pushCriteria(new RoleCriteria($roles));
+  }
 
 }

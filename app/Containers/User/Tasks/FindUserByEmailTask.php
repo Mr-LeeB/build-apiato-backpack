@@ -16,25 +16,26 @@ use Exception;
 class FindUserByEmailTask extends Task
 {
 
-    protected $repository;
+  protected $repository;
 
-    public function __construct(UserRepository $repository)
-    {
-        $this->repository = $repository;
-    }
+  public function __construct(UserRepository $repository)
+  {
+    $this->repository = $repository;
+  }
 
-    /**
-     * @param string $email
-     *
-     * @return User
-     * @throws NotFoundException
-     */
-    public function run(string $email): User
-    {
-        try {
-            return $this->repository->findByField('email', $email)->first();
-        } catch (Exception $e) {
-            throw new NotFoundException();
-        }
+  /**
+   * @param string $email
+   *
+   * @return User
+   * @throws NotFoundException
+   */
+  public function run(string $email): User
+  {
+    // dd($email);
+    try {
+      return $this->repository->findByField('email', $email)->first();
+    } catch (Exception $e) {
+      throw new NotFoundException();
     }
+  }
 }

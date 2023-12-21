@@ -7,6 +7,7 @@ use App\Containers\User\Models\User;
 use App\Containers\User\Tests\TestCase;
 use App\Ship\Transporters\DataTransporter;
 use Illuminate\Support\Facades\App;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Class CreateUserTest.
@@ -19,24 +20,46 @@ use Illuminate\Support\Facades\App;
 class RegisterUserTest extends TestCase
 {
 
-    /**
-     * @test
-     */
-    public function testCreateUser_()
-    {
-        $data = [
-            'email'    => 'Mahmoud@test.test',
-            'password' => 'so-secret',
-            'name'     => 'Mahmoud',
-        ];
+  /**
+   * @test
+   */
+  public function testCreateUser_()
+  {
+    $data = [
+      'email'    => 'Mahmoud@test.test',
+      'password' => 'so-secret',
+      'name'     => 'Mahmoud',
+    ];
 
-        $transporter = new DataTransporter($data);
-        $action = App::make(RegisterUserAction::class);
-        $user = $action->run($transporter);
+    $transporter = new DataTransporter($data);
+    $action      = App::make(RegisterUserAction::class);
+    $user        = $action->run($transporter);
 
-        // asset the returned object is an instance of the User
-        $this->assertInstanceOf(User::class, $user);
+    // asset the returned object is an instance of the User
+    $this->assertInstanceOf(User::class, $user);
 
-        $this->assertEquals($user->name, $data['name']);
-    }
+    $this->assertEquals($user->name, $data['name']);
+  }
+
+
+  public function testCreateUserWithEmptyPassword_()
+  {
+    $data = [
+      'email'    => 'test@gmail.com',
+      'password' => '',
+      'name'     => 'Mahmoud',
+    ];
+
+    $transporter = new DataTransporter($data);
+    $action      = App::make(RegisterUserAction::class);
+
+    // $this->expectException(ValidationException::class);
+
+    $user = $action->run($transporter);
+
+    // asset the returned object is an instance of the User
+    $this->assertInstanceOf(User::class, $user);
+
+    $this->assertEquals($user->name, $data['name']);
+  }
 }

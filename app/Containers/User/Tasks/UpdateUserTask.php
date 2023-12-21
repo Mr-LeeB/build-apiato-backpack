@@ -53,5 +53,4 @@ class UpdateUserTask extends Task
 
         return $user;
     }
-
 }

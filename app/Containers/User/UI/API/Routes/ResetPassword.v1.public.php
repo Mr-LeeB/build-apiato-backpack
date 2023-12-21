@@ -20,6 +20,6 @@
  */
 
 $router->any('password/reset', [
-    'as' => 'api_user_reset_password',
-    'uses'  => 'Controller@resetPassword',
+  'as' => 'api_user_reset_password',
+  'uses' => 'Controller@resetPassword',
 ]);
