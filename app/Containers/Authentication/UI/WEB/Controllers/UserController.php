@@ -3,7 +3,7 @@
 namespace App\Containers\Authentication\UI\WEB\Controllers;
 
 use App\Containers\Authentication\UI\WEB\Requests\LoginRequest;
-use App\Ship\Parents\Controllers\WebController;
+use App\Ship\Controllers\WebCrudController;
 use Apiato\Core\Foundation\Facades\Apiato;
 use App\Ship\Transporters\DataTransporter;
 use Exception;
@@ -13,7 +13,7 @@ use Exception;
  *
  * @package App\Containers\Authentication\UI\WEB\Controllers
  */
-class UserController extends WebController
+class UserController extends WebCrudController
 {
     /**
      * @param \App\Containers\Authentication\UI\WEB\Requests\LoginRequest $request

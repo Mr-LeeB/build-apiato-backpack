@@ -22,7 +22,7 @@ class WebLoginAction extends Action
      */
     public function run(DataTransporter $data): Authenticatable
     {
-        $user = Apiato::call('Authentication@WebLoginTask', [$data->email, $data->password, $data->remember]);
+        $user = Apiato::call('Authentication@WebLoginTask', [$data->email, $data->password, $data->remember ?? false]);
 
         Apiato::call('Authentication@CheckIfUserIsConfirmedTask', [], [['setUser' => [$user]]]);
 
