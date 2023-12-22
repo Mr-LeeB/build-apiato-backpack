@@ -2,7 +2,7 @@
 
 namespace App\Ship\Parents\Controllers;
 
-use App\Ship\Controllers\WebCrudController;
+use App\Ship\CustomContainer\Controllers\WebCrudController;
 
 /**
  * Class WebController.

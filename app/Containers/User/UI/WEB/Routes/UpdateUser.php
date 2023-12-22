@@ -1,8 +1,8 @@
 <?php
 
 $router->put('/update/{id}', [
-  'as' => 'update_user',
-  'uses' => 'Controller@updateUser',
+  'as'         => 'update_user',
+  'uses'       => 'Controller@updateItem',
   'middleware' => [
     'auth:web'
   ],

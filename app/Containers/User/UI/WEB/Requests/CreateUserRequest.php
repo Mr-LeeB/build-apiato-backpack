@@ -9,7 +9,7 @@ use App\Ship\Parents\Requests\Request;
  *
  * @author Mahmoud Zalt <mahmoud@zalt.me>
  */
-class CreateNewUserRequest extends Request
+class CreateUserRequest extends Request
 {
 
   /**
@@ -18,8 +18,6 @@ class CreateNewUserRequest extends Request
    * @var  array
    */
   protected $access = [
-    'roles'       => ['admin', 'user-lv3'],
-    'permissions' => '',
   ];
 
   /**
@@ -54,7 +52,6 @@ class CreateNewUserRequest extends Request
       'name'     => 'min:2|max:50',
       'gender'   => 'max:50',
       'birth'    => 'max:50',
-      "isEdited" => 'string',
     ];
   }
 

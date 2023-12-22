@@ -2,7 +2,7 @@
 
 $router->delete('/delete/{id}', [
   'as' => 'delete_user',
-  'uses' => 'Controller@deleteUser',
+  'uses' => 'Controller@deleteItem',
   'middleware' => [
     'auth:web'
   ],

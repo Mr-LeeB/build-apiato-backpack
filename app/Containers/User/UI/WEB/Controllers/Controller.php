@@ -5,7 +5,7 @@ namespace App\Containers\User\UI\WEB\Controllers;
 use Apiato\Core\Foundation\Facades\Apiato;
 
 use App\Containers\User\UI\WEB\Requests\CheckPasswordRequest;
-use App\Containers\User\UI\WEB\Requests\CreateNewUserRequest;
+use App\Containers\User\UI\WEB\Requests\CreateUserRequest;
 use App\Containers\User\UI\WEB\Requests\DeleteMoreUsersRequest;
 use App\Containers\User\UI\WEB\Requests\DeleteUserRequest;
 use App\Containers\User\UI\WEB\Requests\FindUserByIdRequest;
@@ -30,6 +30,21 @@ use Exception;
  */
 class Controller extends WebController
 {
+    protected $view = 'user::test';
+    protected $model = 'User';
+
+    protected $action = ['delete', 'getAll', 'update', 'create'];
+
+    protected $request = [
+        'create' => CreateUserRequest::class,
+        'update' => UpdateUserRequest::class,
+    ];
+
+    public function showCreatePage()
+    {
+        return view('user::create');
+    }
+
     /**
      * @return  \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -86,7 +101,7 @@ class Controller extends WebController
     /**
      * @return  \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function createUser(CreateNewUserRequest $request)
+    public function createUser(CreateUserRequest $request)
     { // admin create user
         $result = Apiato::call('User@RegisterUserAction', [new DataTransporter($request)]);
         return redirect('listuser')->with('createSuccess', "Create user successfully");
