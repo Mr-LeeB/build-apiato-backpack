@@ -45,6 +45,7 @@ class WebCrudController extends AbstractWebController
     protected $request = [];
     public function __construct()
     {
+
         if (empty($this->action)) {
             $this->action = $this->acceptAction;
         } else {
@@ -69,7 +70,7 @@ class WebCrudController extends AbstractWebController
 
     /**
      * @param $type
-     * 
+     *
      * @return string
      */
     private function setRequests($type)
@@ -77,6 +78,7 @@ class WebCrudController extends AbstractWebController
         switch ($type) {
             case 'create':
                 return ('\App\Containers\\' . $this->model . '\UI\WEB\Requests\Create' . $this->model . 'Request');
+
             case 'update':
                 return ('\App\Containers\\' . $this->model . '\UI\WEB\Requests\Update' . $this->model . 'Request');
             case 'delete':

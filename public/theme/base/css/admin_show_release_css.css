@@ -1,0 +1,239 @@
+/* css create - search area */
+.create-seach-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* css search-area */
+.search-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-radius: 5px;
+    width: 50%;
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: #e2ecf3;
+    border: #000000 1px solid;
+    max-height: 356px;
+}
+
+.search-area input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.search {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+.form-search {
+    width: 30%;
+}
+
+.search span {
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 30px;
+    margin-bottom: 10px;
+}
+
+.select-field-search {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 10px;
+    width: 30%;
+}
+
+.select-field-search label {
+    font-size: 16px;
+    font-weight: bold;
+    padding-right: 30px;
+    padding-left: 5px;
+}
+
+.result {
+    width: 100%;
+    text-align: start;
+}
+
+.release-note-list {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 1px solid black;
+    border-bottom: none;
+    overflow-y: scroll;
+    max-height: 192px;
+}
+
+.release-note-item {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid black;
+    padding: 20px;
+}
+
+.release-note-item-header {
+    display: flex;
+    flex-direction: row;
+    padding-left: 10px;
+    width: 100%;
+    font-weight: bold;
+    font-size: large;
+}
+
+.release-note-item-header:hover {
+    cursor: pointer;
+    color: #22698c;
+}
+
+.release-note-item-header-title {
+    width: fit-content;
+    margin-right: 24px;
+}
+
+.release-note-item-header-date {
+    width: fit-content;
+}
+
+.release-note-item-body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-left: 10px;
+    font-weight: 100;
+}
+
+.release-note-item-body-title {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding-top: 10px;
+}
+
+.release-note-item-body-description {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding-top: 10px;
+}
+
+.more-detail {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border: #a5a1a1 2px solid;
+    border-radius: 25px;
+    width: 18%;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+.more-detail:hover {
+    cursor: pointer;
+    background-color: #F6FBFF;
+    border: #b31fc6 2px solid;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+/* css noti-sorted */
+.noti-sorted {
+    display: none;
+}
+
+.noti-sorted #noti-sortedBy {
+    color: #22698c;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.noti-sorted #noti-orderBy {
+    color: #22698c;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* css sort and limit */
+.sort-and-limit {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* css show-searchable */
+.show-searchable {
+    position: absolute;
+    z-index: 1;
+    background: #fff;
+    margin-top: 60px;
+    width: 60px;
+    border: 1px solid #000;
+    /* display: none; */
+}
+
+.show-searchable div:hover {
+    cursor: pointer;
+    background-color: #d6e4f0;
+}
+
+.input-group-append:hover {
+    cursor: pointer;
+}
+
+/* css icon */
+.icon {
+    width: 2px;
+    color: #000;
+}
+
+/* css btn-edit btn-delete-one btn-info */
+.btn-show-info:hover {
+    color: #22698c;
+    cursor: pointer;
+}
+
+.btn-edit:hover {
+    color: #22698c;
+    cursor: pointer;
+}
+
+.btn-delete-one:hover {
+    color: #bc0b0b;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.reset_params:hover {
+    color: #22698c;
+}
+
+.boloc:hover {
+    cursor: pointer;
+    background-color: aliceblue !important;
+}

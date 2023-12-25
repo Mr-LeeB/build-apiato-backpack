@@ -1,0 +1,345 @@
+ul,li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  background-color: transparent;
+}
+
+blockquote,
+dd,
+dl,
+figure,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ol,
+ul p,
+pre {
+  margin: 0;
+}
+
+div {
+  display: block;
+}
+/* Logo - Dashboard */
+.nova-dashboards {
+  min-height: 100vh;
+  display: flex;
+}
+.nova-sidebar {
+  font-family: Nunito, system-ui, BlinkMacSystemFont, -apple-system, sans-serif;
+  background-image: linear-gradient(0deg, #7e8ea1, #3c4655);
+  background-attachment: fixed;
+  min-height: 100vh;
+  width: 220px;
+}
+
+.logo-nova {
+  background-color: #252d37;
+  height: 60px;
+  align-items: center;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.logo-nova img {
+  max-width: 172px;
+  height: auto;
+}
+
+/* Menu */
+.top-level {
+  user-select: none;
+  margin-bottom: 2rem;
+}
+
+.top-level .nova-text {
+  position: relative;
+  color: rgba(255, 255, 255, 1);
+  align-items: center;
+  display: flex;
+  font-size: 16px;;
+  margin-bottom: 8px;
+  font-weight: 500;
+  flex: 1 1 0%;
+  cursor: pointer;
+}
+
+.top-level .nova-text .nova-icon {
+  margin-right: 12px;
+  width: 24px;
+  height: 24px;
+}
+
+.top-level .nova-text .nova-icon .img1 {
+  width: 24px;
+  height: 24px;
+}
+
+.top-level .nova-text .theme-icon {
+  align-items: center;
+  display: flex;
+  flex: 1 1 0%;
+}
+
+.top-level .nova-text .theme-icon:hover {
+  color: #b3b9bf;
+}
+
+.top-level .nova-text .theme-icon .text-nova span {
+  display: flex;
+  font-weight: 400;
+  /* minh fix đã xoá font-size 18px */
+}
+
+.top-level .nova-text .theme-icon .text-nova .nova1 {
+  top: 0;
+  right: 0;
+  display: flex;
+  flex: 1 1 0%;
+  position: absolute;
+}
+
+.top-level .nova-text .theme-icon .text-nova .nova1 .box {
+  width: 24px;
+  height: 24px;
+}
+/* Danh sách thẻ ul  */
+.nova1-list {
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}
+
+.nova1-list .leading1 {
+  padding-top: 16px;
+  margin-left: 36px;
+  line-height: 1.25;
+  list-style-type: none;
+}
+
+.nova1-list .leading1 a {
+  display: block;
+  position: relative;
+  text-align: left;
+  background: transparent;
+  color: rgba(255, 255, 255, 1);
+}
+
+.nova1-list .leading1 a:hover {
+  color: #b3b9bf;
+}
+
+.nova1-list .leading1 a .items_center {
+  align-items: center;
+  flex: 1 1 0%;
+  display: flex;
+}
+
+.nova1-list .leading1 a .items_center .text {
+  flex: 1 1 0%;
+  /* font-size: 1rem; */ /* fix minh xoá */
+}
+
+.nova1-list .leading1 a .list-icon {
+  width: 15px;
+  top: -3px;
+  left: -25px;
+  display: flex;
+  position: absolute;
+}
+
+.nova1-list .leading1 a .list-icon .bi-layers {
+  width: 16px;
+  height: 16px;
+}
+
+.nova1-list {
+  display: none;
+}
+
+.nova1-list.active {
+  display: block;
+}
+
+
+/* + - */
+
+.top-level .box.minus,
+.top-level.active .box.plus {
+  display: none;
+}
+.top-level.active .box.minus {
+  display: block;
+}
+
+.top-level .nova1-list {
+  display: none;
+}
+.top-level.active .nova1-list {
+  display: block;
+}
+/* End + - */
+/* End Menu*/
+
+/* Content */
+
+.contents {
+  width: calc(100% - 220px);
+}
+
+.contents .content-nova {
+  background-color: rgba(255, 255, 255, 1);
+  align-items: center;
+  display: flex;
+  position: relative;
+  z-index: 20;
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 5%);
+  padding: 0 50px;
+  height: 60px;
+  font-family: Nunito, system-ui, BlinkMacSystemFont, -apple-system, sans-serif;
+  font-size: 16px;;
+}
+.content-nova .nova-search-input {
+  background: #eef1f4;
+  border: #eef1f4 solid 1px;
+  color: #3c4b5f;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1px 12px 1px 44px;
+  line-height: 32px;;
+  border-radius: 18px;;
+}
+.content-nova .nova-search-input:focus {
+  background: #fff;
+  border: #eef1f4 solid 1px;
+  outline: none;
+}
+.content-nova .nova-search-input::-webkit-input-placeholder {
+  color: #b3b9bf;
+}
+.content-nova .search-icon1 {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  width: 20px;
+  height: 20px;
+}
+.content-nova .nova-one {
+  fill: #7c858e;
+  vertical-align: baseline;
+}
+.contents .content-nova .nova2 {
+  color: #3c4b5f;
+  font-weight: 800;
+  margin-right: 24px;
+}
+.nova-menu {
+  padding: 32px 24px;
+}
+.contents .content-nova .nova2:hover {
+  opacity: 0.5;
+}
+
+.contents .content-nova .nova-search {
+  position: relative;
+  z-index: 50;
+  width: 320px;
+}
+
+.contents .content-nova .nova-name {
+  align-items: center;
+  height: 2.25rem;
+  display: flex;
+  margin-left: auto;
+}
+
+.contents .content-nova .nova-name .trigger {
+  display: inline-block;
+}
+
+.contents .content-nova .nova-name .trigger .dropdown-trigger-group {
+  align-items: center;
+  height: 2.25rem;
+  display: flex;
+  cursor: pointer;
+  line-height: 36px;
+}
+.contents .content-nova .dropdown-menu {
+  border: #bacad6  solid 1px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  -webkit-box-shadow: 0 2px 4px 0 rgb(0 0 0 / 5%);
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 5%);
+  font-size: 16px;
+  min-width: 198px;
+  padding: 0;
+}
+.contents .content-nova .dropdown-item {
+  padding: 12px;
+  line-height: 1;
+}
+.contents .content-nova .nova-name .trigger .dropdown-trigger-group .button-two {
+  margin-right: 24px;
+  font-weight: 800;
+  color: #3c4b5f;
+}
+
+.contents .content-nova .nova-name .trigger .dropdown-trigger-group .text-one {
+  color: #3c4b5f;
+}
+.contents .content-nova .nova-name .trigger .dropdown-trigger-group .svg-one {
+  width: 10px;
+  height: 6px;
+  margin-left: 0.5rem;
+}
+
+.contents .content-nova .nova-name .trigger .dropdown-trigger-group .svg-one path {
+  color: #3c4b5f;
+}
+
+/* contents2 */
+
+.contents .content2 {
+  padding-left: 3.125rem;
+  padding-right: 3.125rem;
+  padding-top: 3.125rem;
+  padding-bottom: 3.125rem;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: auto;
+}
+.contents .content2::-webkit-scrollbar {
+  height: 8px;
+  border-radius: 8px;
+}
+.contents .content2::-webkit-scrollbar-track {
+  background: #f2f2f2;
+  border-radius: 8px;
+}
+.contents .content2::-webkit-scrollbar-thumb {
+  background: #999;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.contents .content2::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+.footer {
+  font-size: 1rem;
+  color: #7c858e;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.footer-nova {
+  color: #4099de;
+}
