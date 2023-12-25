@@ -7,7 +7,11 @@ use App\Ship\Parents\Models\Model;
 class Clients extends Model
 {
     protected $fillable = [
-
+      'name',
+      'title_description',
+      'detail_description',
+      'is_publish',
+      'images',
     ];
 
     protected $attributes = [
