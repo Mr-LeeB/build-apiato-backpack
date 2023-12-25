@@ -8,6 +8,10 @@
 </head>
 
 <body>
+    @php
+        // dd(get_defined_vars()['__data']);
+    @endphp
+
     @foreach ($items as $item)
         <form action="{{ route('update_user', $item->id) }}" method="POST">
             {{ csrf_field() }}

@@ -125,7 +125,6 @@ class WebCrudController extends AbstractWebController
 
     public function createItem()
     {
-        dd($this->request['create']);
         $request = resolve($this->request['create']);
         $columns = App::make($this->repository)->getModel()->getFillable();
         $table   = [];
@@ -135,7 +134,7 @@ class WebCrudController extends AbstractWebController
         isset($table['password']) ? $table['password'] = Hash::make($table['password']) : null;
         $item = App::make(CreateItemAction::class)->run($this->repository, new DataTransporter($table));
 
-        return view($this->view, compact(['item']));
+        return view($this->view, compact(['items']));
     }
 
     public function updateItem()
