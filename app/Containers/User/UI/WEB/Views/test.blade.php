@@ -23,6 +23,9 @@
         </form>
     @endforeach
 
+    @if (session('errors'))
+        <div class="text-red">{{ session('errors') }}</div>
+    @endif
     <br />
     <br />
     <br />
