@@ -10,7 +10,6 @@ use App\Ship\CustomContainer\Actions\UpdateItemAction;
 use App\Ship\Transporters\DataTransporter;
 use Hash;
 
-
 class WebCrudController extends AbstractWebController
 {
 
