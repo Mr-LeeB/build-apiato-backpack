@@ -29,7 +29,7 @@
     @php
         //Prepare the variables
         if (!isset($releases)) {
-            $releases = DB::table('clients')->get();
+            $releases = DB::table('clients')->orderBy('created_at', 'asc')->paginate('15');
         }
 
         //Get max created_at
@@ -614,3 +614,6 @@
 @section('footer')
     Footer placeholder nhưng mà hình như không có set attribute 'yield' hoặc em 'yield' sai chỗ
 @endsection
+
+
+私は黒狐です。あなたの越智んち小さいですよ。ははははは
