@@ -1,0 +1,28 @@
+
+.compute_row_user_spam {
+    background-color: rgba(255, 255, 0, 0.2);
+}
+
+.compute_row_disabled {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.compute_row_deleted{
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.compute_row_user_not_active {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.compute_row_user_not_spam {
+    background-color: rgba(0, 255, 0, 0.2);
+}
+
+.compute_row_user_contract_verified {
+    background-color: rgba(0, 0, 255, 0.2);
+}
+
+.compute_row_not_process {
+    background-color: rgba(255, 255, 255, 0.2);
+}
