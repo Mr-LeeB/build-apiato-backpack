@@ -80,23 +80,13 @@ class WebCrudController extends AbstractWebController
      */
     private function setRequests($type)
     {
-        // dd($this->getContainerAndClassName($this->model));
-        switch ($type) {
-            case 'create':
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Create' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-            case 'update':
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Update' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-            case 'delete':
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Delete' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-            case 'bulkDelete':
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\BulkDelete' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-            case 'find':
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Find' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-            case 'getAll':
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\GetAll' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-            default:
-                throw new \InvalidArgumentException("Invalid request type: $type");
+        $requestClass = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\\' . ucfirst($type) . $this->getContainerAndClassName($this->model)['className'] . 'Request';
+
+        if (!class_exists($requestClass)) {
+            throw new \InvalidArgumentException("Invalid request type: $type \n Syntax: {$type}{$this->getContainerAndClassName($this->model)['className']}Request");
         }
+
+        return $requestClass;
     }
 
     /**
