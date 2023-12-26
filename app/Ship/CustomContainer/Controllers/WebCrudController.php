@@ -10,6 +10,10 @@ use App\Ship\CustomContainer\Actions\UpdateItemAction;
 use App\Ship\Transporters\DataTransporter;
 use Hash;
 
+
+/**
+ * Undocumented class.
+ */
 class WebCrudController extends AbstractWebController
 {
 
@@ -45,11 +49,14 @@ class WebCrudController extends AbstractWebController
 
     protected $customIndexVariables = [];
 
+    /**
+     * Constructs a new instance of the class.
+     *
+     * @throws \InvalidArgumentException if an invalid action type is provided
+     * @throws \InvalidArgumentException if an invalid request type is provided
+     */
     public function __construct()
     {
-        if (!$this->model) {
-            return;
-        }
 
         if (empty($this->action)) {
             $this->action = $this->acceptAction;
@@ -75,28 +82,18 @@ class WebCrudController extends AbstractWebController
 
     /**
      * @param $type
-     * 
+     *
      * @return string
      */
     private function setRequests($type)
     {
-        // dd($this->getContainerAndClassName($this->model));
-        switch ($type) {
-            case 'create':
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Create' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-            case 'update':
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Update' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-            case 'delete':
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Delete' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-            case 'bulkDelete':
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\BulkDelete' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-            case 'find':
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Find' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-            case 'getAll':
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\GetAll' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-            default:
-                throw new \InvalidArgumentException("Invalid request type: $type");
+        $requestClass = ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\\' . ucfirst($type) . $this->getContainerAndClassName($this->model)['className'] . 'Request');
+
+        if (!class_exists($requestClass)) {
+            throw new \InvalidArgumentException("Invalid request type: $type");
         }
+
+        return $requestClass;
     }
 
     /**
@@ -123,11 +120,11 @@ class WebCrudController extends AbstractWebController
         $parts = explode('\\', $path);
         if (count($parts) > 1) {
             $containerName = $parts[2];
-            $className     = end($parts);
+            $className = end($parts);
 
             return [
                 'containerName' => $containerName,
-                'className'     => $className
+                'className' => $className
             ];
         }
         return [];
@@ -178,7 +175,7 @@ class WebCrudController extends AbstractWebController
     {
         $request = resolve($this->request['create']);
         $columns = App::make($this->repository)->getModel()->getFillable();
-        $table   = [];
+        $table = [];
         foreach ($columns as $key => $value) {
             $table[$value] = $request->$value;
         }
@@ -192,7 +189,7 @@ class WebCrudController extends AbstractWebController
     {
         $request = resolve($this->request['update']);
         $columns = App::make($this->repository)->getModel()->getFillable();
-        $table   = [];
+        $table = [];
         foreach ($columns as $value) {
             $table[$value] = $request->$value;
         }
