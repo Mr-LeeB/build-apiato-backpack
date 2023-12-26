@@ -2,7 +2,7 @@
 
 $router->get('/listuser', [
   'as'         => 'get_all_user',
-  'uses'       => 'Controller@getAllItem',
+  'uses'       => 'Controller@index',
   'middleware' => [
     'auth:web'
   ],

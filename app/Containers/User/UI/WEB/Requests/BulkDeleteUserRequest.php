@@ -9,7 +9,7 @@ use App\Ship\Parents\Requests\Request;
  *
  * @author Mahmoud Zalt <mahmoud@zalt.me>
  */
-class DeleteMoreUsersRequest extends Request
+class BulkDeleteUserRequest extends Request
 {
 
   /**

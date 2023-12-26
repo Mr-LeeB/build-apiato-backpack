@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ship\CustomContainer\Task;
+namespace App\Ship\CustomContainer\Tasks;
 
 use App;
 use App\Ship\Exceptions\DeleteResourceFailedException;
@@ -17,7 +17,7 @@ class DeleteItemTask extends Task
         $this->repository = App::make($repository);
 
         try {
-            return $this->repository->delete($id);
+            return $this->repository->whereIn('id', $id)->delete();
         } catch (Exception $exception) {
             throw new DeleteResourceFailedException();
         }

@@ -14,10 +14,11 @@ class FindItemTask extends Task
 
     public function run($repository, $id)
     {
+        $id               = (array) $id;
         $this->repository = App::make($repository);
 
         try {
-            return $this->repository->find($id);
+            return $this->repository->whereIn('id', $id);
         } catch (Exception $exception) {
             throw new NotFoundException();
         }

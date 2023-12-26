@@ -2,7 +2,7 @@
 
 $router->post('/create', [
   'as'         => 'create_new_user',
-  'uses'       => 'Controller@createItem',
+  'uses'       => 'Controller@store',
   'middleware' => [
     'auth:web',
   ],

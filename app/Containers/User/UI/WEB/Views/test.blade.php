@@ -40,6 +40,17 @@
             <input type="submit" value="delete">
         </form>
     @endforeach
+
+    <br />
+    <br />
+    <br />
+    <form action="{{ route('delete_more_users') }}" method="POST">
+        {{ csrf_field() }}
+        <input type="text" name="ids[]" placeholder="name" value="2">
+        <input type="text" name="ids[]" placeholder="name" value="3">
+        <input type="text" name="ids[]" placeholder="name" value="4">
+        <input type="submit" value="delete">
+    </form>
 </body>
 
 </html>

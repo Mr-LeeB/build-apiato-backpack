@@ -8,7 +8,7 @@ use App\Containers\Authorization\Models\Role;
 use App\Containers\User\Models\User;
 use App\Containers\User\UI\WEB\Requests\CheckPasswordRequest;
 use App\Containers\User\UI\WEB\Requests\CreateUserRequest;
-use App\Containers\User\UI\WEB\Requests\DeleteMoreUsersRequest;
+use App\Containers\User\UI\WEB\Requests\BulkDeleteUserRequest;
 use App\Containers\User\UI\WEB\Requests\DeleteUserRequest;
 use App\Containers\User\UI\WEB\Requests\FindUserByIdRequest;
 use App\Containers\User\UI\WEB\Requests\GetAllUserRequest;
@@ -35,7 +35,7 @@ class Controller extends WebController
     protected $view = 'user::test';
     protected $model = User::class;
 
-    protected $action = ['delete', 'getAll', 'update', 'create'];
+    protected $action = ['delete', 'getAll', 'update', 'create', 'bulkDelete'];
 
     protected $request = [
         // 'create' => CreateUserRequest::class,
@@ -131,7 +131,7 @@ class Controller extends WebController
     /**
      * @return  \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function deleteMoreUsers(DeleteMoreUsersRequest $request)
+    public function deleteMoreUsers(BulkDeleteUserRequest $request)
     { // admin delete more users
         try {
             $result = Apiato::call('User@DeleteMoreUsersAction', [new DataTransporter($request)]);

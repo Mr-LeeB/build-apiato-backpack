@@ -5,6 +5,7 @@ use Apiato\Core\Abstracts\Controllers\WebController as AbstractWebController;
 use App;
 use App\Ship\CustomContainer\Actions\CreateItemAction;
 use App\Ship\CustomContainer\Actions\DeleteItemAction;
+use App\Ship\CustomContainer\Actions\FindItemAction;
 use App\Ship\CustomContainer\Actions\GetAllItemAction;
 use App\Ship\CustomContainer\Actions\UpdateItemAction;
 use App\Ship\Transporters\DataTransporter;
@@ -36,6 +37,8 @@ class WebCrudController extends AbstractWebController
 
     private $acceptAction = [
         'create',
+        'store',
+        'edit',
         'update',
         'delete',
         'bulkDelete',
@@ -87,13 +90,6 @@ class WebCrudController extends AbstractWebController
      */
     private function setRequests($type)
     {
-        $requestClass = ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\\' . ucfirst($type) . $this->getContainerAndClassName($this->model)['className'] . 'Request');
-
-        if (!class_exists($requestClass)) {
-            throw new \InvalidArgumentException("Invalid request type: $type");
-        }
-
-        return $requestClass;
         $requestClass = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\\' . ucfirst($type) . $this->getContainerAndClassName($this->model)['className'] . 'Request';
 
         if (!class_exists($requestClass)) {
@@ -127,11 +123,11 @@ class WebCrudController extends AbstractWebController
         $parts = explode('\\', $path);
         if (count($parts) > 1) {
             $containerName = $parts[2];
-            $className = end($parts);
+            $className     = end($parts);
 
             return [
                 'containerName' => $containerName,
-                'className' => $className
+                'className'     => $className
             ];
         }
         return [];
@@ -164,7 +160,7 @@ class WebCrudController extends AbstractWebController
      *
      * @return \Illuminate\Contracts\View\View The view that displays the items.
      */
-    public function getAllItem()
+    public function index()
     {
         $request = resolve($this->request['getAll']);
 
@@ -178,11 +174,24 @@ class WebCrudController extends AbstractWebController
         return view($this->view, compact(['items', 'customs']));
     }
 
-    public function createItem()
+    public function show()
     {
-        $request = resolve($this->request['create']);
+        $request = resolve($this->request['find']);
+        $items   = App::make(FindItemAction::class)->run($this->repository, new DataTransporter($request));
+        return view($this->view, compact(['items']));
+    }
+
+    public function create()
+    {
+        resolve($this->request['create']);
+        return view($this->view);
+    }
+
+    public function store()
+    {
+        $request = resolve($this->request['store']);
         $columns = App::make($this->repository)->getModel()->getFillable();
-        $table = [];
+        $table   = [];
         foreach ($columns as $key => $value) {
             $table[$value] = $request->$value;
         }
@@ -192,11 +201,18 @@ class WebCrudController extends AbstractWebController
         return view($this->view, compact(['items']));
     }
 
-    public function updateItem()
+    public function edit()
+    {
+        $request = resolve($this->request['edit']);
+        $item    = App::make(FindItemAction::class)->run($this->repository, new DataTransporter($request));
+        return view($this->view, compact(['item']));
+    }
+
+    public function update()
     {
         $request = resolve($this->request['update']);
         $columns = App::make($this->repository)->getModel()->getFillable();
-        $table = [];
+        $table   = [];
         foreach ($columns as $value) {
             $table[$value] = $request->$value;
         }
@@ -207,9 +223,20 @@ class WebCrudController extends AbstractWebController
         return redirect()->back();
     }
 
-    public function deleteItem()
+    public function delete()
     {
         $request = resolve($this->request['delete']);
+
+        App::make(DeleteItemAction::class)->run($this->repository, new DataTransporter($request));
+
+        return redirect()->back();
+    }
+
+    public function bulkDelete()
+    {
+        $request = resolve($this->request['bulkDelete']);
+
+        $request['id'] = $request['ids'];
 
         App::make(DeleteItemAction::class)->run($this->repository, new DataTransporter($request));
 
