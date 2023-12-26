@@ -13,7 +13,7 @@ use Hash;
 class WebCrudController extends AbstractWebController
 {
 
-    protected $view;
+    protected $view = 'customcontainer::crud.list';
 
     protected $model;
 
@@ -42,8 +42,15 @@ class WebCrudController extends AbstractWebController
     protected $repository;
 
     protected $request = [];
+
+    protected $customIndexVariables = [];
+
     public function __construct()
     {
+        if (!$this->model) {
+            return;
+        }
+
         if (empty($this->action)) {
             $this->action = $this->acceptAction;
         } else {
@@ -63,7 +70,7 @@ class WebCrudController extends AbstractWebController
         }
 
         $this->request = $this->getRequests();
-        $this->repository ?? $this->repository = '\App\Containers\\' . $this->model . '\Data\Repositories\\' . $this->model . 'Repository';
+        $this->repository ?? $this->repository = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($this->model)['className'] . 'Repository';
     }
 
     /**
@@ -73,19 +80,20 @@ class WebCrudController extends AbstractWebController
      */
     private function setRequests($type)
     {
+        // dd($this->getContainerAndClassName($this->model));
         switch ($type) {
             case 'create':
-                return ('\App\Containers\\' . $this->model . '\UI\WEB\Requests\Create' . $this->model . 'Request');
+                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Create' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
             case 'update':
-                return ('\App\Containers\\' . $this->model . '\UI\WEB\Requests\Update' . $this->model . 'Request');
+                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Update' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
             case 'delete':
-                return ('\App\Containers\\' . $this->model . '\UI\WEB\Requests\Delete' . $this->model . 'Request');
+                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Delete' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
             case 'bulkDelete':
-                return ('\App\Containers\\' . $this->model . '\UI\WEB\Requests\BulkDelete' . $this->model . 'Request');
+                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\BulkDelete' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
             case 'find':
-                return ('\App\Containers\\' . $this->model . '\UI\WEB\Requests\Find' . $this->model . 'Request');
+                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Find' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
             case 'getAll':
-                return ('\App\Containers\\' . $this->model . '\UI\WEB\Requests\GetAll' . $this->model . 'Request');
+                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\GetAll' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
             default:
                 throw new \InvalidArgumentException("Invalid request type: $type");
         }
@@ -104,22 +112,66 @@ class WebCrudController extends AbstractWebController
         return $request;
     }
 
+    /**
+     * Retrieves the container name and class name from a given path.
+     *
+     * @param string $path The path from which to extract the container name and class name.
+     * @return array An array containing the container name and class name.
+     */
     public function getContainerAndClassName($path)
     {
-        $parts         = explode('\\', $path);
-        $containerName = $parts[2];
-        $className     = end($parts);
+        $parts = explode('\\', $path);
+        if (count($parts) > 1) {
+            $containerName = $parts[2];
+            $className     = end($parts);
 
-        return [$containerName, $className];
+            return [
+                'containerName' => $containerName,
+                'className'     => $className
+            ];
+        }
+        return [];
     }
 
+    /**
+     * Appends custom variables.
+     *
+     * @return array Returns an array of custom variables.
+     */
+    public function appendCustomVariables($actionClass)
+    {
+        $custom = [];
+        foreach ($this->customIndexVariables as $key) {
+            //Later modified into "Target Request Class"
+            $customRequest = resolve($key[1]);
+
+            $repository = '\App\Containers\\' . $this->getContainerAndClassName($key[0])['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($key[0])['className'] . 'Repository';
+            $collection = App::make($actionClass)->run($repository, new DataTransporter($customRequest));
+
+            $custom[$this->getContainerAndClassName($key[0])['className']] = $collection->toArray();
+        }
+
+        return $custom;
+    }
+
+
+    /**
+     * Retrieves all items.
+     *
+     * @return \Illuminate\Contracts\View\View The view that displays the items.
+     */
     public function getAllItem()
     {
         $request = resolve($this->request['getAll']);
 
         $items = App::make(GetAllItemAction::class)->run($this->repository, new DataTransporter($request));
 
-        return view($this->view, compact(['items']));
+        $customs = [];
+        if (!empty($this->customIndexVariables)) {
+            $customs = $this->appendCustomVariables(GetAllItemAction::class);
+        }
+
+        return view($this->view, compact(['items', 'customs']));
     }
 
     public function createItem()
@@ -131,7 +183,7 @@ class WebCrudController extends AbstractWebController
             $table[$value] = $request->$value;
         }
         isset($table['password']) ? $table['password'] = Hash::make($table['password']) : null;
-        $item = App::make(CreateItemAction::class)->run($this->repository, new DataTransporter($table));
+        $items = App::make(CreateItemAction::class)->run($this->repository, new DataTransporter($table));
 
         return view($this->view, compact(['items']));
     }
@@ -141,7 +193,7 @@ class WebCrudController extends AbstractWebController
         $request = resolve($this->request['update']);
         $columns = App::make($this->repository)->getModel()->getFillable();
         $table   = [];
-        foreach ($columns as $key => $value) {
+        foreach ($columns as $value) {
             $table[$value] = $request->$value;
         }
         isset($table['password']) ? $table['password'] = Hash::make($table['password']) : null;

@@ -171,7 +171,8 @@ return [
              */
         Apiato\Core\Providers\ApiatoProvider::class,
 
-        Facade\Ignition\IgnitionServiceProvider::class
+        Facade\Ignition\IgnitionServiceProvider::class,
+        App\Ship\Providers\CustomViewServiceProvider::class
 
     ],
 
