@@ -14,6 +14,8 @@ use App\Ship\Parents\Controllers\WebController;
 class Controller extends WebController
 {
   protected $view = 'clients::client.client-page';
-  protected $model = 'Clients';
+  protected $model = Clients::class;
+
+  protected $action = ['getAll'];
 
 }
