@@ -614,6 +614,3 @@
 @section('footer')
     Footer placeholder nhưng mà hình như không có set attribute 'yield' hoặc em 'yield' sai chỗ
 @endsection
-
-
-私は黒狐です。あなたの越智んち小さいですよ。ははははは
