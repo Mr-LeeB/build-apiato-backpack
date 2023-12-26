@@ -47,12 +47,6 @@ class WebCrudController extends AbstractWebController
 
     public function __construct()
     {
-<<<<<<< HEAD
-=======
-        if (!$this->model) {
-            return;
-        }
->>>>>>> da68d30553bd27eb79982e84e8b80588df3dfaca
 
         if (empty($this->action)) {
             $this->action = $this->acceptAction;
@@ -86,12 +80,8 @@ class WebCrudController extends AbstractWebController
         // dd($this->getContainerAndClassName($this->model));
         switch ($type) {
             case 'create':
-<<<<<<< HEAD
                 return ('\App\Containers\\' . $this->model . '\UI\WEB\Requests\Create' . $this->model . 'Request');
 
-=======
-                return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Create' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
->>>>>>> da68d30553bd27eb79982e84e8b80588df3dfaca
             case 'update':
                 return ('\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\Update' . $this->getContainerAndClassName($this->model)['className'] . 'Request');
             case 'delete':
