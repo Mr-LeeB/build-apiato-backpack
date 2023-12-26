@@ -9,7 +9,7 @@ use App\Ship\Parents\Requests\Request;
  *
  * @author Mahmoud Zalt <mahmoud@zalt.me>
  */
-class CreateUserRequest extends Request
+class EditUserRequest extends Request
 {
 
   /**
@@ -18,6 +18,8 @@ class CreateUserRequest extends Request
    * @var  array
    */
   protected $access = [
+    'roles'       => '',
+    'permissions' => 'update-users',
   ];
 
   /**
@@ -26,7 +28,7 @@ class CreateUserRequest extends Request
    * @var  array
    */
   protected $decode = [
-
+    'id'
   ];
 
   /**
@@ -36,7 +38,7 @@ class CreateUserRequest extends Request
    * @var  array
    */
   protected $urlParameters = [
-
+    'id'
   ];
 
   /**

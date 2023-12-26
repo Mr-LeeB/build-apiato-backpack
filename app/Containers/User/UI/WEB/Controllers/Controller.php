@@ -35,8 +35,6 @@ class Controller extends WebController
     protected $view = 'user::test';
     protected $model = User::class;
 
-    protected $action = ['delete', 'getAll', 'update', 'create', 'bulkDelete'];
-
     protected $request = [
         // 'create' => CreateUserRequest::class,
         // 'update' => UpdateUserRequest::class,

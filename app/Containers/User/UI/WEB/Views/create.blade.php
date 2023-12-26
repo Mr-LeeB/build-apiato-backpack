@@ -16,6 +16,10 @@
         <input type="text" name="password" placeholder="password">
         <input type="submit" value="submit">
     </form>
+
+    @if (session('errors'))
+        <div class="text-red">{{ session('errors') }}</div>
+    @endif
 </body>
 
 </html>

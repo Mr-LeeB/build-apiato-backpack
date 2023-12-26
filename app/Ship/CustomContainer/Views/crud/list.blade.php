@@ -45,9 +45,7 @@
                     </th>
                 </tfoot>
             </table>
-
         </div>
-
     </div>
 @endsection
 

@@ -11,7 +11,6 @@ use App\Ship\CustomContainer\Actions\UpdateItemAction;
 use App\Ship\Transporters\DataTransporter;
 use Hash;
 
-
 /**
  * Undocumented class.
  */
@@ -46,6 +45,10 @@ class WebCrudController extends AbstractWebController
         'getAll',
     ];
 
+    protected $fieldsFind = [
+        'id',
+    ];
+
     protected $repository;
 
     protected $request = [];
@@ -60,6 +63,9 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
+        if (!$this->model) {
+            return;
+        }
 
         if (empty($this->action)) {
             $this->action = $this->acceptAction;
@@ -88,12 +94,19 @@ class WebCrudController extends AbstractWebController
      *
      * @return string
      */
-    private function setRequests($type)
+    private function setRequests($type, $fieldsFind = null)
     {
-        $requestClass = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\UI\WEB\Requests\\' . ucfirst($type) . $this->getContainerAndClassName($this->model)['className'] . 'Request';
+        $type         = ucfirst($type);
+        $requestClass = '\App\Containers\\'
+            . $this->getContainerAndClassName($this->model)['containerName']
+            . '\UI\WEB\Requests\\'
+            . ($type)
+            . $this->getContainerAndClassName($this->model)['className']
+            . ($fieldsFind ? 'By' . ucfirst($fieldsFind) : null)
+            . 'Request';
 
         if (!class_exists($requestClass)) {
-            throw new \InvalidArgumentException("Invalid request type: $type \n Syntax: {$type}{$this->getContainerAndClassName($this->model)['className']}Request");
+            throw new \InvalidArgumentException("Invalid class request type: $type. Request Syntax: " . ($type) . "{$this->getContainerAndClassName($this->model)['className']}" . ($fieldsFind ? 'By' . ucfirst($fieldsFind) : null) . "Request");
         }
 
         return $requestClass;
@@ -106,7 +119,15 @@ class WebCrudController extends AbstractWebController
     {
         $request = [];
         foreach ($this->action as $value) {
-            isset($this->request[$value]) ? $request[$value] = $this->request[$value] : $request[$value] = self::setRequests($value);
+            if (isset($this->request[$value])) {
+                $request[$value] = $this->request[$value];
+            } elseif ($value === 'find') {
+                foreach ($this->fieldsFind as $key => $fieldsFind) {
+                    $request['findBy' . ucfirst($fieldsFind)] = self::setRequests('find', $this->fieldsFind[$key]);
+                }
+            } else {
+                $request[$value] = self::setRequests($value);
+            }
         }
 
         return $request;
@@ -171,14 +192,31 @@ class WebCrudController extends AbstractWebController
             $customs = $this->appendCustomVariables(GetAllItemAction::class);
         }
 
+        if ($request->expectsJson()) {
+            return response()->json($items);
+        }
+
         return view($this->view, compact(['items', 'customs']));
     }
 
     public function show()
     {
-        $request = resolve($this->request['find']);
-        $items   = App::make(FindItemAction::class)->run($this->repository, new DataTransporter($request));
-        return view($this->view, compact(['items']));
+        $request = resolve($this->request['findById']);
+        try {
+            $item = App::make(FindItemAction::class)->run($this->repository, new DataTransporter($request));
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $e->getMessage(),
+                    'data'    => ''
+                ]);
+            }
+            return redirect()->back()->withErrors($e->getMessage());
+        }
+        if ($request->expectsJson()) {
+            return response()->json($item);
+        }
+        return view($this->view, compact(['item']));
     }
 
     public function create()
@@ -196,15 +234,46 @@ class WebCrudController extends AbstractWebController
             $table[$value] = $request->$value;
         }
         isset($table['password']) ? $table['password'] = Hash::make($table['password']) : null;
-        $items = App::make(CreateItemAction::class)->run($this->repository, new DataTransporter($table));
 
-        return view($this->view, compact(['items']));
+        try {
+            $item = App::make(CreateItemAction::class)->run($this->repository, new DataTransporter($table));
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $e->getMessage(),
+                    'data'    => ''
+                ]);
+            }
+            return redirect()->back()->withErrors($e->getMessage());
+
+        }
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => '',
+                'data'    => $item
+            ]);
+        }
+
+        return view($this->view, compact(['item']))->with('success', '');
     }
 
     public function edit()
     {
         $request = resolve($this->request['edit']);
-        $item    = App::make(FindItemAction::class)->run($this->repository, new DataTransporter($request));
+
+        try {
+            $item = App::make(FindItemAction::class)->run($this->repository, new DataTransporter($request));
+        } catch (\Exception $e) {
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $e->getMessage(),
+                    'data'    => ''
+                ]);
+            }
+            return redirect()->back()->withErrors($e->getMessage());
+        }
+
         return view($this->view, compact(['item']));
     }
 
@@ -218,18 +287,53 @@ class WebCrudController extends AbstractWebController
         }
         isset($table['password']) ? $table['password'] = Hash::make($table['password']) : null;
 
-        App::make(UpdateItemAction::class)->run($this->repository, $request->id, new DataTransporter($table));
+        try {
 
-        return redirect()->back();
+            $items = App::make(UpdateItemAction::class)->run($this->repository, $request->id, new DataTransporter($table));
+        } catch (\Exception $e) {
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $e->getMessage(),
+                    'data'    => ''
+                ]);
+            }
+            return redirect()->back()->withErrors($e->getMessage());
+        }
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => '',
+                'data'    => $items
+            ]);
+        }
+        return redirect()->back()->with('success', '');
     }
 
     public function delete()
     {
         $request = resolve($this->request['delete']);
+        try {
+            App::make(DeleteItemAction::class)->run($this->repository, new DataTransporter($request));
 
-        App::make(DeleteItemAction::class)->run($this->repository, new DataTransporter($request));
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $e->getMessage(),
+                    'success' => '',
+                ]);
+            }
 
-        return redirect()->back();
+            return redirect()->back()->withErrors($e->getMessage());
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => '',
+                'success' => '',
+            ]);
+        }
+
+        return redirect()->back()->with('success', '');
     }
 
     public function bulkDelete()
@@ -238,9 +342,25 @@ class WebCrudController extends AbstractWebController
 
         $request['id'] = $request['ids'];
 
-        App::make(DeleteItemAction::class)->run($this->repository, new DataTransporter($request));
+        try {
+            App::make(DeleteItemAction::class)->run($this->repository, new DataTransporter($request));
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $e->getMessage(),
+                    'success' => '',
+                ]);
+            }
+            return redirect()->back()->withErrors($e->getMessage());
+        }
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => '',
+                'success' => '',
+            ]);
+        }
 
-        return redirect()->back();
+        return redirect()->back()->with('success', '');
     }
 }
 

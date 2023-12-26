@@ -14,16 +14,20 @@
 @endphp
 
 @section('before_breadcrumbs_widgets')
+    @include('customcontainer::base.inc.widgets')
 @endsection
 
 @section('after_breadcrumbs_widgets')
+    @include('customcontainer::base.inc.widgets')
 @endsection
 
 @section('before_content_widgets')
+    @include('customcontainer::base.inc.widgets')
 @endsection
 
 @section('content')
 @endsection
 
 @section('after_content_widgets')
+    @include('customcontainer::base.inc.widgets')
 @endsection
