@@ -4,6 +4,8 @@ namespace App\Containers\User\UI\WEB\Controllers;
 
 use Apiato\Core\Foundation\Facades\Apiato;
 
+use App\Containers\Authorization\Models\Role;
+use App\Containers\User\Models\User;
 use App\Containers\User\UI\WEB\Requests\CheckPasswordRequest;
 use App\Containers\User\UI\WEB\Requests\CreateUserRequest;
 use App\Containers\User\UI\WEB\Requests\DeleteMoreUsersRequest;
@@ -31,13 +33,13 @@ use Exception;
 class Controller extends WebController
 {
     protected $view = 'user::test';
-    protected $model = 'User';
+    protected $model = User::class;
 
     protected $action = ['delete', 'getAll', 'update', 'create'];
 
     protected $request = [
-        'create' => CreateUserRequest::class,
-        'update' => UpdateUserRequest::class,
+        // 'create' => CreateUserRequest::class,
+        // 'update' => UpdateUserRequest::class,
     ];
 
     public function showCreatePage()

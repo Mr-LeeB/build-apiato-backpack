@@ -22,7 +22,7 @@ class UpdateItemTask extends Task
         try {
             return $this->repository->update($data, $id);
         } catch (ModelNotFoundException $exception) {
-            throw new NotFoundException('Release Not Found.');
+            throw new NotFoundException('Item Not Found.');
         } catch (Exception $exception) {
             throw new UpdateResourceFailedException();
         }
