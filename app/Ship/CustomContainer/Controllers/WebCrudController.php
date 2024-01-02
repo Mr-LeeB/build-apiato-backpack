@@ -10,6 +10,7 @@ use App\Ship\CustomContainer\Actions\GetAllItemAction;
 use App\Ship\CustomContainer\Actions\UpdateItemAction;
 use App\Ship\Transporters\DataTransporter;
 use Hash;
+use Illuminate\Support\Str;
 
 /**
  * Undocumented class.
@@ -17,9 +18,9 @@ use Hash;
 class WebCrudController extends AbstractWebController
 {
     protected $views = [
-        'list'        => 'customcontainer::admin.admin_list_page',
+        'list' => 'customcontainer::admin.admin_list_page',
         'create_edit' => 'customcontainer::admin.admin_create_and_edit_page',
-        'show'        => 'customcontainer::admin.admin_show_page'
+        'show' => 'customcontainer::admin.admin_show_page'
     ];
 
     protected $model;
@@ -66,11 +67,6 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
-        $this->setupConfigurationForCurrentOperation();
-        if (!$this->model) {
-            return;
-        }
-
         if (empty($this->action)) {
             $this->action = $this->acceptAction;
         } else {
@@ -97,18 +93,58 @@ class WebCrudController extends AbstractWebController
             }
         }
 
+        
+        // ---------------------------
+        // Create the CrudPanel object
+        // ---------------------------
+        // Used by developers inside their ProductCrudControllers as
+        // $this->crud or using the CRUD facade.
+        //
+        // It's done inside a middleware closure in order to have
+        // the complete request inside the CrudPanel object.
+        $this->middleware(function ($request, $next) {
+
+            // $this->setupDefaults();
+            // $this->setup();
+            $this->setupConfigurationForCurrentOperation();
+
+            return $next($request);
+        });
+
         $this->request = $this->getRequests();
         $this->repository ?? $this->repository = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($this->model)['className'] . 'Repository';
     }
 
-    protected function setupConfigurationForCurrentOperation(){
-        if(method_exists($this,'setupListOperation')){
+    protected $currentOperation;
+
+    /**
+     * Get the current CRUD operation being performed.
+     *
+     * @return string Operation being performed in string form.
+     */
+    public function getCurrentOperation()
+    {
+        return $this->currentOperation ?? \Route::getCurrentRoute()->action['operation'] ?? null;
+    }
+
+    protected function setupConfigurationForCurrentOperation()
+    {
+        $operationName = $this->getCurrentOperation();
+        $setupClassName = 'setup' . Str::studly($operationName) . 'Operation';
+        if (method_exists($this, $setupClassName)) {
             $this->setupListOperation();
         }
     }
 
-    public function setupRoutes(){
+    public function setupRoutes($segment, $routeName, $controller)
+    {
+        preg_match_all('/(?<=^|;)setup([^;]+?)Routes(;|$)/', implode(';', get_class_methods($this)), $matches);
 
+        if (count($matches[1])) {
+            foreach ($matches[1] as $methodName) {
+                $this->{'setup' . $methodName . 'Routes'}($segment, $routeName, $controller);
+            }
+        }
     }
 
     /**
@@ -118,7 +154,7 @@ class WebCrudController extends AbstractWebController
      */
     private function setRequests($type, $fieldsFind = null)
     {
-        $type         = ucfirst($type);
+        $type = ucfirst($type);
         $requestClass = '\App\Containers\\'
             . $this->getContainerAndClassName($this->model)['containerName']
             . '\UI\WEB\Requests\\'
@@ -166,11 +202,11 @@ class WebCrudController extends AbstractWebController
         $parts = explode('\\', $path);
         if (count($parts) > 1) {
             $containerName = $parts[2];
-            $className     = end($parts);
+            $className = end($parts);
 
             return [
                 'containerName' => $containerName,
-                'className'     => $className
+                'className' => $className
             ];
         }
         return [];
@@ -223,7 +259,7 @@ class WebCrudController extends AbstractWebController
 
     public function show()
     {
-        $items      = [];
+        $items = [];
         $callByAjax = false;
         foreach ($this->fieldsFind as $value) {
             $request = resolve($this->request['findBy' . ucfirst($value)]);
@@ -232,7 +268,7 @@ class WebCrudController extends AbstractWebController
                 if (!$request->$value) {
                     continue;
                 }
-                $result                        = App::make(FindItemAction::class)->run($this->repository, $value, new DataTransporter($request));
+                $result = App::make(FindItemAction::class)->run($this->repository, $value, new DataTransporter($request));
                 $items['by' . ucfirst($value)] = [];
                 foreach ($result as $item) {
                     array_push($items['by' . ucfirst($value)], $item);
@@ -241,7 +277,7 @@ class WebCrudController extends AbstractWebController
                 if ($request->expectsJson()) {
                     return response()->json([
                         'message' => $e->getMessage(),
-                        'errors'  => ''
+                        'errors' => ''
                     ]);
                 }
                 return redirect()->back()->withErrors($e->getMessage());
@@ -266,7 +302,7 @@ class WebCrudController extends AbstractWebController
     {
         $request = resolve($this->request['store']);
         $columns = App::make($this->repository)->getModel()->getFillable();
-        $table   = [];
+        $table = [];
         foreach ($columns as $key => $value) {
             $table[$value] = $request->$value;
         }
@@ -278,7 +314,7 @@ class WebCrudController extends AbstractWebController
             if ($request->expectsJson()) {
                 return response()->json([
                     'message' => $e->getMessage(),
-                    'data'    => ''
+                    'data' => ''
                 ]);
             }
             return redirect()->back()->withErrors($e->getMessage());
@@ -287,7 +323,7 @@ class WebCrudController extends AbstractWebController
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => '',
-                'data'    => $item
+                'data' => $item
             ]);
         }
 
@@ -305,7 +341,7 @@ class WebCrudController extends AbstractWebController
             if ($request->expectsJson()) {
                 return response()->json([
                     'message' => $e->getMessage(),
-                    'data'    => ''
+                    'data' => ''
                 ]);
             }
             return redirect()->back()->withErrors($e->getMessage());
@@ -318,7 +354,7 @@ class WebCrudController extends AbstractWebController
     {
         $request = resolve($this->request['update']);
         $columns = App::make($this->repository)->getModel()->getFillable();
-        $table   = [];
+        $table = [];
         foreach ($columns as $value) {
             $table[$value] = $request->$value;
         }
@@ -332,7 +368,7 @@ class WebCrudController extends AbstractWebController
             if ($request->expectsJson()) {
                 return response()->json([
                     'message' => $e->getMessage(),
-                    'data'    => ''
+                    'data' => ''
                 ]);
             }
             return redirect()->back()->withErrors($e->getMessage());
@@ -340,7 +376,7 @@ class WebCrudController extends AbstractWebController
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => '',
-                'data'    => $item
+                'data' => $item
             ]);
         }
         return redirect()->back()->with(['success' => '', 'item' => $item]);
