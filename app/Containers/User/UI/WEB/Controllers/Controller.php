@@ -36,10 +36,13 @@ class Controller extends WebController
 
     public function setupListOperation()
     {
-        dd('hello');
+
     }
 
+    public function setupCreateOperation()
+    {
 
+    }
 
     // protected $views = ['list' => 'user::test'];
     protected $model = User::class;
@@ -74,7 +77,7 @@ class Controller extends WebController
 
         $roles = self::getAllRole(new GetAllRolesRequest());
 
-        $isEdited   = -1;
+        $isEdited = -1;
         $userEdited = null;
 
         if ($findUserRequest->id) {
@@ -83,7 +86,7 @@ class Controller extends WebController
                     'id' => 'required|exists:users,id',
                 ]
             );
-            $isEdited   = $findUserRequest->id;
+            $isEdited = $findUserRequest->id;
             $userEdited = self::findUserById($findUserRequest);
         }
         return view('user::home', compact('users', 'isEdited', 'userEdited', 'roles'));
