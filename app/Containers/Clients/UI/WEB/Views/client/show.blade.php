@@ -29,7 +29,8 @@
     @php
         //Prepare the variables
         if (!isset($releases)) {
-            $releases = DB::table('clients')->orderBy('created_at', 'asc')->paginate('15');
+            //$releases = DB::table('clients')->orderBy('created_at', 'asc')->paginate('15');
+            $releases = $items;
         }
 
         //Get max created_at
