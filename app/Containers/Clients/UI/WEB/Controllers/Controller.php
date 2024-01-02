@@ -13,7 +13,7 @@ use App\Ship\Parents\Controllers\WebController;
  */
 class Controller extends WebController
 {
-  protected $view = 'clients::client.client-page';
+  protected $views = 'clients::client.client-page';
   protected $model = Clients::class;
 
   protected $action = ['getAll'];

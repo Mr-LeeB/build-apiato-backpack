@@ -9,7 +9,7 @@ use App\Ship\Parents\Requests\Request;
  *
  * @author Mahmoud Zalt <mahmoud@zalt.me>
  */
-class FindUserByIdRequest extends Request
+class FindUserByNameRequest extends Request
 {
 
   /**
@@ -38,7 +38,7 @@ class FindUserByIdRequest extends Request
    * @var  array
    */
   protected $urlParameters = [
-    'id',
+    'name',
   ];
 
   /**
@@ -49,7 +49,7 @@ class FindUserByIdRequest extends Request
   public function rules()
   {
     return [
-      'id' => '',
+      'name' => '',
       // 'isEdited' => 'string'
     ];
   }

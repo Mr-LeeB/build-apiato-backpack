@@ -32,12 +32,24 @@ use Exception;
  */
 class Controller extends WebController
 {
-    protected $view = 'user::test';
+    use \App\Ship\CustomContainer\Controllers\Operations\ListOperation;
+
+    public function setupListOperation()
+    {
+        dd('hello');
+    }
+
+
+
+    // protected $views = ['list' => 'user::test'];
     protected $model = User::class;
 
     protected $request = [
-        // 'create' => CreateUserRequest::class,
-        // 'update' => UpdateUserRequest::class,
+    ];
+
+    protected $fieldsFind = [
+        'id',
+        'name'
     ];
 
     public function showCreatePage()

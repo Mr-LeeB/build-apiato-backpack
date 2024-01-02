@@ -16,8 +16,11 @@ use Hash;
  */
 class WebCrudController extends AbstractWebController
 {
-
-    protected $view = 'customcontainer::crud.list';
+    protected $views = [
+        'list'        => 'customcontainer::admin.admin_list_page',
+        'create_edit' => 'customcontainer::admin.admin_create_and_edit_page',
+        'show'        => 'customcontainer::admin.admin_show_page'
+    ];
 
     protected $model;
 
@@ -63,6 +66,7 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
+        $this->setupConfigurationForCurrentOperation();
         if (!$this->model) {
             return;
         }
@@ -85,8 +89,26 @@ class WebCrudController extends AbstractWebController
             }
         }
 
+        if ($this->views) {
+            foreach ($this->views as $key => $value) {
+                if (!in_array($key, ['list', 'create_edit', 'show'])) {
+                    throw new \InvalidArgumentException("Invalid view type: $key");
+                }
+            }
+        }
+
         $this->request = $this->getRequests();
         $this->repository ?? $this->repository = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($this->model)['className'] . 'Repository';
+    }
+
+    protected function setupConfigurationForCurrentOperation(){
+        if(method_exists($this,'setupListOperation')){
+            $this->setupListOperation();
+        }
+    }
+
+    public function setupRoutes(){
+
     }
 
     /**
@@ -196,33 +218,48 @@ class WebCrudController extends AbstractWebController
             return response()->json($items);
         }
 
-        return view($this->view, compact(['items', 'customs']));
+        return view($this->views['list'], compact(['items', 'customs']));
     }
 
     public function show()
     {
-        $request = resolve($this->request['findById']);
-        try {
-            $item = App::make(FindItemAction::class)->run($this->repository, new DataTransporter($request));
-        } catch (\Exception $e) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => $e->getMessage(),
-                    'data'    => ''
-                ]);
+        $items      = [];
+        $callByAjax = false;
+        foreach ($this->fieldsFind as $value) {
+            $request = resolve($this->request['findBy' . ucfirst($value)]);
+
+            try {
+                if (!$request->$value) {
+                    continue;
+                }
+                $result                        = App::make(FindItemAction::class)->run($this->repository, $value, new DataTransporter($request));
+                $items['by' . ucfirst($value)] = [];
+                foreach ($result as $item) {
+                    array_push($items['by' . ucfirst($value)], $item);
+                }
+            } catch (\Exception $e) {
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'message' => $e->getMessage(),
+                        'errors'  => ''
+                    ]);
+                }
+                return redirect()->back()->withErrors($e->getMessage());
             }
-            return redirect()->back()->withErrors($e->getMessage());
+            if ($request->expectsJson()) {
+                $callByAjax = true;
+            }
         }
-        if ($request->expectsJson()) {
-            return response()->json($item);
+        if ($callByAjax) {
+            return response()->json($items);
         }
-        return view($this->view, compact(['item']));
+        return view($this->views['show'], compact(['items']));
     }
 
     public function create()
     {
         resolve($this->request['create']);
-        return view($this->view);
+        return view($this->views['create_edit']);
     }
 
     public function store()
@@ -254,7 +291,7 @@ class WebCrudController extends AbstractWebController
             ]);
         }
 
-        return view($this->view, compact(['item']))->with('success', '');
+        return view($this->views['create_edit'])->with('success', '');
     }
 
     public function edit()
@@ -274,7 +311,7 @@ class WebCrudController extends AbstractWebController
             return redirect()->back()->withErrors($e->getMessage());
         }
 
-        return view($this->view, compact(['item']));
+        return view($this->views['create_edit'], compact(['item']));
     }
 
     public function update()
@@ -289,7 +326,7 @@ class WebCrudController extends AbstractWebController
 
         try {
 
-            $items = App::make(UpdateItemAction::class)->run($this->repository, $request->id, new DataTransporter($table));
+            $item = App::make(UpdateItemAction::class)->run($this->repository, $request->id, new DataTransporter($table));
         } catch (\Exception $e) {
 
             if ($request->expectsJson()) {
@@ -303,10 +340,10 @@ class WebCrudController extends AbstractWebController
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => '',
-                'data'    => $items
+                'data'    => $item
             ]);
         }
-        return redirect()->back()->with('success', '');
+        return redirect()->back()->with(['success' => '', 'item' => $item]);
     }
 
     public function delete()
