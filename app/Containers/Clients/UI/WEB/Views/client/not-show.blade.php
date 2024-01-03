@@ -1,4 +1,4 @@
-@extends('releasevuejs::layout.app_admin_nova')
+@extends('clients::layout.app_admin_nova')
 
 @section('title')
     {{ __('Release') }}
