@@ -66,7 +66,7 @@ class Controller extends WebController
     ];
 
     protected $customIndexVariables = [
-        [Role::class, GetAllRolePermissionRequest::class],
+        Role::class => GetAllRolePermissionRequest::class,
     ];
 
     public function showCreatePage()

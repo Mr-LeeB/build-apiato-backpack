@@ -2,6 +2,11 @@
 
 namespace App\Containers\Clients\UI\WEB\Controllers;
 
+use App\Containers\Authorization\Actions\GetAllRolesAction;
+use App\Containers\Authorization\Models\Permission;
+use App\Containers\Authorization\Models\Role;
+use App\Containers\Authorization\UI\API\Requests\GetAllPermissionsRequest;
+use App\Containers\Authorization\UI\API\Requests\GetAllRolesRequest;
 use App\Containers\Clients\Models\Clients;
 use App\Containers\User\Models\User;
 use App\Containers\User\UI\WEB\Requests\GetAllUserRequest;
@@ -24,5 +29,7 @@ class Controller extends WebController
 
   protected $customIndexVariables = [
     User::class => GetAllUserRequest::class,
+    Role::class => GetAllRolesRequest::class,
+    Permission::class => GetAllPermissionsRequest::class,
   ];
 }

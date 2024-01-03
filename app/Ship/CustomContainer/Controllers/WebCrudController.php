@@ -12,6 +12,8 @@ use App\Ship\CustomContainer\Actions\DeleteItemAction;
 use App\Ship\CustomContainer\Actions\FindItemAction;
 use App\Ship\CustomContainer\Actions\GetAllItemAction;
 use App\Ship\CustomContainer\Actions\UpdateItemAction;
+use App\Ship\Parents\Models\Model;
+use App\Ship\Parents\Requests\Request;
 use App\Ship\Transporters\DataTransporter;
 use Hash;
 use Illuminate\Support\Str;
@@ -71,11 +73,11 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
-
+        //Screen $model
         if ($this->model === null) {
             return;
         }
-
+        //Screen $action
         if (empty($this->action)) {
             $this->action = $this->acceptAction;
         } else {
@@ -96,10 +98,20 @@ class WebCrudController extends AbstractWebController
         //Screen $customIndexVariables
         if (!empty($this->customIndexVariables)) {
             if (is_array($this->customIndexVariables)) {
+                //Traverse through all customIndexVariable entries
                 foreach ($this->customIndexVariables as $key => $value) {
+                    //Class not found
                     if (!class_exists($key) || !class_exists($value)) {
-                        throw new \InvalidArgumentException("Invalid custom index variable: $key || $value");
+                        throw new \InvalidArgumentException("Class not found: $key || $value");
                     }
+                    //Class is not a subclass of Model
+                    if (!is_subclass_of($key, \Illuminate\Database\Eloquent\Model::class)) {
+                        throw new \InvalidArgumentException("Invalid Model class: $key");
+                    }
+                    //Class is not a subclass of Request
+                    if (!is_subclass_of($value, Request::class)) {
+                      throw new \InvalidArgumentException("Invalid Request class: $value");
+                  }
                 }
             }
         }
