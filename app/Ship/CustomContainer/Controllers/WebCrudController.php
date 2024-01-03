@@ -73,9 +73,15 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
-        //Screen $model
         if ($this->model === null) {
             return;
+        }
+        //Screen $model
+        if (!is_subclass_of($this->model, \Illuminate\Database\Eloquent\Model::class)) {
+            throw new \InvalidArgumentException("Invalid model type: $this->model");
+        }
+        if (!class_exists($this->model)) {
+            throw new \InvalidArgumentException("Model not found: $this->model");
         }
         //Screen $action
         if (empty($this->action)) {
@@ -110,8 +116,8 @@ class WebCrudController extends AbstractWebController
                     }
                     //Class is not a subclass of Request
                     if (!is_subclass_of($value, Request::class)) {
-                      throw new \InvalidArgumentException("Invalid Request class: $value");
-                  }
+                        throw new \InvalidArgumentException("Invalid Request class: $value");
+                    }
                 }
             }
         }
