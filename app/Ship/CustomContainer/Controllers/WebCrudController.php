@@ -3,6 +3,7 @@ namespace App\Ship\CustomContainer\Controllers;
 
 use Apiato\Core\Abstracts\Controllers\WebController as AbstractWebController;
 use App;
+use App\Containers\Clients\Models\Clients;
 use App\Ship\CustomContainer\Actions\CreateItemAction;
 use App\Ship\CustomContainer\Actions\DeleteItemAction;
 use App\Ship\CustomContainer\Actions\FindItemAction;
@@ -23,7 +24,7 @@ class WebCrudController extends AbstractWebController
         'show' => 'customcontainer::admin.admin_show_page'
     ];
 
-    protected $model;
+    protected $model = Clients::class;
 
     /**
      * @var array{
@@ -93,7 +94,7 @@ class WebCrudController extends AbstractWebController
             }
         }
 
-        
+
         // ---------------------------
         // Create the CrudPanel object
         // ---------------------------

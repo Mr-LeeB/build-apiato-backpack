@@ -16,12 +16,12 @@ trait ListOperation
     {
         Route::get($segment . '/', [
             'as' => $routeName . '.index',
-            'uses' => $controller . '@index',
+            'uses' => '\App\Containers\Welcome\UI\WEB\Controllers\Controller' . '@sayWelcome',
             'operation' => 'list',
         ]);
 
         Route::get($segment . '/{id}/show', [
-            'as' => $routeName . '.show',
+            'as' => $routeName . '.showHandDiEm',
             'uses' => $controller . '@show',
             'operation' => 'list',
         ]);
