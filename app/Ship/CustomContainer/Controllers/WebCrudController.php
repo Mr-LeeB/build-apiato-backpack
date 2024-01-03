@@ -68,11 +68,11 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
-
+        // Screen $model
         if ($this->model === null) {
             return;
         }
-
+        //Screen $action
         if (empty($this->action)) {
             $this->action = $this->acceptAction;
         } else {
@@ -90,14 +90,24 @@ class WebCrudController extends AbstractWebController
                 }
             }
         }
+        //Screen $customIndexVariables
+        if (!empty($this->customIndexVariables)) {
+            if (is_array($this->customIndexVariables)) {
+                foreach ($this->customIndexVariables as $key => $value) {
+                    if (!class_exists($key) || !class_exists($value)) {
+                        throw new \InvalidArgumentException("Invalid custom index variable: $key || $value");
+                    }
+                }
+            }
+        }
 
-        // if ($this->views) {
-        //     foreach ($this->views as $key => $value) {
-        //         if (!in_array($key, ['list', 'create_edit', 'show'])) {
-        //             throw new \InvalidArgumentException("Invalid view type: $key");
-        //         }
-        //     }
-        // }
+        if ($this->views) {
+            foreach ($this->views as $key => $value) {
+                if (!in_array($key, ['list', 'create_edit', 'show'])) {
+                    throw new \InvalidArgumentException("Invalid view type: $key");
+                }
+            }
+        }
 
 
         // ---------------------------
