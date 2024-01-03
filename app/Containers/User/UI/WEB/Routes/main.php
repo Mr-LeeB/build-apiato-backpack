@@ -2,10 +2,10 @@
 
 Route::prefix('user')->group(function () {
 
-  Route::get('/', [
-    'as'   => 'get_user_home_page',
-    'uses' => 'Controller@sayWelcome',
-  ]);
+  // Route::get('/', [
+  //   'as'   => 'get_user_home_page',
+  //   'uses' => 'Controller@sayWelcome',
+  // ]);
 
   Route::get('/{id}', [
     'as'   => 'find_user_by_id',

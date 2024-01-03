@@ -68,6 +68,11 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
+
+        if ($this->model === null) {
+            throw new \InvalidArgumentException("Model is not set");
+        }
+
         if (empty($this->action)) {
             $this->action = $this->acceptAction;
         } else {
@@ -86,13 +91,13 @@ class WebCrudController extends AbstractWebController
             }
         }
 
-        if ($this->views) {
-            foreach ($this->views as $key => $value) {
-                if (!in_array($key, ['list', 'create_edit', 'show'])) {
-                    throw new \InvalidArgumentException("Invalid view type: $key");
-                }
-            }
-        }
+        // if ($this->views) {
+        //     foreach ($this->views as $key => $value) {
+        //         if (!in_array($key, ['list', 'create_edit', 'show'])) {
+        //             throw new \InvalidArgumentException("Invalid view type: $key");
+        //         }
+        //     }
+        // }
 
 
         // ---------------------------
