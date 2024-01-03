@@ -16,7 +16,7 @@ trait ListOperation
     {
         Route::get($segment . '/', [
             'as' => $routeName . '.index',
-            'uses' => '\App\Containers\Welcome\UI\WEB\Controllers\Controller' . '@sayWelcome',
+            'uses' => $controller . '@list',
             'operation' => 'list',
         ]);
 
