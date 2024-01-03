@@ -16,9 +16,10 @@ use App\Ship\Parents\Controllers\WebController;
 class Controller extends WebController
 {
   use ListOperation;
-  protected $views = [
-    'list' => 'clients::client.show',
-  ];
+  // protected $views = [
+  //   'list' => 'clients::client.show',
+  //   'show' => 'clients::client.show',
+  // ];
   protected $model = Clients::class;
 
   protected $customIndexVariables = [

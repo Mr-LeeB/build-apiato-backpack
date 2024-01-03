@@ -5,8 +5,8 @@
 @endsection
 
 @php
-    dd($items);
-    // dd(get_defined_vars()['__data']);
+    // dd($items);
+    dd(get_defined_vars()['__data']);
 
     $view_load_theme = 'base';
     session()->put('url.back', url()->current());
