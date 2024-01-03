@@ -70,7 +70,7 @@ class WebCrudController extends AbstractWebController
     {
 
         if ($this->model === null) {
-            throw new \InvalidArgumentException("Model is not set");
+            return;
         }
 
         if (empty($this->action)) {
@@ -334,7 +334,7 @@ class WebCrudController extends AbstractWebController
             ]);
         }
 
-        return view($this->views['create_edit'])->with('success', '');
+        return redirect()->back()->with('success', 'ngon');
     }
 
     public function edit()
@@ -342,7 +342,7 @@ class WebCrudController extends AbstractWebController
         $request = resolve($this->request['edit']);
 
         try {
-            $item = App::make(FindItemAction::class)->run($this->repository, new DataTransporter($request));
+            $item = App::make(FindItemAction::class)->run($this->repository, 'id', new DataTransporter($request));
         } catch (\Exception $e) {
 
             if ($request->expectsJson()) {

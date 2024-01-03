@@ -22,7 +22,7 @@ class DeleteItemAction extends Action
      */
     public function run($repository, DataTransporter $data)
     {
-        App::make(FindItemTask::class)->run($repository, $data->id) ? $item = $data->id : null;
+        App::make(FindItemTask::class)->run($repository, 'id', $data->id) ? $item = $data->id : null;
 
         if (!$item)
             throw new NotFoundException();

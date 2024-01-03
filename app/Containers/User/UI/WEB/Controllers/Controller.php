@@ -6,6 +6,7 @@ use Apiato\Core\Foundation\Facades\Apiato;
 
 use App\Containers\Authorization\Models\Role;
 use App\Containers\Authorization\UI\WEB\Requests\CreateRoleRequest;
+use App\Containers\Authorization\UI\WEB\Requests\GetAllRolePermissionRequest;
 use App\Containers\User\Models\User;
 use App\Containers\User\UI\WEB\Requests\CheckPasswordRequest;
 use App\Containers\User\UI\WEB\Requests\CreateUserRequest;
@@ -34,6 +35,10 @@ use Exception;
 class Controller extends WebController
 {
     use \App\Ship\CustomContainer\Controllers\Operations\ListOperation;
+    use \App\Ship\CustomContainer\Controllers\Operations\CreateOperation;
+    use \App\Ship\CustomContainer\Controllers\Operations\UpdateOperation;
+    use \App\Ship\CustomContainer\Controllers\Operations\DeleteOperation;
+    use \App\Ship\CustomContainer\Controllers\Operations\BulkDeleteOperation;
 
     public function setupListOperation()
     {
@@ -45,7 +50,11 @@ class Controller extends WebController
 
     }
 
-    // protected $views = ['list' => 'user::test'];
+    protected $views = [
+        'list' => 'user::test',
+        'create_edit' => 'user::create',
+        'show' => 'user::show',
+    ];
     protected $model = User::class;
 
     protected $request = [
@@ -57,7 +66,7 @@ class Controller extends WebController
     ];
 
     protected $customIndexVariables = [
-        Role::class => CreateRoleRequest::class,
+        [Role::class, GetAllRolePermissionRequest::class],
     ];
 
     public function showCreatePage()

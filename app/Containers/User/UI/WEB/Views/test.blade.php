@@ -51,7 +51,7 @@
         <br />
 
         @foreach ($items as $item)
-            <form action="{{ route('delete_user', $item->id) }}" method="POST">
+            <form action="{{ route('user.delete', $item->id) }}" method="POST">
                 {{ csrf_field() }}
                 {{ method_field('DELETE') }}
                 <input type="text" name="name" placeholder="name" value="{{ $item->name }}">
@@ -64,7 +64,7 @@
         <br />
         <br />
         <br />
-        <form action="{{ route('delete_more_users') }}" method="POST">
+        <form action="{{ route('user.bulkDelete') }}" method="POST">
             {{ csrf_field() }}
             <input type="text" name="ids[]" placeholder="name" value="2">
             <input type="text" name="ids[]" placeholder="name" value="3">
