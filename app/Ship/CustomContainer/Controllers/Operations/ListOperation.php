@@ -16,7 +16,7 @@ trait ListOperation
     {
         Route::get($segment . '/', [
             'as' => $routeName . '.index',
-            'uses' => $controller . '@list',
+            'uses' => $controller . '@index',
             'operation' => 'list',
         ]);
 

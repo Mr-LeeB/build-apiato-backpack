@@ -68,11 +68,11 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
-
+        // Screen $model
         if ($this->model === null) {
             throw new \InvalidArgumentException("Model is not set");
         }
-
+        //Screen $action
         if (empty($this->action)) {
             $this->action = $this->acceptAction;
         } else {
@@ -82,7 +82,7 @@ class WebCrudController extends AbstractWebController
                 }
             }
         }
-
+        //Screen $request
         if (!empty($this->request)) {
             foreach ($this->request as $key => $value) {
                 if (!in_array($key, $this->acceptAction)) {
@@ -90,14 +90,24 @@ class WebCrudController extends AbstractWebController
                 }
             }
         }
+        //Screen $customIndexVariables
+        if (!empty($this->customIndexVariables)) {
+            if (is_array($this->customIndexVariables)) {
+                foreach ($this->customIndexVariables as $key => $value) {
+                    if (!class_exists($key) || !class_exists($value)) {
+                        throw new \InvalidArgumentException("Invalid custom index variable: $key || $value");
+                    }
+                }
+            }
+        }
 
-        // if ($this->views) {
-        //     foreach ($this->views as $key => $value) {
-        //         if (!in_array($key, ['list', 'create_edit', 'show'])) {
-        //             throw new \InvalidArgumentException("Invalid view type: $key");
-        //         }
-        //     }
-        // }
+        if ($this->views) {
+            foreach ($this->views as $key => $value) {
+                if (!in_array($key, ['list', 'create_edit', 'show'])) {
+                    throw new \InvalidArgumentException("Invalid view type: $key");
+                }
+            }
+        }
 
 
         // ---------------------------
@@ -221,19 +231,20 @@ class WebCrudController extends AbstractWebController
     /**
      * Appends custom variables.
      *
+     * @var array $customIndexVariables [Role::class => Request::class, ...]
+     *
      * @return array Returns an array of custom variables.
      */
     public function appendCustomVariables($actionClass)
     {
         $custom = [];
-        foreach ($this->customIndexVariables as $key) {
-            //Later modified into "Target Request Class"
-            $customRequest = resolve($key[1]);
+        foreach ($this->customIndexVariables as $key => $value) {
+            $customRequest = resolve($value);
 
-            $repository = '\App\Containers\\' . $this->getContainerAndClassName($key[0])['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($key[0])['className'] . 'Repository';
+            $repository = '\App\Containers\\' . $this->getContainerAndClassName($key)['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($key)['className'] . 'Repository';
             $collection = App::make($actionClass)->run($repository, new DataTransporter($customRequest));
 
-            $custom[$this->getContainerAndClassName($key[0])['className']] = $collection->toArray();
+            $custom[$this->getContainerAndClassName($key)['className']] = $collection->toArray();
         }
 
         return $custom;
@@ -253,6 +264,7 @@ class WebCrudController extends AbstractWebController
 
         $customs = [];
         if (!empty($this->customIndexVariables)) {
+
             $customs = $this->appendCustomVariables(GetAllItemAction::class);
         }
 
@@ -269,7 +281,6 @@ class WebCrudController extends AbstractWebController
         $callByAjax = false;
         foreach ($this->fieldsFind as $value) {
             $request = resolve($this->request['findBy' . ucfirst($value)]);
-
             try {
                 if (!$request->$value) {
                     continue;
