@@ -9,16 +9,22 @@
 </head>
 
 <body>
-    <form action="{{ route('create_new_user') }}" method="POST">
+    <form action="{{ isset($item) ? route('user.update', $item[0]->id) : route('user.store') }}" method="POST">
         {{ csrf_field() }}
-        <input type="text" name="name" placeholder="name">
-        <input type="text" name="email" placeholder="email">
+        @if (isset($item))
+            {{ method_field('PUT') }}
+        @endif
+        <input type="text" name="name" placeholder="name" value="{{ isset($item) && $item[0]->name }}">
+        <input type="text" name="email" placeholder="email" value="{{ isset($item) && $item[0]->email }}">
         <input type="text" name="password" placeholder="password">
         <input type="submit" value="submit">
     </form>
 
     @if (session('errors'))
         <div class="text-red">{{ session('errors') }}</div>
+    @endif
+    @if (session('success'))
+        <div class="text-green">{{ session('success') }}</div>
     @endif
 </body>
 

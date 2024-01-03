@@ -3,6 +3,9 @@ namespace App\Ship\CustomContainer\Controllers;
 
 use Apiato\Core\Abstracts\Controllers\WebController as AbstractWebController;
 use App;
+use App\Containers\Authorization\Models\Permission;
+use App\Containers\Authorization\Models\Role;
+use App\Containers\Authorization\UI\WEB\Requests\CreateRoleRequest;
 use App\Containers\User\Models\User;
 use App\Ship\CustomContainer\Actions\CreateItemAction;
 use App\Ship\CustomContainer\Actions\DeleteItemAction;
@@ -70,7 +73,7 @@ class WebCrudController extends AbstractWebController
     {
 
         if ($this->model === null) {
-            throw new \InvalidArgumentException("Model is not set");
+            return;
         }
 
         if (empty($this->action)) {
@@ -91,13 +94,13 @@ class WebCrudController extends AbstractWebController
             }
         }
 
-        // if ($this->views) {
-        //     foreach ($this->views as $key => $value) {
-        //         if (!in_array($key, ['list', 'create_edit', 'show'])) {
-        //             throw new \InvalidArgumentException("Invalid view type: $key");
-        //         }
-        //     }
-        // }
+        if ($this->views) {
+            foreach ($this->views as $key => $value) {
+                if (!in_array($key, ['list', 'create_edit', 'show'])) {
+                    throw new \InvalidArgumentException("Invalid view type: $key");
+                }
+            }
+        }
 
 
         // ---------------------------
@@ -333,7 +336,7 @@ class WebCrudController extends AbstractWebController
             ]);
         }
 
-        return view($this->views['create_edit'])->with('success', '');
+        return redirect()->back()->with('success', 'ngon');
     }
 
     public function edit()
@@ -341,7 +344,7 @@ class WebCrudController extends AbstractWebController
         $request = resolve($this->request['edit']);
 
         try {
-            $item = App::make(FindItemAction::class)->run($this->repository, new DataTransporter($request));
+            $item = App::make(FindItemAction::class)->run($this->repository, 'id', new DataTransporter($request));
         } catch (\Exception $e) {
 
             if ($request->expectsJson()) {

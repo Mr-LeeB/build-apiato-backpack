@@ -5,6 +5,7 @@
 @endsection
 
 @php
+    dd($errors);
     dd(get_defined_vars()['__data']);
 
     $view_load_theme = 'base';
