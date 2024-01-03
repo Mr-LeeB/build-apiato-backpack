@@ -68,11 +68,11 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
-        // Screen $model
+
         if ($this->model === null) {
             throw new \InvalidArgumentException("Model is not set");
         }
-        //Screen $action
+
         if (empty($this->action)) {
             $this->action = $this->acceptAction;
         } else {
@@ -87,16 +87,6 @@ class WebCrudController extends AbstractWebController
             foreach ($this->request as $key => $value) {
                 if (!in_array($key, $this->acceptAction)) {
                     throw new \InvalidArgumentException("Invalid request type: $key");
-                }
-            }
-        }
-        //Screen $customIndexVariables
-        if (!empty($this->customIndexVariables)) {
-            if (is_array($this->customIndexVariables)) {
-                foreach ($this->customIndexVariables as $key => $value) {
-                    if (!class_exists($key) || !class_exists($value)) {
-                        throw new \InvalidArgumentException("Invalid custom index variable: $key || $value");
-                    }
                 }
             }
         }

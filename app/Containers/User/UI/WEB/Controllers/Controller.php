@@ -56,6 +56,10 @@ class Controller extends WebController
         'name'
     ];
 
+    protected $customIndexVariables = [
+        Role::class => CreateRoleRequest::class,
+    ];
+
     public function showCreatePage()
     {
         return view('user::create');
