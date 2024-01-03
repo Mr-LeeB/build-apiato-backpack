@@ -3,6 +3,7 @@ namespace App\Ship\CustomContainer\Controllers;
 
 use Apiato\Core\Abstracts\Controllers\WebController as AbstractWebController;
 use App;
+use App\Containers\User\Models\User;
 use App\Ship\CustomContainer\Actions\CreateItemAction;
 use App\Ship\CustomContainer\Actions\DeleteItemAction;
 use App\Ship\CustomContainer\Actions\FindItemAction;
@@ -67,6 +68,11 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
+
+        if ($this->model === null) {
+            throw new \InvalidArgumentException("Model is not set");
+        }
+
         if (empty($this->action)) {
             $this->action = $this->acceptAction;
         } else {
@@ -85,15 +91,15 @@ class WebCrudController extends AbstractWebController
             }
         }
 
-        if ($this->views) {
-            foreach ($this->views as $key => $value) {
-                if (!in_array($key, ['list', 'create_edit', 'show'])) {
-                    throw new \InvalidArgumentException("Invalid view type: $key");
-                }
-            }
-        }
+        // if ($this->views) {
+        //     foreach ($this->views as $key => $value) {
+        //         if (!in_array($key, ['list', 'create_edit', 'show'])) {
+        //             throw new \InvalidArgumentException("Invalid view type: $key");
+        //         }
+        //     }
+        // }
 
-        
+
         // ---------------------------
         // Create the CrudPanel object
         // ---------------------------

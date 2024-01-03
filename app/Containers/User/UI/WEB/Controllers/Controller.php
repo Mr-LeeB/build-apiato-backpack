@@ -5,6 +5,7 @@ namespace App\Containers\User\UI\WEB\Controllers;
 use Apiato\Core\Foundation\Facades\Apiato;
 
 use App\Containers\Authorization\Models\Role;
+use App\Containers\Authorization\UI\WEB\Requests\CreateRoleRequest;
 use App\Containers\User\Models\User;
 use App\Containers\User\UI\WEB\Requests\CheckPasswordRequest;
 use App\Containers\User\UI\WEB\Requests\CreateUserRequest;
@@ -53,6 +54,10 @@ class Controller extends WebController
     protected $fieldsFind = [
         'id',
         'name'
+    ];
+
+    protected $customIndexVariables = [
+        Role::class => CreateRoleRequest::class,
     ];
 
     public function showCreatePage()
