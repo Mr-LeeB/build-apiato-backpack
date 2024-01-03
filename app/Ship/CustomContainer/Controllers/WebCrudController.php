@@ -91,13 +91,13 @@ class WebCrudController extends AbstractWebController
             }
         }
 
-        if ($this->views) {
-            foreach ($this->views as $key => $value) {
-                if (!in_array($key, ['list', 'create_edit', 'show'])) {
-                    throw new \InvalidArgumentException("Invalid view type: $key");
-                }
-            }
-        }
+        // if ($this->views) {
+        //     foreach ($this->views as $key => $value) {
+        //         if (!in_array($key, ['list', 'create_edit', 'show'])) {
+        //             throw new \InvalidArgumentException("Invalid view type: $key");
+        //         }
+        //     }
+        // }
 
 
         // ---------------------------
