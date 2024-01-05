@@ -4,8 +4,12 @@
     @include('customcontainer::layout.template.head_admin')
     <link href="{{ asset('/theme/base/nova_assets/css/admin-nova.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/theme/base/nova_assets/css/custom.css') }}?version=04082023" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script> --}}
+    {{-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> --}}
+
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net-vue3@2.1.3/dist/datatables.net-vue3.umd.min.js"></script>
 
     {{-- import ajax_setting from resource --}}
     <script src="{{ asset('/theme/base/js/utils/ajax_setting.js') }}"></script>

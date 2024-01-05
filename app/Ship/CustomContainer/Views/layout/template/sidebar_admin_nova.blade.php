@@ -52,24 +52,15 @@
             ],
         ],
         [
-            'label' => 'Permissions',
+            'label' => 'Users',
             'children' => [
                 [
-                    'label' => 'Permissions',
-                    'url' => '/authorization',
-                ],
-            ],
-        ],
-        [
-            'label' => 'Release',
-            'children' => [
-                [
-                    'label' => 'Show Release',
-                    'url' => '/releasevuejs',
+                    'label' => 'Users',
+                    'url' => '/#',
                 ],
                 [
-                    'label' => 'Create Release',
-                    'url' => '/releasevuejs/new',
+                    'label' => 'Users 2',
+                    'url' => '/#',
                 ],
             ],
         ],
