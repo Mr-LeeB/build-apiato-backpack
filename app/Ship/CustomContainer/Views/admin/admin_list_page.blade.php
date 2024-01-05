@@ -199,6 +199,7 @@
     @endsection
 
     @section('javascript')
+<<<<<<< HEAD
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
             integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -225,6 +226,9 @@
             });
         </script>
         <script>
+=======
+        <script setup>
+>>>>>>> 7fefea0 (Refactor user controller and views)
             const app = new Vue({
                 el: '#manage_item',
                 data: {
@@ -244,7 +248,28 @@
                         searchFields: null,
                     },
                     lastPage: @json($items->lastPage()),
+<<<<<<< HEAD
                     isLoading: false
+=======
+                    isLoading: false,
+                    data = [{
+                            "id": 1,
+                            "first_name": "Misti",
+                            "last_name": "Strase",
+                            "email": "mstrase0@instagram.com",
+                            "gender": "Non-binary",
+                            "ip_address": "151.38.32.165",
+                        },
+                        {
+                            "id": 2,
+                            "first_name": "Valentina",
+                            "last_name": "Bonas",
+                            "email": "vbonas1@is.gd",
+                            "gender": "Agender",
+                            "ip_address": "103.10.225.246",
+                        },
+                    ]
+>>>>>>> 7fefea0 (Refactor user controller and views)
                 },
                 computed: {},
                 methods: {
