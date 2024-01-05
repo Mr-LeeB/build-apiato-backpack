@@ -7,6 +7,7 @@
 @php
     // dd($customs);
     // dd(get_defined_vars()['__data']);
+    // dd(get_defined_vars()['__data']);
 
     $view_load_theme = 'base';
     session()->put('url.back', url()->current());
