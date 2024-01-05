@@ -50,11 +50,11 @@ class Controller extends WebController
 
     }
 
-    protected $views = [
-        'list' => 'user::test',
-        'create_edit' => 'user::create',
-        'show' => 'user::show',
-    ];
+    // protected $views = [
+    //     'list' => 'user::test',
+    //     'create_edit' => 'user::create',
+    //     'show' => 'user::show',
+    // ];
     protected $model = User::class;
 
     protected $request = [
@@ -66,7 +66,7 @@ class Controller extends WebController
     ];
 
     protected $customIndexVariables = [
-        [Role::class, GetAllRolePermissionRequest::class],
+        Role::class => GetAllRolePermissionRequest::class,
     ];
 
     public function showCreatePage()
@@ -105,7 +105,7 @@ class Controller extends WebController
         }
         return view('user::home', compact('users', 'isEdited', 'userEdited', 'roles'));
     }
-
+ 
     private function getAllRole(GetAllRolesRequest $request)
     {
         $roles = Apiato::call('Authorization@GetAllRolesAction', [new DataTransporter($request)]);

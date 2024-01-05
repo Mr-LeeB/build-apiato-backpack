@@ -6,7 +6,7 @@
 
 @php
     // dd($customs);
-    dd(get_defined_vars()['__data']);
+    // dd(get_defined_vars()['__data']);
 
     $view_load_theme = 'base';
     session()->put('url.back', url()->current());
@@ -275,7 +275,7 @@
     @endsection
 
     @section('javascript')
-        <script>
+        <script setup>
             const app = new Vue({
                 el: '#manage_item',
                 data: {
@@ -296,13 +296,30 @@
                     },
                     lastPage: @json($items->lastPage()),
                     isLoading: false,
+                    data = [{
+                            "id": 1,
+                            "first_name": "Misti",
+                            "last_name": "Strase",
+                            "email": "mstrase0@instagram.com",
+                            "gender": "Non-binary",
+                            "ip_address": "151.38.32.165",
+                        },
+                        {
+                            "id": 2,
+                            "first_name": "Valentina",
+                            "last_name": "Bonas",
+                            "email": "vbonas1@is.gd",
+                            "gender": "Agender",
+                            "ip_address": "103.10.225.246",
+                        },
+                    ]
                 },
                 computed: {},
                 methods: {
                     getRelease: async function() {
                         this.isLoading = true;
                         const response = await handleCallAjax(
-                            '{{ route('web_releasevuejs_get_all_release') }}', {
+                            '{{ route('user.index') }}', {
                                 orderBy: this.params.orderBy,
                                 sortedBy: this.params.sortedBy,
                                 limit: this.params.limit,
@@ -358,11 +375,12 @@
 
                         if (confirm("Are you sure you want to delete this release?")) {
                             releaseIDs.forEach((id) => {
-                                $('#form-access').append('<input type="hidden" name="id[]" value="' + id +
+                                $('#form-access').append(
+                                    '<input type="hidden" name="id[]" value="' + id +
                                     '">');
                             });
                             const response = await handleCallAjax(
-                                "{{ route('web_releasevuejs_delete_bulk') }}",
+                                "{{ route('user.bulkDelete') }}",
                                 $('#form-access').serialize(),
                                 'DELETE',
                             );
@@ -441,7 +459,8 @@
                         $('.icon-nm').css('color', '#3f4254');
                         $('.icon-' + this.params.orderBy).css('display', 'inline-block');
                         $('.icon-' + this.params.orderBy).css('color', '#a9cef3');
-                        $('.icon-' + this.params.orderBy + '.icon-' + this.params.sortedBy).css('color', '#3699FF');
+                        $('.icon-' + this.params.orderBy + '.icon-' + this.params.sortedBy).css('color',
+                            '#3699FF');
                         $('.field').css('color', '#3f4254');
                         $('.field-' + this.params.orderBy).css('color', '#3699FF');
 
