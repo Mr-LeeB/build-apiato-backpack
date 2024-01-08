@@ -11,6 +11,7 @@ use App\Ship\CustomContainer\Actions\UpdateItemAction;
 use App\Ship\Parents\Requests\Request;
 use App\Ship\Transporters\DataTransporter;
 use Hash;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 /**
@@ -78,11 +79,22 @@ class WebCrudController extends AbstractWebController
     public function __construct()
     {
         $this->setup();
+
         //Screen $model
         if ($this->model === null) {
             return;
+        } else {
+            if (!class_exists($this->model)) {
+                throw new \InvalidArgumentException("Model not found: $this->model");
+            }
+            if (!is_subclass_of($this->model, Model::class)) {
+                throw new \InvalidArgumentException("Model must be a subclass of Illuminate\Database\Eloquent\Model: $this->model");
+            }
         }
+
         $this->middleware(function ($request, $next) {
+
+
             //Screen $action
             if (empty($this->action)) {
                 $this->action = $this->acceptAction;
