@@ -160,83 +160,9 @@ class WebCrudController extends AbstractWebController
             }
             return $next($request);
         });
-    }
 
-    protected function setModel($model)
-    {
-        $this->model = $model;
-    }
-
-    protected function getModels()
-    {
-        return $this->model;
-    }
-
-    /**
-     * @param array $views
-     */
-    protected function setViews($views)
-    {
-        foreach ($views as $key => $value) {
-            if ($value) {
-                $this->views[$key] = $value;
-            }
-        }
-    }
-
-    protected function setColumns($columns, $autoset = false)
-    {
-        if ($autoset) {
-
-        }
-        $this->columns = $columns;
-    }
-
-    protected function getColumns()
-    {
-
-        if (empty($this->columns)) {
-            $this->columns = App::make($this->repository)->getModel()->getFillable();
-        }
-
-        dd($this->columns);
-
-        return $this->columns;
-    }
-
-    protected function setFields($fields)
-    {
-        $this->fields = $fields;
-    }
-
-    protected function getFields()
-    {
-        return $this->fields;
-    }
-
-    protected function setAction($action)
-    {
-        $this->action = $action;
-    }
-
-    protected function setFieldsFind($fieldsFind)
-    {
-        $this->fieldsFind = $fieldsFind;
-    }
-
-    protected function setRepository($repository)
-    {
-        $this->repository = $repository;
-    }
-
-    protected function setFromDB($autoSetColumns = true, $autoSetFields = true)
-    {
-        if ($autoSetColumns) {
-            $this->setColumns(App::make($this->repository)->getModel()->getFillable(), true);
-        }
-        if ($autoSetFields) {
-            $this->setFields(App::make($this->repository)->getModel()->getFillable());
-        }
+        $this->request = $this->getRequests();
+        $this->repository ?? $this->repository = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($this->model)['className'] . 'Repository';
     }
 
     protected function setup()
