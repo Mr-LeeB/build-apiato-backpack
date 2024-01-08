@@ -46,18 +46,22 @@ class Controller extends WebController
             'name' => [
                 'label' => 'Name',
                 'type' => 'text',
+                'name' => 'name',
             ],
             'email' => [
                 'label' => 'Email',
                 'type' => 'email',
+                'name' => 'email',
             ],
             'created_at' => [
                 'label' => 'Created At',
                 'type' => 'date',
+                'name' => 'created_at',
             ],
             'updated_at' => [
                 'label' => 'Updated At',
                 'type' => 'date',
+                'name' => 'updated_at',
             ],
         ]);
     }
@@ -98,7 +102,6 @@ class Controller extends WebController
     protected function setup()
     {
         $this->setModel(User::class);
-
     }
     protected $customIndexVariables = [
         Role::class => GetAllRolePermissionRequest::class,

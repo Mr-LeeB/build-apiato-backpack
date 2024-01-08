@@ -160,7 +160,7 @@
 
                             @endphp
                             <tr>
-                                @foreach ($crud->$columns as $column)
+                                @foreach ($crud[$crud['operation'] . '.columns'] as $column)
                                     <th>
                                         {{ $column['label'] }}
                                     </th>
@@ -217,20 +217,20 @@
             $(document).ready(function() {
                 $('#tableproduct').DataTable({
                     data: @json($items->items()),
-                    columns: [{
-                            data: 'name'
-                        },
-                        {
-                            data: 'email'
-                        },
+                    columns: [
+                        @foreach ($crud[$crud['operation'] . '.columns'] as $column)
+                            {
+                                data: '{{ $column['name'] }}',
+                            },
+                        @endforeach
                     ],
-                    searching: false,
-                    ordering: false,
-                    paging: false,
+                    searching: true,
+                    ordering: true,
+                    paging: true,
                     scrollX: 400,
                     scrollY: 400,
                     processing: true,
-                    info: false,
+                    info: true,
                 });
             });
         </script>

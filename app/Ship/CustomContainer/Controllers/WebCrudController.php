@@ -160,9 +160,6 @@ class WebCrudController extends AbstractWebController
             }
             return $next($request);
         });
-
-
-
     }
 
     protected function setModel($model)
@@ -175,6 +172,9 @@ class WebCrudController extends AbstractWebController
         return $this->model;
     }
 
+    /**
+     * @param array $views
+     */
     protected function setViews($views)
     {
         foreach ($views as $key => $value) {
@@ -184,13 +184,23 @@ class WebCrudController extends AbstractWebController
         }
     }
 
-    protected function setColumns($columns)
+    protected function setColumns($columns, $autoset = false)
     {
+        if ($autoset) {
+
+        }
         $this->columns = $columns;
     }
 
     protected function getColumns()
     {
+
+        if (empty($this->columns)) {
+            $this->columns = App::make($this->repository)->getModel()->getFillable();
+        }
+
+        dd($this->columns);
+
         return $this->columns;
     }
 
@@ -217,6 +227,16 @@ class WebCrudController extends AbstractWebController
     protected function setRepository($repository)
     {
         $this->repository = $repository;
+    }
+
+    protected function setFromDB($autoSetColumns = true, $autoSetFields = true)
+    {
+        if ($autoSetColumns) {
+            $this->setColumns(App::make($this->repository)->getModel()->getFillable(), true);
+        }
+        if ($autoSetFields) {
+            $this->setFields(App::make($this->repository)->getModel()->getFillable());
+        }
     }
 
     protected function setup()
