@@ -161,8 +161,62 @@ class WebCrudController extends AbstractWebController
             return $next($request);
         });
 
-        $this->request = $this->getRequests();
-        $this->repository ?? $this->repository = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($this->model)['className'] . 'Repository';
+
+
+    }
+
+    protected function setModel($model)
+    {
+        $this->model = $model;
+    }
+
+    protected function getModels()
+    {
+        return $this->model;
+    }
+
+    protected function setViews($views)
+    {
+        foreach ($views as $key => $value) {
+            if ($value) {
+                $this->views[$key] = $value;
+            }
+        }
+    }
+
+    protected function setColumns($columns)
+    {
+        $this->columns = $columns;
+    }
+
+    protected function getColumns()
+    {
+        return $this->columns;
+    }
+
+    protected function setFields($fields)
+    {
+        $this->fields = $fields;
+    }
+
+    protected function getFields()
+    {
+        return $this->fields;
+    }
+
+    protected function setAction($action)
+    {
+        $this->action = $action;
+    }
+
+    protected function setFieldsFind($fieldsFind)
+    {
+        $this->fieldsFind = $fieldsFind;
+    }
+
+    protected function setRepository($repository)
+    {
+        $this->repository = $repository;
     }
 
     protected function setup()
