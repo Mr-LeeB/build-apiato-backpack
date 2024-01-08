@@ -64,6 +64,8 @@ class Controller extends WebController
                 'name' => 'updated_at',
             ],
         ]);
+
+        // $this->setFromDB();
     }
 
     public function setupCreateOperation()
