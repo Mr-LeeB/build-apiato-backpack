@@ -25,11 +25,48 @@ class Controller extends WebController
   //   'list' => 'clients::client.show',
   //   'show' => 'clients::client.show',
   // ];
-  protected $model = Clients::class;
+
+  protected function setupListOperation() {
+    $this->setFields([
+      'name' => [
+        'label' => 'Tên',
+        'type' => 'text',
+      ],
+      'email' => [
+        'label' => 'Thơ điện tử',
+        'type' => 'email',
+      ]
+    ]);
+  }
+
+  protected function setupCreateOperation() {
+    $this->setFields([
+      'name' => [
+        'label' => 'Tên',
+        'type' => 'text',
+        'rules' => 'required',
+      ],
+      'email' => [
+        'label' => 'Thơ điện tử',
+        'type' => 'email',
+        'rules' => 'required',
+      ],
+      'password' => [
+        'label' => 'Mật khẩu',
+      ]
+    ]);
+  }
+
+  protected function setup()
+  {
+      $this->setModel(Clients::class);
+
+  }
 
   protected $customIndexVariables = [
     User::class => GetAllUserRequest::class,
     Role::class => GetAllRolesRequest::class,
     Permission::class => GetAllPermissionsRequest::class,
   ];
+
 }

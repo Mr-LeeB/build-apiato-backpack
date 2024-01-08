@@ -11,6 +11,7 @@ use App\Ship\CustomContainer\Actions\UpdateItemAction;
 use App\Ship\Parents\Requests\Request;
 use App\Ship\Transporters\DataTransporter;
 use Hash;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 /**
@@ -77,82 +78,22 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
-<<<<<<< HEAD
-=======
+        $this->setup();
+
+        //Screen $model
         if ($this->model === null) {
             return;
-        }
-        //Screen $model
-        if (!is_subclass_of($this->model, \Illuminate\Database\Eloquent\Model::class)) {
-            throw new \InvalidArgumentException("Invalid model type: $this->model");
-        }
-        if (!class_exists($this->model)) {
-            throw new \InvalidArgumentException("Model not found: $this->model");
-        }
-        //Screen $action
-        if (empty($this->action)) {
-            $this->action = $this->acceptAction;
         } else {
-            foreach ($this->action as $value) {
-                if (!in_array($value, $this->acceptAction)) {
-                    throw new \InvalidArgumentException("Invalid action type: $value");
-                }
+            if (!class_exists($this->model)) {
+                throw new \InvalidArgumentException("Model not found: $this->model");
             }
-        }
-        //Screen $request
-        if (!empty($this->request)) {
-            foreach ($this->request as $key => $value) {
-                if (!in_array($key, $this->acceptAction)) {
-                    throw new \InvalidArgumentException("Invalid request type: $key");
-                }
-            }
-        }
-        //Screen $customIndexVariables
-        if (!empty($this->customIndexVariables)) {
-            if (is_array($this->customIndexVariables)) {
-                //Traverse through all customIndexVariable entries
-                foreach ($this->customIndexVariables as $key => $value) {
-                    //Class not found
-                    if (!class_exists($key) || !class_exists($value)) {
-                        throw new \InvalidArgumentException("Class not found: $key || $value");
-                    }
-                    //Class is not a subclass of Model
-                    if (!is_subclass_of($key, \Illuminate\Database\Eloquent\Model::class)) {
-                        throw new \InvalidArgumentException("Invalid Model class: $key");
-                    }
-                    //Class is not a subclass of Request
-                    if (!is_subclass_of($value, Request::class)) {
-                        throw new \InvalidArgumentException("Invalid Request class: $value");
-                    }
-                }
+            if (!is_subclass_of($this->model, Model::class)) {
+                throw new \InvalidArgumentException("Model must be a subclass of Illuminate\Database\Eloquent\Model: $this->model");
             }
         }
 
-        if ($this->views) {
-            foreach ($this->views as $key => $value) {
-                if (!in_array($key, ['list', 'create_edit', 'show'])) {
-                    throw new \InvalidArgumentException("Invalid view type: $key");
-                }
-            }
-        }
-
-
-        // ---------------------------
-        // Create the CrudPanel object
-        // ---------------------------
-        // Used by developers inside their ProductCrudControllers as
-        // $this->crud or using the CRUD facade.
-        //
-        // It's done inside a middleware closure in order to have
-        // the complete request inside the CrudPanel object.
->>>>>>> 8cc3bac (Screen vài thứ)
         $this->middleware(function ($request, $next) {
-            $this->setup();
 
-            //Screen $model
-            if ($this->model === null) {
-                return;
-            }
 
             //Screen $action
             if (empty($this->action)) {
