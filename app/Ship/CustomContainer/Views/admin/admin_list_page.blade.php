@@ -144,96 +144,20 @@
                 </div>
 
                 <div class="card-body py-0 overlay-parent">
-                    <table class="table">
+                    <table id="tableproduct">
                         <thead>
+                            @php
+ 
+                            @endphp
                             <tr>
-                                <td>
-                                    <input type="checkbox" id="checkAll" @click="checkAll()">
-                                </td>
-                                <td @click="sortRelease('id')" class="field field-id cursor-pointer"> ID
-                                    <i class="la la-long-arrow-up icon-nm icon icon-asc icon-id"></i>
-                                    <i class="la la-long-arrow-down icon-nm icon icon-desc icon-id"></i>
-                                </td>
-                                <td @click="sortRelease('name')" class="field field-name cursor-pointer"> Name
-                                    <i class="la la-long-arrow-up icon-nm icon icon-asc icon-name"></i>
-                                    <i class="la la-long-arrow-down icon-nm icon icon-desc icon-name"></i>
-                                </td>
-                                <td class="field field-title_description cursor-pointer"
-                                    @click="sortRelease('title_description')"> Title
-                                    <i class="la la-long-arrow-up icon-nm icon icon-asc icon-title_description"></i>
-                                    <i class="la la-long-arrow-down icon-nm icon icon-desc icon-title_description"></i>
-                                </td>
-                                <td class="field field-detail_description cursor-pointer"
-                                    @click="sortRelease('detail_description')">Description
-                                    <i class="la la-long-arrow-up icon-nm icon icon-asc icon-detail_description"></i>
-                                    <i class="la la-long-arrow-down icon-nm icon icon-desc icon-detail_description"></i>
-                                </td>
-                                <td class="text-center field field-created_at cursor-pointer"
-                                    @click="sortRelease('created_at')"> Date Created
-                                    <i class="la la-long-arrow-up icon-nm icon icon-asc icon-created_at"></i>
-                                    <i class="la la-long-arrow-down icon-nm icon icon-desc icon-created_at"></i>
-                                </td>
-                                <td class="text-center">Is Publish</td>
-                                <td class="text-center"> Images </td>
-                                <td class="text-center" colspan="3"> Actions </td>
-
+                                @foreach ($crud->$columns as $column)
+                                    <th>
+                                        {{ $column['label'] }}
+                                    </th>
+                                @endforeach
                             </tr>
                         </thead>
-
-                        <tbody id="body-content" v-if="!isLoading">
-                            <tr class="bg-hover-secondary" v-for="release in items" v-if="length > 0">
-                                <td style="text-align: center;">
-                                    <input type="checkbox" :value="release.id" @click="check()">
-                                </td>
-                                <td>
-                                    <span v-html="release.id">Release id</span>
-                                </td>
-                                <td>
-                                    <span v-html="mb_str_split(release.name)"> Release name</span>
-                                </td>
-                                <td>
-                                    <span v-html="mb_str_split(release.title_description)"> Release title</span>
-                                </td>
-                                <td>
-                                    <span v-html="mb_str_split(strip_tags(release.detail_description))"> Release
-                                        description</span>
-                                </td>
-                                <td class="text-center">
-                                    <span v-html="release.created_at.substring(0, 10)"> Release date created</span>
-                                </td>
-                                <td class="text-center">
-                                    <span v-html="release.is_publish">Is publish</span>
-                                </td>
-                                <td>
-                                    <div class="small-image d-flex flex-column align-items-center"
-                                        v-if="release.images != null">
-                                        <div class="symbol symbol-40 mr-3">
-                                            <img alt="Image" :src="release.images[0]" />
-                                        </div>
-                                        <span style="font-size: 12px" v-if="release.images.length > 1">
-                                            More <span v-html="release.images.length - 1"></span> image(s)
-                                        </span>
-                                    </div>
-                                    <div class="small-image d-flex flex-column align-items-center" v-else>
-                                        <p> Not image </p>
-                                    </div>
-                                </td>
-                                <td style="text-align: center btn">
-                                    <i class="fa la-info-circle btn-show-info"
-                                        @click="showReleaseDetailPage(release.id)"></i>
-                                </td>
-                                <td style="text-align: center">
-                                    <i class="fa fa-pen btn-edit" @click="enableEdit(release.id)"></i>
-                                </td>
-                                <td style="text-align: center">
-                                    <i class="fa fa-trash btn-delete-one" @click="deleteRelease(release.id)"></i>
-                                </td>
-                            </tr>
-                            <tr v-else>
-                                <td colspan="100%" class=" bg-hover-secondary text-center">
-                                    <b>{{ __('global.no_data') }}</b>
-                                </td>
-                            </tr>
+                        <tbody>
                         </tbody>
                     </table>
                     <div class="overlay-child" v-if="isLoading"></div>
@@ -275,7 +199,32 @@
     @endsection
 
     @section('javascript')
-        <script setup>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+            integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#tableproduct').DataTable({
+                    data: @json($items->items()),
+                    columns: [{
+                            data: 'name'
+                        },
+                        {
+                            data: 'email'
+                        },
+                    ],
+                    searching: false,
+                    ordering: false,
+                    paging: false,
+                    scrollX: 400,
+                    scrollY: 400,
+                    processing: true,
+                    info: false,
+                });
+            });
+        </script>
+        <script>
             const app = new Vue({
                 el: '#manage_item',
                 data: {
@@ -295,24 +244,7 @@
                         searchFields: null,
                     },
                     lastPage: @json($items->lastPage()),
-                    isLoading: false,
-                    data = [{
-                            "id": 1,
-                            "first_name": "Misti",
-                            "last_name": "Strase",
-                            "email": "mstrase0@instagram.com",
-                            "gender": "Non-binary",
-                            "ip_address": "151.38.32.165",
-                        },
-                        {
-                            "id": 2,
-                            "first_name": "Valentina",
-                            "last_name": "Bonas",
-                            "email": "vbonas1@is.gd",
-                            "gender": "Agender",
-                            "ip_address": "103.10.225.246",
-                        },
-                    ]
+                    isLoading: false
                 },
                 computed: {},
                 methods: {

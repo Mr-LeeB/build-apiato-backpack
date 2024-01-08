@@ -3,16 +3,11 @@ namespace App\Ship\CustomContainer\Controllers;
 
 use Apiato\Core\Abstracts\Controllers\WebController as AbstractWebController;
 use App;
-use App\Containers\Authorization\Models\Permission;
-use App\Containers\Authorization\Models\Role;
-use App\Containers\Authorization\UI\WEB\Requests\CreateRoleRequest;
-use App\Containers\User\Models\User;
 use App\Ship\CustomContainer\Actions\CreateItemAction;
 use App\Ship\CustomContainer\Actions\DeleteItemAction;
 use App\Ship\CustomContainer\Actions\FindItemAction;
 use App\Ship\CustomContainer\Actions\GetAllItemAction;
 use App\Ship\CustomContainer\Actions\UpdateItemAction;
-use App\Ship\Parents\Models\Model;
 use App\Ship\Parents\Requests\Request;
 use App\Ship\Transporters\DataTransporter;
 use Hash;
@@ -23,13 +18,19 @@ use Illuminate\Support\Str;
  */
 class WebCrudController extends AbstractWebController
 {
-    protected $views = [
+    private $views = [
         'list' => 'customcontainer::admin.admin_list_page',
         'create_edit' => 'customcontainer::admin.admin_create_and_edit_page',
         'show' => 'customcontainer::admin.admin_show_page'
     ];
 
-    protected $model;
+    protected $crud;
+
+    private $columns = [];
+
+    private $fields = [];
+
+    private $model;
 
     /**
      * @var array{
@@ -41,7 +42,7 @@ class WebCrudController extends AbstractWebController
      *     getAll: string
      * }
      */
-    protected $action = [
+    private $action = [
     ];
 
     private $acceptAction = [
@@ -55,15 +56,18 @@ class WebCrudController extends AbstractWebController
         'getAll',
     ];
 
-    protected $fieldsFind = [
+    private $fieldsFind = [
         'id',
     ];
 
-    protected $repository;
+    private $repository;
 
-    protected $request = [];
+    private $request = [];
 
     protected $customIndexVariables = [];
+
+    private $currentOperation;
+
 
     /**
      * Constructs a new instance of the class.
@@ -73,86 +77,142 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
-        if ($this->model === null) {
-            return;
-        }
-        //Screen $model
-        if (!is_subclass_of($this->model, \Illuminate\Database\Eloquent\Model::class)) {
-            throw new \InvalidArgumentException("Invalid model type: $this->model");
-        }
-        if (!class_exists($this->model)) {
-            throw new \InvalidArgumentException("Model not found: $this->model");
-        }
-        //Screen $action
-        if (empty($this->action)) {
-            $this->action = $this->acceptAction;
-        } else {
-            foreach ($this->action as $value) {
-                if (!in_array($value, $this->acceptAction)) {
-                    throw new \InvalidArgumentException("Invalid action type: $value");
-                }
-            }
-        }
-        //Screen $request
-        if (!empty($this->request)) {
-            foreach ($this->request as $key => $value) {
-                if (!in_array($key, $this->acceptAction)) {
-                    throw new \InvalidArgumentException("Invalid request type: $key");
-                }
-            }
-        }
-        //Screen $customIndexVariables
-        if (!empty($this->customIndexVariables)) {
-            if (is_array($this->customIndexVariables)) {
-                //Traverse through all customIndexVariable entries
-                foreach ($this->customIndexVariables as $key => $value) {
-                    //Class not found
-                    if (!class_exists($key) || !class_exists($value)) {
-                        throw new \InvalidArgumentException("Class not found: $key || $value");
-                    }
-                    //Class is not a subclass of Model
-                    if (!is_subclass_of($key, \Illuminate\Database\Eloquent\Model::class)) {
-                        throw new \InvalidArgumentException("Invalid Model class: $key");
-                    }
-                    //Class is not a subclass of Request
-                    if (!is_subclass_of($value, Request::class)) {
-                        throw new \InvalidArgumentException("Invalid Request class: $value");
-                    }
-                }
-            }
-        }
-
-        if ($this->views) {
-            foreach ($this->views as $key => $value) {
-                if (!in_array($key, ['list', 'create_edit', 'show'])) {
-                    throw new \InvalidArgumentException("Invalid view type: $key");
-                }
-            }
-        }
-
-
-        // ---------------------------
-        // Create the CrudPanel object
-        // ---------------------------
-        // Used by developers inside their ProductCrudControllers as
-        // $this->crud or using the CRUD facade.
-        //
-        // It's done inside a middleware closure in order to have
-        // the complete request inside the CrudPanel object.
         $this->middleware(function ($request, $next) {
+            $this->setup();
 
-            // $this->setupDefaults();
-            // $this->setup();
+            //Screen $model
+            if ($this->model === null) {
+                return;
+            }
+
+            //Screen $action
+            if (empty($this->action)) {
+                $this->action = $this->acceptAction;
+            } else {
+                foreach ($this->action as $value) {
+                    if (!in_array($value, $this->acceptAction)) {
+                        throw new \InvalidArgumentException("Invalid action type: $value");
+                    }
+                }
+            }
+            //Screen $request
+            if (!empty($this->request)) {
+                foreach ($this->request as $key => $value) {
+                    if (!in_array($key, $this->acceptAction)) {
+                        throw new \InvalidArgumentException("Invalid request type: $key");
+                    }
+                }
+            }
+            //Screen $customIndexVariables
+            if (!empty($this->customIndexVariables)) {
+                if (is_array($this->customIndexVariables)) {
+                    //Traverse through all customIndexVariable entries
+                    foreach ($this->customIndexVariables as $key => $value) {
+                        //Class not found
+                        if (!class_exists($key) || !class_exists($value)) {
+                            throw new \InvalidArgumentException("Class not found: $key || $value");
+                        }
+                        //Class is not a subclass of Model
+                        if (!is_subclass_of($key, \Illuminate\Database\Eloquent\Model::class)) {
+                            throw new \InvalidArgumentException("Invalid Model class: $key");
+                        }
+                        //Class is not a subclass of Request
+                        if (!is_subclass_of($value, Request::class)) {
+                            throw new \InvalidArgumentException("Invalid Request class: $value");
+                        }
+                    }
+                }
+            }
+
+            if ($this->views) {
+                foreach ($this->views as $key => $value) {
+                    if (!in_array($key, ['list', 'create_edit', 'show'])) {
+                        throw new \InvalidArgumentException("Invalid view type: $key");
+                    }
+                }
+            }
+
+            if ($this->getCurrentOperation()) {
+                $this->setCurrentOperation($this->getCurrentOperation());
+            }
+
             $this->setupConfigurationForCurrentOperation();
+            $this->request = $this->getRequests();
+            $this->repository ?? $this->repository = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($this->model)['className'] . 'Repository';
 
+
+            $this->crud['model'] = $this->getModels();
+            $this->crud['operation'] = $this->currentOperation;
+            if ($this->currentOperation === 'list') {
+                $this->crud[$this->currentOperation . '.columns'] = $this->getColumns();
+            } else {
+                $this->crud[$this->currentOperation . '.fields'] = $this->getFields();
+            }
             return $next($request);
         });
 
-        $this->request = $this->getRequests();
-        $this->repository ?? $this->repository = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($this->model)['className'] . 'Repository';
+
+
     }
 
-    protected $currentOperation;
+    protected function setModel($model)
+    {
+        $this->model = $model;
+    }
+
+    protected function getModels()
+    {
+        return $this->model;
+    }
+
+    protected function setViews($views)
+    {
+        foreach ($views as $key => $value) {
+            if ($value) {
+                $this->views[$key] = $value;
+            }
+        }
+    }
+
+    protected function setColumns($columns)
+    {
+        $this->columns = $columns;
+    }
+
+    protected function getColumns()
+    {
+        return $this->columns;
+    }
+
+    protected function setFields($fields)
+    {
+        $this->fields = $fields;
+    }
+
+    protected function getFields()
+    {
+        return $this->fields;
+    }
+
+    protected function setAction($action)
+    {
+        $this->action = $action;
+    }
+
+    protected function setFieldsFind($fieldsFind)
+    {
+        $this->fieldsFind = $fieldsFind;
+    }
+
+    protected function setRepository($repository)
+    {
+        $this->repository = $repository;
+    }
+
+    protected function setup()
+    {
+
+    }
 
     /**
      * Get the current CRUD operation being performed.
@@ -162,6 +222,11 @@ class WebCrudController extends AbstractWebController
     public function getCurrentOperation()
     {
         return $this->currentOperation ?? \Route::getCurrentRoute()->action['operation'] ?? null;
+    }
+
+    public function setCurrentOperation($operation)
+    {
+        $this->currentOperation = $operation;
     }
 
     protected function setupConfigurationForCurrentOperation()
@@ -189,7 +254,7 @@ class WebCrudController extends AbstractWebController
      *
      * @return string
      */
-    private function setRequests($type, $fieldsFind = null)
+    private function getRequestClass($type, $fieldsFind = null)
     {
         $type = ucfirst($type);
         $requestClass = '\App\Containers\\'
@@ -218,10 +283,10 @@ class WebCrudController extends AbstractWebController
                 $request[$value] = $this->request[$value];
             } elseif ($value === 'find') {
                 foreach ($this->fieldsFind as $key => $fieldsFind) {
-                    $request['findBy' . ucfirst($fieldsFind)] = self::setRequests('find', $this->fieldsFind[$key]);
+                    $request['findBy' . ucfirst($fieldsFind)] = self::getRequestClass('find', $this->fieldsFind[$key]);
                 }
             } else {
-                $request[$value] = self::setRequests($value);
+                $request[$value] = self::getRequestClass($value);
             }
         }
 
@@ -289,11 +354,15 @@ class WebCrudController extends AbstractWebController
             $customs = $this->appendCustomVariables(GetAllItemAction::class);
         }
 
+
+        $crud = $this->crud;
+
         if ($request->expectsJson()) {
-            return response()->json($items);
+            return response()->json([$items ?? [], $customs ?? [], $crud ?? []]);
         }
 
-        return view($this->views['list'], compact(['items', 'customs']));
+
+        return view($this->views['list'], compact(['items', 'customs', 'crud']));
     }
 
     public function show()
@@ -324,16 +393,22 @@ class WebCrudController extends AbstractWebController
                 $callByAjax = true;
             }
         }
+
+        $crud = $this->crud;
+
         if ($callByAjax) {
-            return response()->json($items);
+            return response()->json([$items ?? [], $crud ?? []]);
         }
-        return view($this->views['show'], compact(['items']));
+        return view($this->views['show'], compact(['items', 'crud']));
     }
 
     public function create()
     {
         resolve($this->request['create']);
-        return view($this->views['create_edit']);
+
+        $crud = $this->crud;
+
+        return view($this->views['create_edit'], compact(['crud']));
     }
 
     public function store()
@@ -358,14 +433,17 @@ class WebCrudController extends AbstractWebController
             return redirect()->back()->withErrors($e->getMessage());
 
         }
+
+        $crud = $this->crud;
+
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => '',
-                'data' => $item
+                'data' => [$item, $crud]
             ]);
         }
 
-        return redirect()->back()->with('success', 'ngon');
+        return redirect()->back()->with(['success' => 'ngon', 'item' => $item, 'crud' => $crud]);
     }
 
     public function edit()
@@ -385,7 +463,9 @@ class WebCrudController extends AbstractWebController
             return redirect()->back()->withErrors($e->getMessage());
         }
 
-        return view($this->views['create_edit'], compact(['item']));
+        $crud = $this->crud;
+
+        return view($this->views['create_edit'], compact(['item', 'crud']));
     }
 
     public function update()
@@ -411,13 +491,16 @@ class WebCrudController extends AbstractWebController
             }
             return redirect()->back()->withErrors($e->getMessage());
         }
+
+        $crud = $this->crud;
+
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => '',
-                'data' => $item
+                'data' => [$item, $crud]
             ]);
         }
-        return redirect()->back()->with(['success' => '', 'item' => $item]);
+        return redirect()->back()->with(['success' => '', 'item' => $item, 'crud' => $crud]);
     }
 
     public function delete()
@@ -444,7 +527,7 @@ class WebCrudController extends AbstractWebController
             ]);
         }
 
-        return redirect()->back()->with('success', '');
+        return redirect()->back()->with(['success' => '', 'crud' => $this->crud]);
     }
 
     public function bulkDelete()
@@ -471,7 +554,7 @@ class WebCrudController extends AbstractWebController
             ]);
         }
 
-        return redirect()->back()->with('success', '');
+        return redirect()->back()->with(['success' => '', 'crud' => $this->crud]);
     }
 }
 

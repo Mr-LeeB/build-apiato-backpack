@@ -42,12 +42,52 @@ class Controller extends WebController
 
     public function setupListOperation()
     {
-
+        $this->setColumns([
+            'name' => [
+                'label' => 'Name',
+                'type' => 'text',
+            ],
+            'email' => [
+                'label' => 'Email',
+                'type' => 'email',
+            ],
+            'created_at' => [
+                'label' => 'Created At',
+                'type' => 'date',
+            ],
+            'updated_at' => [
+                'label' => 'Updated At',
+                'type' => 'date',
+            ],
+        ]);
     }
 
     public function setupCreateOperation()
     {
-
+        $this->setFields([
+            'name' => [
+                'label' => 'Name',
+                'type' => 'text',
+                'rules' => 'required',
+            ],
+            'email' => [
+                'label' => 'Email',
+                'type' => 'email',
+                'rules' => 'required',
+            ],
+            'password' => [
+                'label' => 'Password',
+                'type' => 'password',
+                'rules' => 'required',
+            ],
+            'roles' => [
+                'label' => 'Roles',
+                'type' => 'select',
+                'rules' => 'required',
+                'options' => Role::pluck('name', 'id'),
+                'multiple' => true,
+            ],
+        ]);
     }
 
     // protected $views = [
@@ -55,16 +95,11 @@ class Controller extends WebController
     //     'create_edit' => 'user::create',
     //     'show' => 'user::show',
     // ];
-    protected $model = User::class;
+    protected function setup()
+    {
+        $this->setModel(User::class);
 
-    protected $request = [
-    ];
-
-    protected $fieldsFind = [
-        'id',
-        'name'
-    ];
-
+    }
     protected $customIndexVariables = [
         Role::class => GetAllRolePermissionRequest::class,
     ];
@@ -105,7 +140,7 @@ class Controller extends WebController
         }
         return view('user::home', compact('users', 'isEdited', 'userEdited', 'roles'));
     }
- 
+
     private function getAllRole(GetAllRolesRequest $request)
     {
         $roles = Apiato::call('Authorization@GetAllRolesAction', [new DataTransporter($request)]);
