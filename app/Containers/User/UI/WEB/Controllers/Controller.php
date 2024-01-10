@@ -42,30 +42,30 @@ class Controller extends WebController
 
     public function setupListOperation()
     {
-        $this->setColumns([
-            'name' => [
-                'label' => 'Name',
-                'type' => 'text',
-                'name' => 'name',
-            ],
-            'email' => [
-                'label' => 'Email',
-                'type' => 'email',
-                'name' => 'email',
-            ],
-            'created_at' => [
-                'label' => 'Created At',
-                'type' => 'date',
-                'name' => 'created_at',
-            ],
-            'updated_at' => [
-                'label' => 'Updated At',
-                'type' => 'date',
-                'name' => 'updated_at',
-            ],
-        ]);
+        // $this->setColumns([
+        //     'name' => [
+        //         'label' => 'Name',
+        //         'type' => 'text',
+        //         'name' => 'name',
+        //     ],
+        //     'email' => [
+        //         'label' => 'Email',
+        //         'type' => 'email',
+        //         'name' => 'email',
+        //     ],
+        //     'created_at' => [
+        //         'label' => 'Created At',
+        //         'type' => 'date',
+        //         'name' => 'created_at',
+        //     ],
+        //     'updated_at' => [
+        //         'label' => 'Updated At',
+        //         'type' => 'date',
+        //         'name' => 'updated_at',
+        //     ],
+        // ]);
 
-        // $this->setFromDB();
+        $this->setFromDB();
     }
 
     public function setupCreateOperation()
@@ -96,14 +96,12 @@ class Controller extends WebController
         ]);
     }
 
-    // protected $views = [
-    //     'list' => 'user::test',
-    //     'create_edit' => 'user::create',
-    //     'show' => 'user::show',
-    // ];
     protected function setup()
     {
         $this->setModel(User::class);
+        $this->setViews([
+            'create_edit' => 'user::create',
+        ]);
     }
     protected $customIndexVariables = [
         Role::class => GetAllRolePermissionRequest::class,

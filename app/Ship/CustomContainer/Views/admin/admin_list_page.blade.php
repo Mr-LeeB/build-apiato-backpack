@@ -5,7 +5,7 @@
 @endsection
 
 @php
-    // dd($items);
+    // dd($customs);
     // dd(get_defined_vars()['__data']);
 
     $view_load_theme = 'base';
@@ -201,7 +201,7 @@
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
         <script>
-            console.log(window);
+            console.log(@json($items->items()));
             $(document).ready(function() {
                 $('#tableproduct').DataTable({
                     data: @json($items->items()),

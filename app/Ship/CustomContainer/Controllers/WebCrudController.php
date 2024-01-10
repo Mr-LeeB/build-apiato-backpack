@@ -529,7 +529,7 @@ class WebCrudController extends AbstractWebController
             $repository = '\App\Containers\\' . $this->getContainerAndClassName($key)['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($key)['className'] . 'Repository';
             $collection = App::make($actionClass)->run($repository, new DataTransporter($customRequest));
 
-            $custom[$this->getContainerAndClassName($key)['className']] = $collection->toArray();
+            $custom[$this->getContainerAndClassName($key)['className']] = $collection;
         }
 
         return $custom;
