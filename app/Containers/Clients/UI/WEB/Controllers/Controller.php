@@ -60,7 +60,9 @@ class Controller extends WebController
   protected function setup()
   {
       $this->setModel(Clients::class);
-
+      $this->setViews([
+        'list' => 'clients::client.show',
+      ]);
   }
 
   protected $customIndexVariables = [
