@@ -11,6 +11,7 @@ use App\Ship\CustomContainer\Actions\UpdateItemAction;
 use App\Ship\Parents\Requests\Request;
 use App\Ship\Transporters\DataTransporter;
 use Hash;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -78,110 +79,96 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
-        $this->setup();
 
         //Screen $model
-        if ($this->model === null) {
+        // if ($this->model === null) {
+        //     return;
+        // } else {
+        //     if (!class_exists($this->model)) {
+        //         throw new \InvalidArgumentException("Model not found: $this->model");
+        //     }
+        //     if (!is_subclass_of($this->model, Model::class)) {
+        //         throw new \InvalidArgumentException("Model must be a subclass of Illuminate\Database\Eloquent\Model: $this->model");
+        //     }
+        // }
+
+        if ($this->crud) {
             return;
-        } else {
-            if (!class_exists($this->model)) {
-                throw new \InvalidArgumentException("Model not found: $this->model");
-            }
-            if (!is_subclass_of($this->model, Model::class)) {
-                throw new \InvalidArgumentException("Model must be a subclass of Illuminate\Database\Eloquent\Model: $this->model");
-            }
         }
 
         $this->middleware(function ($request, $next) {
+            $this->crud = app()->make('crud');
 
-            $this->repository ?? $this->repository = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($this->model)['className'] . 'Repository';
+            $this->setup();
+            self::init();
 
-            //Screen $action
-            if (empty($this->action)) {
-                $this->action = $this->acceptAction;
-            } else {
-                foreach ($this->action as $value) {
-                    if (!in_array($value, $this->acceptAction)) {
-                        throw new \InvalidArgumentException("Invalid action type: $value");
-                    }
-                }
-            }
-            //Screen $request
-            if (!empty($this->request)) {
-                foreach ($this->request as $key => $value) {
-                    if (!in_array($key, $this->acceptAction)) {
-                        throw new \InvalidArgumentException("Invalid request type: $key");
-                    }
-                }
-            }
-
-            $this->request = $this->getRequests();
-
-            //Screen $customIndexVariables
-            if (!empty($this->customIndexVariables)) {
-                if (is_array($this->customIndexVariables)) {
-                    //Traverse through all customIndexVariable entries
-                    foreach ($this->customIndexVariables as $key => $value) {
-                        //Class not found
-                        if (!class_exists($key) || !class_exists($value)) {
-                            throw new \InvalidArgumentException("Class not found: $key || $value");
-                        }
-                        //Class is not a subclass of Model
-                        if (!is_subclass_of($key, \Illuminate\Database\Eloquent\Model::class)) {
-                            throw new \InvalidArgumentException("Invalid Model class: $key");
-                        }
-                        //Class is not a subclass of Request
-                        if (!is_subclass_of($value, Request::class)) {
-                            throw new \InvalidArgumentException("Invalid Request class: $value");
-                        }
-                    }
-                }
-            }
-
-            if ($this->views) {
-                foreach ($this->views as $key => $value) {
-                    if (!in_array($key, ['list', 'create_edit', 'show'])) {
-                        throw new \InvalidArgumentException("Invalid view type: $key");
-                    }
-                }
-            }
-
-            if ($this->getCurrentOperation()) {
-                $this->setCurrentOperation($this->getCurrentOperation());
-            }
-
+            $this->crud->setModel($this->model);
+            $this->crud->setRepository($this->repository);
             $this->setupConfigurationForCurrentOperation();
+            $this->crud->setTitle($this->crud->makeLabel($this->crud->getModel()->getTable()));
 
-
-            $this->crud['model'] = $this->getModel();
-            $this->crud['operation'] = $this->currentOperation;
-            if ($this->currentOperation === 'list') {
-                $this->crud[$this->currentOperation . '.columns'] = $this->getColumns();
-            } else {
-                $this->crud[$this->currentOperation . '.fields'] = $this->getFields();
-            }
             return $next($request);
         });
+    }
+
+    private function init()
+    {
+        $this->repository ?? $this->repository = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($this->model)['className'] . 'Repository';
+
+        //Screen $action
+        if (empty($this->action)) {
+            $this->action = $this->acceptAction;
+        } else {
+            foreach ($this->action as $value) {
+                if (!in_array($value, $this->acceptAction)) {
+                    throw new \InvalidArgumentException("Invalid action type: $value");
+                }
+            }
+        }
+        //Screen $request
+        if (!empty($this->request)) {
+            foreach ($this->request as $key => $value) {
+                if (!in_array($key, $this->acceptAction)) {
+                    throw new \InvalidArgumentException("Invalid request type: $key");
+                }
+            }
+        }
+
+        $this->request = $this->getRequests();
+
+        //Screen $customIndexVariables
+        if (!empty($this->customIndexVariables)) {
+            if (is_array($this->customIndexVariables)) {
+                //Traverse through all customIndexVariable entries
+                foreach ($this->customIndexVariables as $key => $value) {
+                    //Class not found
+                    if (!class_exists($key) || !class_exists($value)) {
+                        throw new \InvalidArgumentException("Class not found: $key || $value");
+                    }
+                    //Class is not a subclass of Model
+                    if (!is_subclass_of($key, Model::class)) {
+                        throw new \InvalidArgumentException("Invalid Model class: $key");
+                    }
+                    //Class is not a subclass of Request
+                    if (!is_subclass_of($value, Request::class)) {
+                        throw new \InvalidArgumentException("Invalid Request class: $value");
+                    }
+                }
+            }
+        }
+
+        if ($this->views) {
+            foreach ($this->views as $key => $value) {
+                if (!in_array($key, ['list', 'create_edit', 'show'])) {
+                    throw new \InvalidArgumentException("Invalid view type: $key");
+                }
+            }
+        }
     }
 
     protected function setModel($model)
     {
         $this->model = $model;
-    }
-
-    protected function getModel()
-    {
-        return $this->model = new $this->model;
-    }
-
-    /**
-     * Get the database connection, as specified in the .env file or overwritten by the property on the model.
-     *
-     * @return \Illuminate\Database\Schema\Builder
-     */
-    private function getSchema()
-    {
-        return $this->getModel()->getConnection()->getSchemaBuilder();
     }
 
     /**
@@ -194,31 +181,6 @@ class WebCrudController extends AbstractWebController
                 $this->views[$key] = $value;
             }
         }
-    }
-
-    protected function setColumns($columns, $autoset = false)
-    {
-        if ($autoset) {
-            foreach ($columns as $value) {
-                $this->columns[$value] = [
-                    'label' => $this->makeLabel($value),
-                    'type' => $this->inferFieldTypeFromDbColumnType($value),
-                    'name' => $value,
-                ];
-            }
-            
-            if($this->columns['password']){
-                unset($this->columns['password']);
-            }
-            return;
-        }
-
-        $this->columns = $columns;
-    }
-
-    protected function getColumns()
-    {
-        return $this->columns;
     }
 
     protected function setFields($fields)
@@ -246,191 +208,14 @@ class WebCrudController extends AbstractWebController
         $this->repository = $repository;
     }
 
-
-    /**
-     * Get all columns from the database for that table.
-     *
-     * @return array
-     */
-    public function getDbColumnTypes()
-    {
-        $this->setDoctrineTypesMapping();
-
-        $dbColumnTypes = [];
-
-        foreach ($this->getDbTableColumns() as $key => $column) {
-            $column_type = $column->getType()->getName();
-            $dbColumnTypes[$column->getName()]['type'] = trim(preg_replace('/\(\d+\)(.*)/i', '', $column_type));
-            $dbColumnTypes[$column->getName()]['default'] = $column->getDefault();
-        }
-
-        return $dbColumnTypes;
-    }
-
-    /**
-     * Get all columns in the database table.
-     *
-     * @return array
-     */
-    public function getDbTableColumns()
-    {
-        // if (isset($this->autoset['table_columns']) && $this->autoset['table_columns']) {
-        //     return $this->autoset['table_columns'];
-        // }
-
-        $conn = $this->model->getConnection();
-        $table = $conn->getTablePrefix() . $this->model->getTable();
-        $columns = $conn->getDoctrineSchemaManager()->listTableColumns($table);
-
-        // $this->autoset['table_columns'] = $columns;
-
-        return $columns;
-    }
-
-    /**
-     * Turn a database column name or PHP variable into a pretty label to be shown to the user.
-     *
-     * @param  string  $value  The value.
-     * @return string The transformed value.
-     */
-    public function makeLabel($value)
-    {
-        return trim($this->mb_ucfirst(str_replace('_', ' ', preg_replace('/(_id|_at|\[\])$/i', '', $value))));
-    }
-
-    /**
-     * Capitalize the first letter of a string,
-     * even if that string is multi-byte (non-latin alphabet).
-     *
-     * @param  string  $string  String to have its first letter capitalized.
-     * @param  \Defuse\Crypto\Encoding  $encoding  Character encoding
-     * @return string String with first letter capitalized.
-     */
-    function mb_ucfirst($string, $encoding = false)
-    {
-        $string = $string ?? '';
-        $encoding = $encoding ? $encoding : mb_internal_encoding();
-
-        $strlen = mb_strlen($string, $encoding);
-        $firstChar = mb_substr($string, 0, 1, $encoding);
-        $then = mb_substr($string, 1, $strlen - 1, $encoding);
-
-        return mb_strtoupper($firstChar, $encoding) . $then;
-    }
-
-    /**
-     * Infer a field type, judging from the database column type.
-     *
-     * @param  string  $field  Field name.
-     * @return string Field type.
-     */
-    protected function inferFieldTypeFromDbColumnType($fieldName)
-    {
-        if ($fieldName == 'password') {
-            return 'password';
-        }
-
-        if ($fieldName == 'email') {
-            return 'email';
-        }
-
-        if (is_array($fieldName)) {
-            return 'text'; // not because it's right, but because we don't know what it is
-        }
-
-        $dbColumnTypes = $this->getDbColumnTypes();
-
-        if (!isset($dbColumnTypes[$fieldName])) {
-            return 'text';
-        }
-
-        switch ($dbColumnTypes[$fieldName]['type']) {
-            case 'int':
-            case 'integer':
-            case 'smallint':
-            case 'mediumint':
-            case 'longint':
-                return 'number';
-
-            case 'string':
-            case 'varchar':
-            case 'set':
-                return 'text';
-
-            case 'boolean':
-                return 'boolean';
-
-            case 'tinyint':
-                return 'active';
-
-            case 'text':
-            case 'mediumtext':
-            case 'longtext':
-                return 'textarea';
-
-            case 'date':
-                return 'date';
-
-            case 'datetime':
-            case 'timestamp':
-                return 'datetime';
-
-            case 'time':
-                return 'time';
-
-            case 'json':
-                return 'table';
-
-            default:
-                return 'text';
-        }
-    }
-
-    // Fix for DBAL not supporting enum
-    public function setDoctrineTypesMapping()
-    {
-        $types = ['enum' => 'string'];
-        $platform = $this->getSchema()->getConnection()->getDoctrineSchemaManager()->getDatabasePlatform();
-        foreach ($types as $type_key => $type_value) {
-            if (!$platform->hasDoctrineTypeMappingFor($type_key)) {
-                $platform->registerDoctrineTypeMapping($type_key, $type_value);
-            }
-        }
-    }
-
-    protected function setFromDB($autoSetColumns = true, $autoSetFields = true)
-    {
-        if ($autoSetColumns) {
-            $this->setColumns(App::make($this->repository)->getModel()->getFillable(), true);
-        }
-        if ($autoSetFields) {
-            $this->setFields(App::make($this->repository)->getModel()->getFillable());
-        }
-    }
-
     protected function setup()
     {
 
     }
 
-    /**
-     * Get the current CRUD operation being performed.
-     *
-     * @return string Operation being performed in string form.
-     */
-    public function getCurrentOperation()
-    {
-        return $this->currentOperation ?? \Route::getCurrentRoute()->action['operation'] ?? null;
-    }
-
-    public function setCurrentOperation($operation)
-    {
-        $this->currentOperation = $operation;
-    }
-
     protected function setupConfigurationForCurrentOperation()
     {
-        $operationName = $this->getCurrentOperation();
+        $operationName = $this->crud->getCurrentOperation();
         $setupClassName = 'setup' . Str::studly($operationName) . 'Operation';
         if (method_exists($this, $setupClassName)) {
             $this->setupListOperation();

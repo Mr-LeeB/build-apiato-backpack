@@ -5,7 +5,6 @@ namespace App\Containers\User\UI\WEB\Controllers;
 use Apiato\Core\Foundation\Facades\Apiato;
 
 use App\Containers\Authorization\Models\Role;
-use App\Containers\Authorization\UI\WEB\Requests\CreateRoleRequest;
 use App\Containers\Authorization\UI\WEB\Requests\GetAllRolePermissionRequest;
 use App\Containers\User\Models\User;
 use App\Containers\User\UI\WEB\Requests\CheckPasswordRequest;
@@ -27,6 +26,8 @@ use App\Ship\Transporters\DataTransporter;
 use Auth;
 use Exception;
 
+use App\Ship\CustomContainer\Library\CrudPanel\CrudPanelFacade as CRUD;
+
 /**
  * Class Controller
  *
@@ -42,7 +43,7 @@ class Controller extends WebController
 
     public function setupListOperation()
     {
-        // $this->setColumns([
+        // CRUD::setColumns([
         //     'name' => [
         //         'label' => 'Name',
         //         'type' => 'text',
@@ -65,7 +66,7 @@ class Controller extends WebController
         //     ],
         // ]);
 
-        $this->setFromDB();
+        CRUD::setFromDB();
     }
 
     public function setupCreateOperation()

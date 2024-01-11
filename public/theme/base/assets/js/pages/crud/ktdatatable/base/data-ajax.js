@@ -1,9 +1,9 @@
 "use strict";
 // Class definition
 
+
 var KTDatatableRemoteAjaxDemo = (function () {
   // Private functions
-
   // basic demo
   var demo = function () {
     var datatable = $("#kt_datatable").KTDatatable({
@@ -226,5 +226,4 @@ var KTDatatableRemoteAjaxDemo = (function () {
 
 jQuery(document).ready(function () {
   KTDatatableRemoteAjaxDemo.init();
-  console.log(window);
 });

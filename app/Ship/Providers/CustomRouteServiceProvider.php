@@ -1,6 +1,7 @@
 <?php
 namespace App\Ship\Providers;
 
+use App\Ship\CustomContainer\Library\CrudPanel\CrudPanel;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,12 @@ class CustomRouteServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
+        // Bind the CrudPanel object to Laravel's service container
+        $this->app->singleton('crud', function ($app) {
+            return new CrudPanel($app);
+        });
+        
         // load a macro for Route,
         // helps developers load all routes for a CRUD resource in one line
         if (!Route::hasMacro('crud')) {
