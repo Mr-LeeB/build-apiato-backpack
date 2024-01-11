@@ -93,7 +93,7 @@
 
 @section('javascript')
     <script>
-        var KTDatatableHtmlTableDemo = (function() {
+        var DatatableHtmlTableDemo = (function() {
             var setup = function() {
                 var datatable = $('#tableproduct').DataTable({
                     data: @json($items->items()),
@@ -160,7 +160,7 @@
             };
         })();
         $(document).ready(function() {
-            KTDatatableHtmlTableDemo.init();
+            DatatableHtmlTableDemo.init();
         });
     </script>
 @endsection
