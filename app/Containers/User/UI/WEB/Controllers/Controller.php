@@ -41,69 +41,67 @@ class Controller extends WebController
     use \App\Ship\CustomContainer\Controllers\Operations\DeleteOperation;
     use \App\Ship\CustomContainer\Controllers\Operations\BulkDeleteOperation;
 
+    protected function setup()
+    {
+        $this->setModel(User::class);
+    }
     public function setupListOperation()
     {
-        // CRUD::setColumns([
-        //     'name' => [
-        //         'label' => 'Name',
-        //         'type' => 'text',
-        //         'name' => 'name',
-        //     ],
-        //     'email' => [
-        //         'label' => 'Email',
-        //         'type' => 'email',
-        //         'name' => 'email',
-        //     ],
-        //     'created_at' => [
-        //         'label' => 'Created At',
-        //         'type' => 'date',
-        //         'name' => 'created_at',
-        //     ],
-        //     'updated_at' => [
-        //         'label' => 'Updated At',
-        //         'type' => 'date',
-        //         'name' => 'updated_at',
-        //     ],
-        // ]);
-
-        CRUD::setFromDB();
-    }
-
-    public function setupCreateOperation()
-    {
-        $this->setFields([
+        CRUD::setColumns([
             'name' => [
                 'label' => 'Name',
                 'type' => 'text',
-                'rules' => 'required',
+                'name' => 'name',
             ],
             'email' => [
                 'label' => 'Email',
                 'type' => 'email',
-                'rules' => 'required',
+                'name' => 'email',
+            ],
+            'created_at' => [
+                'label' => 'Created At',
+                'type' => 'date',
+                'name' => 'created_at',
+            ],
+            'updated_at' => [
+                'label' => 'Updated At',
+                'type' => 'date',
+                'name' => 'updated_at',
+            ],
+        ]);
+
+        // CRUD::setFromDB();
+
+    }
+
+    public function setupCreateOperation()
+    {
+        CRUD::setFields([
+            'name' => [
+                'label' => 'Name',
+                'type' => 'text',
+                'name' => 'name',
+            ],
+            'email' => [
+                'label' => 'Email',
+                'type' => 'email',
+                'name' => 'email',
             ],
             'password' => [
                 'label' => 'Password',
                 'type' => 'password',
-                'rules' => 'required',
+                'name' => 'password',
             ],
-            'roles' => [
-                'label' => 'Roles',
-                'type' => 'select',
-                'rules' => 'required',
-                'options' => Role::pluck('name', 'id'),
-                'multiple' => true,
+            'password_confirmation' => [
+                'label' => 'Password Confirmation',
+                'type' => 'password',
+                'name' => 'password_confirmation',
             ],
         ]);
+
+        // CRUD::setFromDB();
     }
 
-    protected function setup()
-    {
-        $this->setModel(User::class);
-        $this->setViews([
-            'create_edit' => 'user::create',
-        ]);
-    }
     protected $customIndexVariables = [
         Role::class => GetAllRolePermissionRequest::class,
     ];

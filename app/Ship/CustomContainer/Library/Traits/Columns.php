@@ -6,7 +6,7 @@ trait Columns
 {
     public $columns = [];
 
-    protected function setColumns($columns, $autoset = false)
+    public function setColumns($columns, $autoset = false)
     {
         if ($autoset) {
             foreach ($columns as $value) {
