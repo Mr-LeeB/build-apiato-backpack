@@ -1226,7 +1226,7 @@
     <script src="/theme/base/assets/js/pages/features/miscellaneous/blockui.js?v=7.0.3"></script>
     <iframe id="_hjSafeContext_94917652" title="_hjSafeContext" tabindex="-1" aria-hidden="true" src="about:blank" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
     <script src="theme/base/js/utils.js"></script>
-    <script src="theme/base/assets/js/pages/crud/ktdatatable/base/data-ajax.js"></script>
+    <script src="theme/base/nova_assets/plugins/custom/datatables/datatables.bundle.js"></script>
     <!--end::Page Scripts-->
     <script src="theme/base/assets/js/pages/crud/forms/widgets/select2.js?v=7.0.3"></script>
 
