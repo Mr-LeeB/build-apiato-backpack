@@ -10,8 +10,8 @@ use Illuminate\Support\ServiceProvider;
 class CustomRouteServiceProvider extends ServiceProvider
 {
 
-    public $customRoutesFilePath = '/app/Containers/User/UI/WEB/Routes/custom.php';
-
+    // public $customRoutesFilePath = '/app/Containers/User/UI/WEB/Routes/custom.php';
+    public $customRoutesFilePath = '/app/Containers/Clients/UI/WEB/Routes/custom.php';
     /**
      * Bootstrap services.
      *
@@ -35,7 +35,7 @@ class CustomRouteServiceProvider extends ServiceProvider
         $this->app->singleton('crud', function ($app) {
             return new CrudPanel($app);
         });
-        
+
         // load a macro for Route,
         // helps developers load all routes for a CRUD resource in one line
         if (!Route::hasMacro('crud')) {
