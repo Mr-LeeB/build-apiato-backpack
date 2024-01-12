@@ -4,11 +4,15 @@ namespace App\Ship\CustomContainer\Library\CrudPanel;
 
 use App;
 use App\Ship\CustomContainer\Library\Traits\Columns;
+use App\Ship\CustomContainer\Library\Traits\Fields;
 use App\Ship\CustomContainer\Library\Traits\Operations;
+
+
+use Illuminate\Database\Eloquent\Model;
 
 class CrudPanel
 {
-    use Columns, Operations;
+    use Columns, Operations, Fields;
 
     public $model = "\App\Models\Entity"; // what's the namespace for your entity's model
     public $route; // what route have you defined for your entity? used for links.
@@ -45,6 +49,9 @@ class CrudPanel
             throw new \Exception('The model does not exist.', 500);
         }
 
+        if (!is_subclass_of($model_namespace, Model::class)) {
+            throw new \InvalidArgumentException("Model must be a subclass of Illuminate\Database\Eloquent\Model: $this->model");
+        }
         // if (!method_exists($model_namespace, 'hasCrudTrait')) {
         //     throw new \Exception('Please use CrudTrait on the model.', 500);
         // }
@@ -85,7 +92,7 @@ class CrudPanel
             $this->setColumns(App::make($this->repository)->getModel()->getFillable(), true);
         }
         if ($autoSetFields) {
-            // $this->setFields(App::make($this->repository)->getModel()->getFillable());
+            $this->setFields(App::make($this->repository)->getModel()->getFillable(), true);
         }
     }
 

@@ -5,8 +5,8 @@
 @endsection
 
 @php
-    dd($errors);
-    dd(get_defined_vars()['__data']);
+    // dd($errors);
+    // dd(get_defined_vars()['__data']);
 
     $view_load_theme = 'base';
 @endphp
@@ -23,39 +23,10 @@
 
 @once
     @push('after_header')
-        <link href="{{ asset('theme/' . $view_load_theme . '/css/admin_create_release_css.css') }}" rel="stylesheet"
-            type="text/css">
+        {{-- <link href="{{ asset('theme/' . $view_load_theme . '/css/admin_create_release_css.css') }}" rel="stylesheet"
+            type="text/css"> --}}
     @endpush
 @endonce
-
-
-@php
-    $name = old('name', null);
-    $title_description = old('title_description', null);
-    $detail_description = old('detail_description', null);
-    $date_created = old('date_created', date('Y-m-d'));
-    if (old('is_publish', null)) {
-        $is_publish = 'checked';
-    } else {
-        $is_publish = '';
-    }
-    $id = 0;
-    $list_images = old('images', null);
-
-    if (isset($release)) {
-        $name = old('name', $release->name);
-        $title_description = old('title_description', $release->title_description);
-        $detail_description = old('detail_description', $release->detail_description);
-        $date_created = old('date_created', substr($release->created_at, 0, 10));
-        if (old('is_publish', $release->is_publish) == true) {
-            $is_publish = 'checked';
-        } else {
-            $is_publish = '';
-        }
-        $id = $release->id;
-        $list_images = $release->images;
-    }
-@endphp
 
 
 @section('content')

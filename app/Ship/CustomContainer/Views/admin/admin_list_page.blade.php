@@ -77,7 +77,7 @@
                                     <th class="text-end min-w-100px">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="text-gray-600 fw-semibold">
                             </tbody>
                         </table>
                     </div>

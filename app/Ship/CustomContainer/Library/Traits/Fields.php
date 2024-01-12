@@ -7,7 +7,7 @@ trait Fields
 
     public $fields = [];
 
-    protected function setFields($fields, $autoset = false)
+    public function setFields($fields, $autoset = false)
     {
         if ($autoset) {
             foreach ($fields as $value) {
@@ -16,10 +16,6 @@ trait Fields
                     'type' => $this->inferFieldTypeFromDbColumnType($value),
                     'name' => $value,
                 ];
-            }
-
-            if ($this->fields['password']) {
-                unset($this->fields['password']);
             }
             return;
         }

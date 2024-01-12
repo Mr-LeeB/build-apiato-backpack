@@ -79,39 +79,29 @@ class WebCrudController extends AbstractWebController
      */
     public function __construct()
     {
-
-        //Screen $model
-        // if ($this->model === null) {
-        //     return;
-        // } else {
-        //     if (!class_exists($this->model)) {
-        //         throw new \InvalidArgumentException("Model not found: $this->model");
-        //     }
-        //     if (!is_subclass_of($this->model, Model::class)) {
-        //         throw new \InvalidArgumentException("Model must be a subclass of Illuminate\Database\Eloquent\Model: $this->model");
-        //     }
-        // }
-
-        if ($this->crud) {
+        if ($this->crud || strpos(url()->current(), 'login')) {
             return;
         }
 
         $this->middleware(function ($request, $next) {
+            if (!auth()->check()) {
+                return redirect('login');
+            }
             $this->crud = app()->make('crud');
 
             $this->setup();
-            self::init();
+            self::setupValidate();
 
             $this->crud->setModel($this->model);
             $this->crud->setRepository($this->repository);
-            $this->setupConfigurationForCurrentOperation();
             $this->crud->setTitle($this->crud->makeLabel($this->crud->getModel()->getTable()));
+            $this->setupConfigurationForCurrentOperation();
 
             return $next($request);
         });
     }
 
-    private function init()
+    private function setupValidate()
     {
         $this->repository ?? $this->repository = '\App\Containers\\' . $this->getContainerAndClassName($this->model)['containerName'] . '\Data\Repositories\\' . $this->getContainerAndClassName($this->model)['className'] . 'Repository';
 
@@ -183,16 +173,6 @@ class WebCrudController extends AbstractWebController
         }
     }
 
-    protected function setFields($fields)
-    {
-        $this->fields = $fields;
-    }
-
-    protected function getFields()
-    {
-        return $this->fields;
-    }
-
     protected function setAction($action)
     {
         $this->action = $action;
@@ -218,7 +198,7 @@ class WebCrudController extends AbstractWebController
         $operationName = $this->crud->getCurrentOperation();
         $setupClassName = 'setup' . Str::studly($operationName) . 'Operation';
         if (method_exists($this, $setupClassName)) {
-            $this->setupListOperation();
+            $this->$setupClassName();
         }
     }
 
