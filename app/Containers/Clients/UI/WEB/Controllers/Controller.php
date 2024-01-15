@@ -11,6 +11,7 @@ use App\Containers\Clients\Models\Clients;
 use App\Containers\User\Models\User;
 use App\Containers\User\UI\WEB\Requests\GetAllUserRequest;
 use App\Ship\CustomContainer\Controllers\Operations\ListOperation;
+use App\Ship\CustomContainer\Library\CrudPanel\CrudPanelFacade as CRUD;
 use App\Ship\Parents\Controllers\WebController;
 
 /**
@@ -27,34 +28,32 @@ class Controller extends WebController
   // ];
 
   protected function setupListOperation() {
-    $this->setFields([
-      'name' => [
-        'label' => 'Tên',
-        'type' => 'text',
+    CRUD::setColumns([
+      'id' => [
+          'label' => 'ID',
+          'type' => 'text',
+          'name' => 'id',
       ],
-      'email' => [
-        'label' => 'Thơ điện tử',
-        'type' => 'email',
-      ]
-    ]);
+      'name' => [
+          'label' => 'Name',
+          'type' => 'text',
+          'name' => 'name',
+      ],
+      'created_at' => [
+          'label' => 'Created At',
+          'type' => 'date',
+          'name' => 'created_at',
+      ],
+      'updated_at' => [
+          'label' => 'Updated At',
+          'type' => 'date',
+          'name' => 'updated_at',
+      ],
+  ]);
   }
 
   protected function setupCreateOperation() {
-    $this->setFields([
-      'name' => [
-        'label' => 'Tên',
-        'type' => 'text',
-        'rules' => 'required',
-      ],
-      'email' => [
-        'label' => 'Thơ điện tử',
-        'type' => 'email',
-        'rules' => 'required',
-      ],
-      'password' => [
-        'label' => 'Mật khẩu',
-      ]
-    ]);
+    //$this->setupListOperation();
   }
 
   protected function setup()
