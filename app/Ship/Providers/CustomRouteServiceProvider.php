@@ -20,7 +20,6 @@ class CustomRouteServiceProvider extends ServiceProvider
     public function boot(Router $router)
     {
         $this->setupCustomRoutes($this->app->router);
-
     }
 
     /**

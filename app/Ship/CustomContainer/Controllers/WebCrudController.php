@@ -414,7 +414,7 @@ class WebCrudController extends AbstractWebController
         $request = resolve($this->request['edit']);
 
         try {
-            $item = App::make(FindItemAction::class)->run($this->repository, new DataTransporter($request));
+            $item = App::make(FindItemAction::class)->run($this->repository, 'id', new DataTransporter($request));
         } catch (\Exception $e) {
 
             if ($request->expectsJson()) {
