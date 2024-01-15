@@ -103,11 +103,11 @@
                         className: 'row-selected'
                     },
                     columns: [{
-                            data: 'RecordID'
+                            data: null
                         },
                         @foreach ($crud->columns as $column)
                             {
-                                data: '{{ $column['name'] }}',
+                                data: '{{ $column['name'] }}'
                             },
                         @endforeach {
                             data: null
@@ -116,6 +116,7 @@
                     columnDefs: [{
                             targets: 0,
                             orderable: false,
+                            data: null,
                             render: function(_, _, data) {
                                 return `
                             <div class="form-check form-check-sm form-check-custom form-check-solid">
@@ -129,18 +130,18 @@
                             orderable: false,
                             className: 'text-end',
                             render: function(data, type, row) {
+                                console.log(data, type, row)
                                 return `
-                                    <a href="#" class="btn btn-light btn-active-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-flip="top-end">
-                                        Actions
-                                        <span class="svg-icon fs-5 m-0">
-                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                    <polygon points="0 0 24 0 24 24 0 24"></polygon>
-                                                    <path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="currentColor" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-180.000000) translate(-12.000003, -11.999999)"></path>
-                                                </g>
-                                            </svg>
-                                        </span>
-                                    </a>
+                                    <div class="dropdown">
+                                        <button class="btn btn-light btn-active-light-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="{!! url($crud->route) !!}/${data.id}/show">Show</a>
+                                            <a class="dropdown-item" href="{!! url($crud->route) !!}/${data.id}/edit">Edit</a>
+                                            <div class="dropdown-item btn btn-danger" click='onDelete'>Delete</div>
+                                        </div>
+                                    </div>
                                 `;
                             },
                         },
@@ -150,7 +151,9 @@
                     scrollX: true,
                     processing: true,
                     info: true,
-
+                    order: [
+                        [1, 'none']
+                    ],
                 });
             }
             return {

@@ -44,10 +44,16 @@ class Controller extends WebController
     protected function setup()
     {
         $this->setModel(User::class);
+        CRUD::setRoute(config('custom.base.route_prefix') . '/user');
     }
     public function setupListOperation()
     {
         CRUD::setColumns([
+            'id' => [
+                'label' => 'ID',
+                'type' => 'number',
+                'name' => 'id',
+            ],
             'name' => [
                 'label' => 'Name',
                 'type' => 'text',
