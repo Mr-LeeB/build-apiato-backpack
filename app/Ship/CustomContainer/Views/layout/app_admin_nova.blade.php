@@ -5,12 +5,13 @@
     <link href="{{ asset('/theme/base/nova_assets/css/admin-nova.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('/theme/base/nova_assets/css/custom.css') }}?version=04082023" rel="stylesheet" type="text/css" />
 
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    {{-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
         integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <link href="theme/base/nova_assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/base/nova_assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet"
+        type="text/css" />
 
     {{-- import ajax_setting from resource --}}
     <script src="{{ asset('/theme/base/js/utils/ajax_setting.js') }}"></script>
@@ -73,7 +74,7 @@
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnUserDropdown"
                                     x-placement="bottom-start">
-                                    {{-- <a class="dropdown-item" href="{{ route('nova.logout') }}"> Logout </a> --}}
+                                    <a class="dropdown-item" data-action-logout='logout'> Logout </a>
                                     <a class="dropdown-item" href="/system/nova-password-reset"> Reset My Password </a>
                                 </div>
                             </div>
@@ -227,6 +228,23 @@
                     window.location.replace(delete_url);
                 }
             });
+
+            $("[data-action-logout=logout]").click(function(e) {
+                e.preventDefault();
+                if (confirm("Bạn có chắc muốn đăng xuất?") == true) {
+                    $.ajax({
+                        url: "{{ route('post_user_logout_form') }}",
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(data) {
+                            alert(data.message);
+                            window.location.replace('/login');
+                        }
+                    });
+                }
+            });
         });
     </script>
 
@@ -254,7 +272,7 @@
         });
     </script>
 
-    <script src="theme/base/nova_assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <script src="{{ asset('theme/base/nova_assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
 
     @yield('javascript')
     @yield('css')

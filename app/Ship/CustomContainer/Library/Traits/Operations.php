@@ -45,5 +45,3 @@ trait Operations
         return $this->setCurrentOperation($operation_name);
     }
 }
-
-?>

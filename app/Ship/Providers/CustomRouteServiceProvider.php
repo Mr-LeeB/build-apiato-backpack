@@ -10,7 +10,7 @@ use Illuminate\Support\ServiceProvider;
 class CustomRouteServiceProvider extends ServiceProvider
 {
 
-    public $customRoutesFilePath = '/app/Containers/User/UI/WEB/Routes/custom.php';
+    public $customRoutesFilePath = '/app/Containers/Product/UI/WEB/Routes/custom.php';
 
     /**
      * Bootstrap services.
@@ -32,9 +32,9 @@ class CustomRouteServiceProvider extends ServiceProvider
 
         // Bind the CrudPanel object to Laravel's service container
         $this->app->singleton('crud', function ($app) {
-            return new CrudPanel($app);
+            return new CrudPanel();
         });
-        
+
         // load a macro for Route,
         // helps developers load all routes for a CRUD resource in one line
         if (!Route::hasMacro('crud')) {
@@ -69,6 +69,7 @@ class CustomRouteServiceProvider extends ServiceProvider
             // as passed to the Route::group() statements
             $routeName = '';
 
+            // dd($this->getGroupStack());
             if ($this->hasGroupStack()) {
                 foreach ($this->getGroupStack() as $key => $groupStack) {
                     if (isset($groupStack['name'])) {

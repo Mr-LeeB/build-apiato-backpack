@@ -24,7 +24,7 @@ class StoreProductRequest extends Request
      */
     protected $access = [
         'permissions' => '',
-        'roles'       => '',
+        'roles' => '',
     ];
 
     /**
@@ -52,8 +52,9 @@ class StoreProductRequest extends Request
     public function rules()
     {
         return [
-            // 'id' => 'required',
-            // '{user-input}' => 'required|max:255',
+            'name' => 'required|unique:products|max:255|min:3',
+            'description' => 'string|required|min:3|max:4096|',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 

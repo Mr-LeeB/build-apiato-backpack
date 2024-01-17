@@ -5,14 +5,13 @@ async function handleCallAjax(url, data, method) {
         url: url,
         type: method,
         data: data,
-        success: function (data, textStatus, xhr) {
+        success: function (data, _, xhr) {
             response = {
                 data: data,
                 status: xhr.status,
             }
         },
         error: function (xhr) {
-            console.log("error delete");
             window.location.href = "/error/" + xhr.status;
         },
     });

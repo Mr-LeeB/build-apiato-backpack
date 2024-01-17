@@ -13,54 +13,28 @@
 @php
     $menus = [
         [
-            'label' => 'Dashboard',
-            'children' => [
-                [
-                    'label' => 'Dashboard',
-                    'url' => '/#',
-                ],
-                [
-                    'label' => 'Dashboard 2',
-                    'url' => '/#',
-                ],
-            ],
-        ],
-        [
             'label' => 'Users',
             'children' => [
                 [
-                    'label' => 'Users',
-                    'url' => '/#',
+                    'label' => 'Users fake BP',
+                    'url' => '/admin/user',
                 ],
                 [
-                    'label' => 'Users 2',
-                    'url' => '/#',
-                ],
-            ],
-        ],
-        [
-            'label' => 'Roles',
-            'children' => [
-                [
-                    'label' => 'Roles',
-                    'url' => '/#',
-                ],
-                [
-                    'label' => 'Roles 2',
-                    'url' => '/#',
+                    'label' => 'User normal',
+                    'url' => '/users',
                 ],
             ],
         ],
         [
-            'label' => 'Users',
+            'label' => 'Products',
             'children' => [
                 [
-                    'label' => 'Users',
-                    'url' => '/#',
+                    'label' => 'Users fake BP',
+                    'url' => '/admin/product',
                 ],
                 [
-                    'label' => 'Users 2',
-                    'url' => '/#',
+                    'label' => 'Product normal',
+                    'url' => '/products',
                 ],
             ],
         ],

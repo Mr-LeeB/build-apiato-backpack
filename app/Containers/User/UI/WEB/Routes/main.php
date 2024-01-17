@@ -1,11 +1,11 @@
 <?php
 
-Route::prefix('user')->group(function () {
+Route::prefix('users')->group(function () {
 
-  // Route::get('/', [
-  //   'as'   => 'get_user_home_page',
-  //   'uses' => 'Controller@sayWelcome',
-  // ]);
+  Route::get('/', [
+    'as' => 'get_user_home_page',
+    'uses' => 'Controller@getAllUser',
+  ]);
 
   Route::get('/{id}/ajax', [
     'as' => 'find_user_by_id',

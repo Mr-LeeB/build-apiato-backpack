@@ -27,6 +27,3 @@ trait ListOperation
         ]);
     }
 }
-
-
-?>

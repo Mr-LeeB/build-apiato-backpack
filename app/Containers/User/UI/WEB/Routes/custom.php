@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\Route;
 // Routes you generate using Backpack\Generators will be placed here.
 
 Route::group([
-    
+    'prefix' => config('custom.base.route_prefix', 'admin'),
     'namespace' => '\App\Containers\User\UI\WEB\Controllers',
+    'middleware' => ['auth:web'],
 ], function () { // custom admin routes
     Route::crud('user', 'Controller');
 }); // this should be the absolute last line of this file

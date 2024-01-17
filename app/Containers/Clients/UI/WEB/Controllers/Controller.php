@@ -26,7 +26,8 @@ class Controller extends WebController
   //   'show' => 'clients::client.show',
   // ];
 
-  protected function setupListOperation() {
+  protected function setupListOperation()
+  {
     $this->setFields([
       'name' => [
         'label' => 'Tên',
@@ -39,7 +40,8 @@ class Controller extends WebController
     ]);
   }
 
-  protected function setupCreateOperation() {
+  protected function setupCreateOperation()
+  {
     $this->setFields([
       'name' => [
         'label' => 'Tên',
@@ -57,12 +59,12 @@ class Controller extends WebController
     ]);
   }
 
-  protected function setup()
+  public function setup()
   {
-      $this->setModel(Clients::class);
-      $this->setViews([
-        'list' => 'clients::client.show',
-      ]);
+    $this->setModel(Clients::class);
+    $this->setViews([
+      'list' => 'clients::client.show',
+    ]);
   }
 
   protected $customIndexVariables = [
