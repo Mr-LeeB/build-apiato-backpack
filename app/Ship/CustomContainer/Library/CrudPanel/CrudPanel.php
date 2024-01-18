@@ -65,6 +65,10 @@ class CrudPanel
         $this->route = $route;
     }
 
+    public function getRoute()
+    {
+        return $this->route;
+    }
     /**
      * Get the corresponding Eloquent Model for the CrudController, as defined with the setModel() function.
      *

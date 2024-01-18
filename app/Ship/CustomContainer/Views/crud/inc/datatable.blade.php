@@ -1,19 +1,48 @@
 <script>
+    // here we will check if the cached dataTables paginator length is conformable with current paginator settings.
+    // datatables caches the ajax responses with pageLength in LocalStorage so when changing this
+    // settings in controller users get unexpected results. To avoid that we will reset
+    // the table cache when both lengths don't match.
+    let $dtCachedInfo = JSON.parse(localStorage.getItem('DataTables_tableproduct_/{{ $crud->getRoute() }}')) ?
+        JSON.parse(localStorage.getItem('DataTables_tableproduct_/{{ $crud->getRoute() }}')) : [];
+    var $dtDefaultPageLength = 25;
+    let $dtStoredPageLength = localStorage.getItem('DataTables_tableproduct_/{{ $crud->getRoute() }}_pageLength');
+
+    if (!$dtStoredPageLength && $dtCachedInfo.length !== 0 && $dtCachedInfo.length !== $dtDefaultPageLength) {
+        localStorage.removeItem('DataTables_tableproduct_/{{ $crud->getRoute() }}');
+    }
+
+    // let $dtStoredPage = localStorage.getItem('DataTables_tableproduct_/{{ $crud->getRoute() }}_page');
+
     var DatatableHtmlTableDemo = (function() {
         var datatable;
+
+        var params = {
+            orderBy: null,
+            sortedBy: null,
+            limit: null,
+            page: 1,
+            search: null,
+            searchFields: null,
+        };
+
+        var reloadPending = false;
+
         var setup = function() {
             datatable = $('#tableproduct').DataTable({
                 searching: true,
                 paging: true,
-                "lengthMenu": [
+                lengthChange: true,
+                pageLength: $dtDefaultPageLength,
+                lengthMenu: [
                     [10, 25, 50, 100, -1],
                     [10, 25, 50, 100, "All"]
                 ],
+                autoWidth: false,
                 scrollX: true,
+                fixedHeader: true,
                 processing: true,
-                order: [
-                    [1, 'none']
-                ],
+                aaSorting: [],
                 rowId: 'id',
                 select: {
                     style: 'multi',
@@ -23,8 +52,8 @@
                 ajax: {
                     url: "{!! url($crud->route) . '?' . Request::getQueryString() !!}",
                     type: 'GET',
-                    dataSrc: function(response) {
-                        return response.items.data;
+                    error: function(xhr) {
+                        console.log(xhr.status + ': ' + xhr.statusText);
                     }
                 },
                 columns: [{
@@ -75,12 +104,71 @@
                         },
                     },
                 ],
+                dom: "<'row hidden'<'col-sm-6'i><'col-sm-6 d-print-none'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row mt-2 d-print-none '<'col-sm-12 col-md-4'l><'col-sm-0 col-md-4 text-center'B><'col-sm-12 col-md-4 'p>>",
             });
 
             datatable.on('draw', function() {
                 initToggleToolbar();
                 toggleToolbars();
                 handleDeleteRows();
+            });
+            datatable.on('preXhr.dt', function(e, settings, data) {
+                if (reloadPending) {
+                    reloadPending = false;
+                    return;
+                }
+
+                var url = localStorage.getItem('{{ Str::slug($crud->getRoute()) }}_list_url');
+                var time = localStorage.getItem('{{ Str::slug($crud->getRoute()) }}_list_url_time');
+
+                if (url && time) {
+                    var now = new Date().getTime();
+                    var diff = now - time;
+
+                    if (diff < 1000 * 60 * 60 * 24) {
+                        data = JSON.parse(url);
+                        params = data;
+                    }
+                }
+
+                if (params.orderBy) {
+                    data.orderBy = params.orderBy;
+                }
+
+                if (params.sortedBy) {
+                    data.sortedBy = params.sortedBy;
+                }
+
+                if (params.limit) {
+                    data.limit = params.limit;
+                }
+
+                if (params.page) {
+                    data.page = params.page;
+                }
+
+                if (params.search) {
+                    data.search = params.search;
+                }
+
+                if (params.searchFields) {
+                    data.searchFields = params.searchFields;
+                }
+
+                localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url', JSON.stringify(
+                    data));
+                localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url_time', new Date()
+                    .getTime());
+            });
+
+            datatable.on('xhr.dt', function(e, settings, json, xhr) {
+                if (json.data.length == 0 && json.draw > 1) {
+                    params.page = json.draw - 1;
+                    reloadPending = true;
+                    datatable.ajax.reload();
+                }
             });
         }
         const handleDeleteRows = () => {
@@ -341,5 +429,40 @@
             var actionPath = $(this).data('action-create-item');
             window.location.href = baseUrl + '/' + actionPath;
         });
+
+
+        // create the reset button
+        var crudTableResetButton =
+            `<a href="{{ url($crud->route) }}" class="ml-1" id="crudTable_reset_button"> 
+                <i class="flaticon2-reload cursor-pointer reset_params" data-toggle="tooltip" title="Reset" /> 
+            </a> `;
+
+        $('#datatable_info_stack').append(crudTableResetButton);
+
+        // when clicking in reset button we clear the localStorage for datatables.
+        $('#crudTable_reset_button').on('click', function() {
+
+            //clear the filters
+            if (localStorage.getItem('{{ Str::slug($crud->getRoute()) }}_list_url')) {
+                localStorage.removeItem('{{ Str::slug($crud->getRoute()) }}_list_url');
+            }
+            if (localStorage.getItem('{{ Str::slug($crud->getRoute()) }}_list_url_time')) {
+                localStorage.removeItem('{{ Str::slug($crud->getRoute()) }}_list_url_time');
+            }
+
+            //clear the table sorting/ordering/visibility
+            if (localStorage.getItem('DataTables_tableproduct_/{{ $crud->getRoute() }}')) {
+                localStorage.removeItem('DataTables_tableproduct_/{{ $crud->getRoute() }}');
+            }
+        });
+
+        // make sure AJAX requests include XSRF token
+        $.ajaxPrefilter(function(options, originalOptions, xhr) {
+            var token = $('meta[name="csrf_token"]').attr('content');
+            if (token) {
+                return xhr.setRequestHeader('X-XSRF-TOKEN', token);
+            }
+        });
+
     });
 </script>

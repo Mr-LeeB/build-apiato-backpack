@@ -310,6 +310,9 @@ class WebCrudController extends AbstractWebController
     {
         $request = resolve($this->request['getAll']);
 
+        $crud = $this->crud;
+        $totalRows = $this->crud->model->count();
+
         $items = App::make(GetAllItemAction::class)->run($this->repository, new DataTransporter($request));
 
         $customs = [];
@@ -318,14 +321,16 @@ class WebCrudController extends AbstractWebController
             $customs = $this->appendCustomVariables(GetAllItemAction::class);
         }
 
-
-        $crud = $this->crud;
-
         if ($request->expectsJson()) {
-            return response()->json(['items' => $items ?? [], "customs" => $customs ?? [], "crud" => $crud ?? []]);
+            return response()->json([
+                'draw' => 1,
+                'recordsTotal' => $totalRows,
+                'recordsFiltered' => $totalRows,
+                'data' => $items->toArray()['data'],
+            ]);
         }
 
-        return view($this->views['list'], compact(['items', 'customs', 'crud']));
+        return view($this->views['list'], compact(['crud']));
     }
 
     public function show()
@@ -338,7 +343,7 @@ class WebCrudController extends AbstractWebController
                     continue;
                 }
                 $entry = App::make(FindItemAction::class)->run($this->repository, $value, new DataTransporter($request));
-                
+
             } catch (\Exception $e) {
                 if ($request->expectsJson()) {
                     return response()->json([

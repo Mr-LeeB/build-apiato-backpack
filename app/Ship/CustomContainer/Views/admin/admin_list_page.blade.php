@@ -56,10 +56,11 @@
                 <div class="card-header">
                     <div class="card-title">
                         <h3>{{ __('Danh sách ') . $crud->title }} </h3>
+
                     </div>
                     <div class="card-toolbar">
-                        <i class="flaticon2-reload cursor-pointer reset_params" data-toggle="tooltip" title="Reset">
-                        </i>
+                        <div id="datatable_info_stack" class="mr-2"> </div>
+                        
                         <!--begin::Toolbar-->
                         <div class="d-flex justify-content-end ml-2" data-kt-docs-table-toolbar="base">
                             <!--begin::Add customer-->
