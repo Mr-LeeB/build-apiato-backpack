@@ -310,12 +310,10 @@ class WebCrudController extends AbstractWebController
     {
         $request = resolve($this->request['getAll']);
 
-        $newRequest = request()->only('orderBy', 'sortedBy', 'limit', 'page', 'search', 'searchFields');
-
         $crud = $this->crud;
         $totalRows = $this->crud->model->count();
 
-        $items = App::make(GetAllItemAction::class)->run($this->repository, new DataTransporter($newRequest));
+        $items = App::make(GetAllItemAction::class)->run($this->repository, new DataTransporter($request));
 
         $customs = [];
         if (!empty($this->customIndexVariables)) {

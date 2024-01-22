@@ -1,4 +1,4 @@
-<!-- select2 multiple -->
+/<!-- select2 multiple -->
 @php
     if (!isset($field['options'])) {
         $field['options'] = $field['model']::all();

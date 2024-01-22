@@ -59,4 +59,5 @@
 
 
 @section('javascript')
+    @yield('after_scripts')
 @endsection

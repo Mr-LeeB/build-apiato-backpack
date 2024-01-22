@@ -17,19 +17,6 @@
     var DatatableHtmlTableDemo = (function() {
         var datatable;
 
-        var params = {
-            orderBy: null,
-            sortedBy: null,
-            limit: 10,
-            page: 1,
-            search: null,
-            searchFields: null,
-        };
-
-        var columns = @json($crud->columns);
-
-        var reloadPending = false;
-
         var setup = function() {
             datatable = $('#tableproduct').DataTable({
                 searching: true,
@@ -52,18 +39,10 @@
                     selector: 'td:first-child input[type="checkbox"]',
                     className: 'row-selected'
                 },
-                serverS
+                // serverSide: true,
                 ajax: {
                     url: "{!! url($crud->route) . '?' . Request::getQueryString() !!}",
-                    type: 'GET',
-                    data: function(data) {
-                        data.orderBy = params.orderBy;
-                        data.sortedBy = params.sortedBy;
-                        data.limit = params.limit;
-                        data.page = params.page;
-                        data.search = params.search;
-                        data.searchFields = params.searchFields;
-                    },
+                    type: 'POST',
                     error: function(xhr) {
                         console.log(xhr.status + ': ' + xhr.statusText);
                     }
@@ -126,99 +105,6 @@
                 initToggleToolbar();
                 toggleToolbars();
                 handleDeleteRows();
-            });
-            datatable.on('preXhr.dt', function(e, settings, data) {
-                if (reloadPending) {
-                    reloadPending = false;
-                    return;
-                }
-
-                var url = localStorage.getItem('{{ Str::slug($crud->getRoute()) }}_list_url');
-                var time = localStorage.getItem('{{ Str::slug($crud->getRoute()) }}_list_url_time');
-
-                if (url && time) {
-                    var now = new Date().getTime();
-                    var diff = now - time;
-
-                    if (diff < 1000 * 60 * 60 * 24) {
-                        data = JSON.parse(url);
-                        params = data;
-                    }
-                }
-
-                if (params.orderBy) {
-                    data.orderBy = params.orderBy;
-                }
-
-                if (params.sortedBy) {
-                    data.sortedBy = params.sortedBy;
-                }
-
-                if (params.limit) {
-                    data.limit = params.limit;
-                }
-
-                if (params.page) {
-                    data.page = params.page;
-                }
-
-                if (params.search) {
-                    data.search = params.search;
-                }
-
-                if (params.searchFields) {
-                    data.searchFields = params.searchFields;
-                }
-
-                localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url', JSON.stringify(
-                    data));
-                localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url_time', new Date()
-                    .getTime());
-            });
-
-            datatable.on('xhr.dt', function(e, settings, json, xhr) {
-                if (json.data.length == 0 && json.draw > 1) {
-                    params.page = json.draw - 1;
-                    reloadPending = true;
-                    datatable.ajax.reload();
-                }
-            });
-
-            datatable.on('order.dt', function(e, settings, order) {
-                if (order.length > 0) {
-                    var newOrderBy = settings['aoColumns'][order[0].col].data;
-                    var newSortedBy = order[0].dir;
-
-                    // Get the current order parameters from local storage
-                    var currentParams = JSON.parse(localStorage.getItem(
-                        '{{ Str::slug($crud->getRoute()) }}_list_url')) || {};
-
-                    // Check if the order has changed
-                    if (currentParams.orderBy != newOrderBy || currentParams.sortedBy !=
-                        newSortedBy) {
-                        params.orderBy = newOrderBy;
-                        params.sortedBy = newSortedBy;
-
-                        localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url', JSON
-                            .stringify(params));
-
-                        datatable.ajax.reload();
-                    }
-                }
-                datatable.clear();
-            });
-
-            datatable.on('length.dt', function(e, settings, length) {
-                if (length != params.limit) {
-                    if (length == -1) {
-                        length = settings.json.recordsTotal;
-                    }
-                    params.limit = length;
-                    localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url', JSON
-                        .stringify(
-                            params));
-                    datatable.ajax.reload();
-                }
             });
         }
 
