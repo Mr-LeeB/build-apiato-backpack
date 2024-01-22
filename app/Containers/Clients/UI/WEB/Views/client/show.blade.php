@@ -18,88 +18,27 @@
             overflow: hidden;
         }
 
-        input[type="checkbox"] {
-            vertical-align: middle;
-            display: -webkit-inline-flex;
+        .d-none {
+            display: none !important;
+        }
+
+        .form-check-custom {
+            display: flex;
+            align-items: center;
+            margin: 0;
         }
     </style>
 @endsection
 
 @section('php')
     @php
-        $releases[] = $items;
-        $releases = [];
+        // dd(get_defined_vars()['__data']);
+        // dd($crud);
 
         //Get max created_at
-        $latest_entry = DB::table('clients')->max('created_at');
+        // $latest_entry = DB::table('clients')->max('created_at');
 
     @endphp
-@endsection
-
-@section('javascript')
-    <script>
-        var DatatableHtmlTableDemo = (function() {
-            var setup = function() {
-                var datatable = $('#tableproduct').DataTable({
-                    data: @json($items->items()),
-                    select: {
-                        style: 'multi',
-                        selector: 'td:first-child input[type="checkbox"]',
-                        className: 'row-selected'
-                    },
-                    columns: [
-                        @foreach ($crud->columns as $column)
-                            {
-                                className: @if ($column['type'] == 'text')
-                                    'dt-right'
-                                @else
-                                    'dt-left'
-                                @endif ,
-                                data: '{{ $column['name'] }}',
-                            },
-                        @endforeach {
-                            data: null
-                        },
-                    ],
-                    columnDefs: [{
-                        targets: -1,
-                        data: null,
-                        orderable: false,
-                        className: 'text-end',
-                        render: function(data, type, row) {
-                            return `
-                                    <a href="#" class="btn btn-light btn-active-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-flip="top-end">
-                                        Actions
-                                        <span class="svg-icon fs-5 m-0">
-                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                    <polygon points="0 0 24 0 24 24 0 24"></polygon>
-                                                    <path d="M6.70710678,15.7071068 C6.31658249,16.0976311 5.68341751,16.0976311 5.29289322,15.7071068 C4.90236893,15.3165825 4.90236893,14.6834175 5.29289322,14.2928932 L11.2928932,8.29289322 C11.6714722,7.91431428 12.2810586,7.90106866 12.6757246,8.26284586 L18.6757246,13.7628459 C19.0828436,14.1360383 19.1103465,14.7686056 18.7371541,15.1757246 C18.3639617,15.5828436 17.7313944,15.6103465 17.3242754,15.2371541 L12.0300757,10.3841378 L6.70710678,15.7071068 Z" fill="currentColor" fill-rule="nonzero" transform="translate(12.000003, 11.999999) rotate(-180.000000) translate(-12.000003, -11.999999)"></path>
-                                                </g>
-                                            </svg>
-                                        </span>
-                                    </a>
-                                `;
-                        },
-                    }, ],
-                    searching: true,
-                    paging: true,
-                    scrollX: true,
-                    processing: true,
-                    info: true,
-
-                });
-            }
-            return {
-                init: function() {
-                    setup();
-                }
-            };
-        })();
-        $(document).ready(function() {
-            DatatableHtmlTableDemo.init();
-        });
-    </script>
 @endsection
 
 @section('header_sub')
@@ -121,43 +60,71 @@
                 <div class="card-title">
                     <h3 class="card-label"></h3>
                 </div>
+
+                <div class="card-toolbar">
+                    <div id="datatable_info_stack" class="mr-2"> </div>
+
+                    <!--begin::Toolbar-->
+                    <div class="d-flex justify-content-end ml-2" data-kt-docs-table-toolbar="base">
+                        <!--begin::Add customer-->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="tooltip"
+                            data-action-create-item='{{ $crud->route . '/create' }}' title="Add new {{ $crud->title }}">
+                            <i class="flaticon2-plus icon-nm"></i>
+                            Add {{ $crud->title }}
+                        </button>
+                        <!--end::Add customer-->
+                    </div>
+                    <!--end::Toolbar-->
+
+                    <!--begin::Group actions-->
+                    <div class="d-flex justify-content-end align-items-center d-none ml-2"
+                        data-kt-docs-table-toolbar="selected">
+                        <div class="fw-bold me-5">
+                            <span class="mr-1" data-kt-docs-table-select="selected_count"></span> Selected
+                        </div>
+
+                        <button type="button" class="btn btn-danger ml-2" data-kt-docs-table-select="delete_selected"
+                            data-bs-toggle="tooltip" title="Delete Selections">
+                            Selection Action
+                        </button>
+                    </div>
+                    <!--end::Group actions-->
+                </div>
             </div>
 
-            <div class="card-body">
-              <table id="tableproduct" class="table table-striped table-row-bordered table-hover gy-5 gs-7">
-                <thead>
-                    <tr>
-
-                        @foreach ($crud->columns as $column)
-                            <th
-                                class="min-w-200px
-                  @switch($column['type'])
-                    @case('number')
-                      {{ 'dt-right' }}
-                      @break
-                    @case('text')
-                      {{ 'dt-left' }}
-                    @break
-                    @case('date')
-                      {{ 'dt-center' }}
-                    @break
-                    @default
-
-                  @endswitch">
-                                {{ $column['label'] }}
-                            </th>
-                        @endforeach
-                        <th class="text-end min-w-100px">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-600 fw-semibold">
-                </tbody>
-            </table>
+            <div class="card-body py-0 overlay-parent">
+                <div class="table-responsive">
+                    <table id="tableproduct" class="table table-striped table-row-bordered gy-5 gs-7" style="width: 100%">
+                        <thead>
+                            <tr class="fw-semibold fs-6 text-gray-800">
+                                <th class="w-10px pe-2 align-items-center">
+                                    <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+                                        <input class="form-check-input" type="checkbox" data-kt-check="true"
+                                            data-kt-check-target="#tableproduct .form-check-input" value="1" />
+                                    </div>
+                                </th>
+                                @foreach ($crud->columns as $column)
+                                    <th class="font-weight-bold font-size-lg">
+                                        {{ $column['label'] }}
+                                    </th>
+                                @endforeach
+                                <th class="text-end min-w-100px">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-600 fw-semibold">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="overlay-child" v-if="isLoading"></div>
             </div>
 
 
         </div>
     </div>
+@endsection
+
+@section('javascript')
+    @include('customcontainer::crud.inc.datatable')
 @endsection
 
 

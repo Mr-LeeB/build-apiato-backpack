@@ -322,6 +322,8 @@ class WebCrudController extends AbstractWebController
         }
 
         if ($request->expectsJson()) {
+            // dd($items);
+
             return response()->json([
                 'draw' => 1,
                 'recordsTotal' => $totalRows,
