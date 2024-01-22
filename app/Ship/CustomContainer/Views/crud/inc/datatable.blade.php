@@ -32,7 +32,7 @@
                 fixedHeader: true,
                 processing: true,
                 order: [], //Initial no order.
-                serverSide: true,
+                // serverSide: true,
                 aaSorting: [],
                 rowId: 'id',
                 select: {
