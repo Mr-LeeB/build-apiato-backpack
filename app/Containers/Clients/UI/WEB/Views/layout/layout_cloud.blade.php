@@ -10,19 +10,19 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
     <!--end::Fonts-->
     <!--begin::Page Vendors Styles(used by this page)-->
-    <link href="theme/base/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css?v=7.0.3" rel="stylesheet" type="text/css" />
+    <link href={{ asset("theme/base/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css?v=7.0.3") }} rel="stylesheet" type="text/css" />
     <!--end::Page Vendors Styles-->
     <!--begin::Global Theme Styles(used by all pages)-->
-    <link href="theme/base/assets/plugins/global/plugins.bundle.css?v=7.0.3" rel="stylesheet" type="text/css" />
-    <link href="theme/base/assets/plugins/custom/prismjs/prismjs.bundle.css?v=7.0.3" rel="stylesheet" type="text/css" />
-    <link href="theme/base/assets/css/style.bundle.css?v=7.0.3" rel="stylesheet" type="text/css" />
-    <link href="theme/base/css/custom.css" rel="stylesheet" type="text/css" />
+    <link href={{ asset("theme/base/assets/plugins/global/plugins.bundle.css?v=7.0.3") }} rel="stylesheet" type="text/css" />
+    <link href={{ asset("theme/base/assets/plugins/custom/prismjs/prismjs.bundle.css?v=7.0.3") }} rel="stylesheet" type="text/css" />
+    <link href={{ asset("theme/base/assets/css/style.bundle.css?v=7.0.3") }} rel="stylesheet" type="text/css" />
+    <link href={{ asset("theme/base/css/custom.css") }} rel="stylesheet" type="text/css" />
     <!--end::Global Theme Styles-->
     <!--begin::Layout Themes(used by all pages)-->
-    <link href="theme/base/assets/css/themes/layout/header/base/light.css?v=7.0.3" rel="stylesheet" type="text/css" />
-    <link href="theme/base/assets/css/themes/layout/header/menu/light.css?v=7.0.3" rel="stylesheet" type="text/css" />
-    <link href="theme/base/assets/css/themes/layout/brand/dark.css?v=7.0.3" rel="stylesheet" type="text/css" />
-    <link href="theme/base/assets/css/themes/layout/aside/dark.css?v=7.0.3" rel="stylesheet" type="text/css" />
+    <link href={{ asset("theme/base/assets/css/themes/layout/header/base/light.css?v=7.0.3") }} rel="stylesheet" type="text/css" />
+    <link href={{ asset("theme/base/assets/css/themes/layout/header/menu/light.css?v=7.0.3") }} rel="stylesheet" type="text/css" />
+    <link href={{ asset("theme/base/assets/css/themes/layout/brand/dark.css?v=7.0.3") }} rel="stylesheet" type="text/css" />
+    <link href={{ asset("theme/base/assets/css/themes/layout/aside/dark.css?v=7.0.3") }} rel="stylesheet" type="text/css" />
     <!--end::Layout Themes-->
     <!-- begin:: dàn cấm xoá -->
     <style type="text/css">
@@ -1214,21 +1214,24 @@
     </script>
     <!--end::Global Config-->
     <!--begin::Global Theme Bundle(used by all pages)-->
-    <script src="theme/base/assets/plugins/global/plugins.bundle.js?v=7.0.3"></script>
-    <script src="theme/base/assets/plugins/custom/prismjs/prismjs.bundle.js?v=7.0.3"></script>
-    <script src="theme/base/assets/js/scripts.bundle.js?v=7.0.3"></script>
+
+
+    <script src={{ asset("theme/base/assets/plugins/global/plugins.bundle.js?v=7.0.3") }}></script>
+    <script src={{ asset("theme/base/assets/plugins/custom/prismjs/prismjs.bundle.js?v=7.0.3") }}></script>
+    <script src={{ asset("theme/base/assets/js/scripts.bundle.js?v=7.0.3") }}></script>
     <!--end::Global Theme Bundle-->
     <!--begin::Page Vendors(used by this page)-->
-    <script src="theme/base/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js?v=7.0.3"></script>
+    <script src={{ asset("theme/base/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js?v=7.0.3") }}></script>
     <!--end::Page Vendors-->
     <!--begin::Page Scripts(used by this page)-->
-    <script src="theme/base/assets/js/pages/widgets.js?v=7.0.3"></script>
-    <script src="/theme/base/assets/js/pages/features/miscellaneous/blockui.js?v=7.0.3"></script>
+    <script src={{ asset("theme/base/assets/js/pages/widgets.js?v=7.0.3") }}></script>
+    <script src={{ asset("/theme/base/assets/js/pages/features/miscellaneous/blockui.js?v=7.0.3") }}
     <iframe id="_hjSafeContext_94917652" title="_hjSafeContext" tabindex="-1" aria-hidden="true" src="about:blank" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
-    <script src="theme/base/js/utils.js"></script>
-    <script src="theme/base/assets/js/pages/crud/ktdatatable/base/data-ajax.js"></script>
+    <script src={{ asset("theme/base/js/utils.js") }}></script>
+    <script src={{ asset("theme/base/nova_assets/plugins/custom/datatables/datatables.bundle.js") }}></script>
+    <link href={{ asset("theme/base/nova_assets/plugins/custom/datatables/datatables.bundle.css") }} rel="stylesheet" type="text/css" />
     <!--end::Page Scripts-->
-    <script src="theme/base/assets/js/pages/crud/forms/widgets/select2.js?v=7.0.3"></script>
+    <script src={{ asset("theme/base/assets/js/pages/crud/forms/widgets/select2.js?v=7.0.3") }}></script>
 
     @yield('javascript')
     @yield('css')

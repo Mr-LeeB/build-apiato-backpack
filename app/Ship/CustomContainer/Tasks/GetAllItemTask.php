@@ -17,7 +17,7 @@ class GetAllItemTask extends Task
     public function run($repository)
     {
         $this->repository = App::make($repository);
-        $this->repository->pushCriteria(new OrderByCreationDateDescendingCriteria());
+        // $this->repository->pushCriteria(new OrderByCreationDateDescendingCriteria());
         return $this->repository->paginate();
     }
     public function ordered()

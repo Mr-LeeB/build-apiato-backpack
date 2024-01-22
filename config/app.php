@@ -175,6 +175,8 @@ return [
         App\Ship\Providers\CustomViewServiceProvider::class,
         App\Ship\Providers\CustomRouteServiceProvider::class,
 
+        Barryvdh\Debugbar\ServiceProvider::class,
+
     ],
 
     /*
@@ -226,6 +228,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         // NOTE: all packages aliases must be registered inside their containers service providers
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
     ],
 
 ];

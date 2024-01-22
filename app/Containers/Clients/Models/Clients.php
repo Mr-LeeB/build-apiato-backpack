@@ -6,6 +6,8 @@ use App\Ship\Parents\Models\Model;
 
 class Clients extends Model
 {
+  protected $table = 'clients';
+
     protected $fillable = [
       'name',
       'title_description',
@@ -23,7 +25,8 @@ class Clients extends Model
     ];
 
     protected $casts = [
-
+      'created_at' => 'datetime: Y-m-d h:i:s',
+      'updated_at' => 'datetime: Y-m-d h:i:s',
     ];
 
     protected $dates = [

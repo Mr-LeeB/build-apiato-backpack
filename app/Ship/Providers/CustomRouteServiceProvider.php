@@ -10,7 +10,8 @@ use Illuminate\Support\ServiceProvider;
 class CustomRouteServiceProvider extends ServiceProvider
 {
 
-    public $customRoutesFilePath = '/app/Containers/Product/UI/WEB/Routes/custom.php';
+    // public $customRoutesFilePath = '/app/Containers/Product/UI/WEB/Routes/custom.php';
+    public $customRoutesFilePath = '/app/Containers/Client/UI/WEB/Routes/custom.php';
 
     /**
      * Bootstrap services.

@@ -32,6 +32,7 @@
                 fixedHeader: true,
                 processing: true,
                 order: [], //Initial no order.
+                serverSide: true,
                 aaSorting: [],
                 rowId: 'id',
                 select: {
@@ -39,10 +40,9 @@
                     selector: 'td:first-child input[type="checkbox"]',
                     className: 'row-selected'
                 },
-                // serverSide: true,
                 ajax: {
                     url: "{!! url($crud->route) . '?' . Request::getQueryString() !!}",
-                    type: 'POST',
+                    type: 'GET',
                     error: function(xhr) {
                         console.log(xhr.status + ': ' + xhr.statusText);
                     }
@@ -205,9 +205,11 @@
             // Select all checkboxes
             const container = document.querySelector('#tableproduct');
             const checkboxes = container.querySelectorAll('[type="checkbox"]');
+            // console.log(checkboxes);
 
             // Select elements
             const deleteSelected = document.querySelector('[data-kt-docs-table-select="delete_selected"]');
+            // console.log(deleteSelected);
 
             // Toggle delete selected toolbar
             checkboxes.forEach(c => {
@@ -345,6 +347,7 @@
             init: function() {
                 setup();
                 initToggleToolbar();
+
                 handleDeleteRows();
                 // Re-init functions on every datatable reload
                 $('input[data-kt-check="true"]').change(function() {
@@ -371,8 +374,8 @@
 
         // create the reset button
         var crudTableResetButton =
-            `<a href="{{ url($crud->route) }}" class="ml-1" id="crudTable_reset_button"> 
-                <i class="flaticon2-reload cursor-pointer reset_params" data-toggle="tooltip" title="Reset" /> 
+            `<a href="{{ url($crud->route) }}" class="ml-1" id="crudTable_reset_button">
+                <i class="flaticon2-reload cursor-pointer reset_params" data-toggle="tooltip" title="Reset" />
             </a> `;
 
         $('#datatable_info_stack').append(crudTableResetButton);
