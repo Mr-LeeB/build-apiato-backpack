@@ -5,7 +5,7 @@
     // the table cache when both lengths don't match.
     let $dtCachedInfo = JSON.parse(localStorage.getItem('DataTables_tableproduct_/{{ $crud->getRoute() }}')) ?
         JSON.parse(localStorage.getItem('DataTables_tableproduct_/{{ $crud->getRoute() }}')) : [];
-    var $dtDefaultPageLength = 25;
+    var $dtDefaultPageLength = 10;
     let $dtStoredPageLength = localStorage.getItem('DataTables_tableproduct_/{{ $crud->getRoute() }}_pageLength');
 
     if (!$dtStoredPageLength && $dtCachedInfo.length !== 0 && $dtCachedInfo.length !== $dtDefaultPageLength) {
@@ -20,11 +20,13 @@
         var params = {
             orderBy: null,
             sortedBy: null,
-            limit: null,
+            limit: 10,
             page: 1,
             search: null,
             searchFields: null,
         };
+
+        var columns = @json($crud->columns);
 
         var reloadPending = false;
 
@@ -42,6 +44,7 @@
                 scrollX: true,
                 fixedHeader: true,
                 processing: true,
+                order: [], //Initial no order.
                 aaSorting: [],
                 rowId: 'id',
                 select: {
@@ -49,13 +52,23 @@
                     selector: 'td:first-child input[type="checkbox"]',
                     className: 'row-selected'
                 },
+                serverS
                 ajax: {
                     url: "{!! url($crud->route) . '?' . Request::getQueryString() !!}",
                     type: 'GET',
+                    data: function(data) {
+                        data.orderBy = params.orderBy;
+                        data.sortedBy = params.sortedBy;
+                        data.limit = params.limit;
+                        data.page = params.page;
+                        data.search = params.search;
+                        data.searchFields = params.searchFields;
+                    },
                     error: function(xhr) {
                         console.log(xhr.status + ': ' + xhr.statusText);
                     }
                 },
+                deferRender: true,
                 columns: [{
                         data: 'id',
                     },
@@ -170,7 +183,45 @@
                     datatable.ajax.reload();
                 }
             });
+
+            datatable.on('order.dt', function(e, settings, order) {
+                if (order.length > 0) {
+                    var newOrderBy = settings['aoColumns'][order[0].col].data;
+                    var newSortedBy = order[0].dir;
+
+                    // Get the current order parameters from local storage
+                    var currentParams = JSON.parse(localStorage.getItem(
+                        '{{ Str::slug($crud->getRoute()) }}_list_url')) || {};
+
+                    // Check if the order has changed
+                    if (currentParams.orderBy != newOrderBy || currentParams.sortedBy !=
+                        newSortedBy) {
+                        params.orderBy = newOrderBy;
+                        params.sortedBy = newSortedBy;
+
+                        localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url', JSON
+                            .stringify(params));
+
+                        datatable.ajax.reload();
+                    }
+                }
+                datatable.clear();
+            });
+
+            datatable.on('length.dt', function(e, settings, length) {
+                if (length != params.limit) {
+                    if (length == -1) {
+                        length = settings.json.recordsTotal;
+                    }
+                    params.limit = length;
+                    localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url', JSON
+                        .stringify(
+                            params));
+                    datatable.ajax.reload();
+                }
+            });
         }
+
         const handleDeleteRows = () => {
             // Select all delete buttons
             const deleteButtons = document.querySelectorAll(
@@ -409,6 +460,7 @@
                 setup();
                 initToggleToolbar();
                 handleDeleteRows();
+                // Re-init functions on every datatable reload
                 $('input[data-kt-check="true"]').change(function() {
                     // When it changes, set the checked property of all checkboxes in the table to match its checked property
                     $('#tableproduct .form-check-input').prop('checked', $(this).prop('checked'));
@@ -464,5 +516,6 @@
             }
         });
 
+        // $("#tableproduct_paginate")
     });
 </script>
