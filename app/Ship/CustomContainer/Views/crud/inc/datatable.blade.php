@@ -45,6 +45,7 @@
                 fixedHeader: true,
                 processing: true,
                 order: [], //Initial no order.
+                serverSide: true,
                 aaSorting: [],
                 rowId: 'id',
                 select: {
@@ -52,7 +53,6 @@
                     selector: 'td:first-child input[type="checkbox"]',
                     className: 'row-selected'
                 },
-                serverS
                 ajax: {
                     url: "{!! url($crud->route) . '?' . Request::getQueryString() !!}",
                     type: 'GET',
@@ -205,7 +205,7 @@
                         datatable.ajax.reload();
                     }
                 }
-                datatable.clear();
+                // datatable.clear();
             });
 
             datatable.on('length.dt', function(e, settings, length) {
@@ -214,6 +214,16 @@
                         length = settings.json.recordsTotal;
                     }
                     params.limit = length;
+                    localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url', JSON
+                        .stringify(
+                            params));
+                    datatable.ajax.reload();
+                }
+            });
+
+            datatable.on('search.dt', function(e, settings, search) {
+                if (search != params.search) {
+                    params.search = search;
                     localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url', JSON
                         .stringify(
                             params));
@@ -319,7 +329,7 @@
             // Select all checkboxes
             const container = document.querySelector('#tableproduct');
             const checkboxes = container.querySelectorAll('[type="checkbox"]');
-            console.log(checkboxes);
+            // console.log(checkboxes);
 
             // Select elements
             const deleteSelected = document.querySelector('[data-kt-docs-table-select="delete_selected"]');
