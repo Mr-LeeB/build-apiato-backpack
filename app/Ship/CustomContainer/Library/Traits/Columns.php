@@ -17,7 +17,7 @@ trait Columns
                 ];
             }
 
-            if ($this->columns['password']) {
+            if (isset($this->columns['password'])) {
                 unset($this->columns['password']);
             }
             return;
@@ -186,5 +186,3 @@ trait Columns
     }
 
 }
-
-?>

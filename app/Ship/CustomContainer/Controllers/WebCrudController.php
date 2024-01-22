@@ -188,7 +188,7 @@ class WebCrudController extends AbstractWebController
         $this->repository = $repository;
     }
 
-    protected function setup()
+    public function setup()
     {
 
     }
@@ -310,6 +310,9 @@ class WebCrudController extends AbstractWebController
     {
         $request = resolve($this->request['getAll']);
 
+        $crud = $this->crud;
+        $totalRows = $this->crud->model->count();
+
         $items = App::make(GetAllItemAction::class)->run($this->repository, new DataTransporter($request));
 
         $customs = [];
@@ -318,19 +321,20 @@ class WebCrudController extends AbstractWebController
             $customs = $this->appendCustomVariables(GetAllItemAction::class);
         }
 
-
-        $crud = $this->crud;
-
         if ($request->expectsJson()) {
-            return response()->json([$items ?? [], $customs ?? [], $crud ?? []]);
+            return response()->json([
+                'draw' => 1,
+                'recordsTotal' => $totalRows,
+                'recordsFiltered' => $totalRows,
+                'data' => $items->toArray()['data'],
+            ]);
         }
 
-        return view($this->views['list'], compact(['items', 'customs', 'crud']));
+        return view($this->views['list'], compact(['crud']));
     }
 
     public function show()
     {
-        $items = [];
         $callByAjax = false;
         foreach ($this->fieldsFind as $value) {
             $request = resolve($this->request['findBy' . ucfirst($value)]);
@@ -338,11 +342,8 @@ class WebCrudController extends AbstractWebController
                 if (!$request->$value) {
                     continue;
                 }
-                $result = App::make(FindItemAction::class)->run($this->repository, $value, new DataTransporter($request));
-                $items['by' . ucfirst($value)] = [];
-                foreach ($result as $item) {
-                    array_push($items['by' . ucfirst($value)], $item);
-                }
+                $entry = App::make(FindItemAction::class)->run($this->repository, $value, new DataTransporter($request));
+
             } catch (\Exception $e) {
                 if ($request->expectsJson()) {
                     return response()->json([
@@ -360,9 +361,10 @@ class WebCrudController extends AbstractWebController
         $crud = $this->crud;
 
         if ($callByAjax) {
-            return response()->json([$items ?? [], $crud ?? []]);
+            return response()->json([$entry ?? [], $crud ?? []]);
         }
-        return view($this->views['show'], compact(['items', 'crud']));
+
+        return view($this->views['show'], compact(['entry', 'crud']));
     }
 
     public function create()
@@ -426,7 +428,25 @@ class WebCrudController extends AbstractWebController
             return redirect()->back()->withErrors($e->getMessage());
         }
 
+        foreach ($this->crud->fields as &$field) {
+            // set the value
+            if (!isset($field['value'])) {
+
+                $field['value'] = $item->{$field['name']};
+            }
+        }
+
+        // always have a hidden input for the entry id
+        if (!array_key_exists('id', $this->crud->fields)) {
+            $fields['id'] = [
+                'name' => 'id',
+                'value' => $item->id,
+                'type' => 'hidden',
+            ];
+        }
+
         $crud = $this->crud;
+        // dd($crud);
 
         return view($this->views['create_edit'], compact(['item', 'crud']));
     }

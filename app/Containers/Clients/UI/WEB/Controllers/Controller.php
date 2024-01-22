@@ -27,13 +27,9 @@ class Controller extends WebController
   //   'show' => 'clients::client.show',
   // ];
 
-  protected function setupListOperation() {
-    CRUD::setColumns([
-      'id' => [
-          'label' => 'ID',
-          'type' => 'text',
-          'name' => 'id',
-      ],
+  protected function setupListOperation()
+  {
+    $this->setFields([
       'name' => [
           'label' => 'Name',
           'type' => 'text',
@@ -52,16 +48,31 @@ class Controller extends WebController
   ]);
   }
 
-  protected function setupCreateOperation() {
-    //$this->setupListOperation();
+  protected function setupCreateOperation()
+  {
+    $this->setFields([
+      'name' => [
+        'label' => 'Tên',
+        'type' => 'text',
+        'rules' => 'required',
+      ],
+      'email' => [
+        'label' => 'Thơ điện tử',
+        'type' => 'email',
+        'rules' => 'required',
+      ],
+      'password' => [
+        'label' => 'Mật khẩu',
+      ]
+    ]);
   }
 
-  protected function setup()
+  public function setup()
   {
-      $this->setModel(Clients::class);
-      $this->setViews([
-        'list' => 'clients::client.show',
-      ]);
+    $this->setModel(Clients::class);
+    $this->setViews([
+      'list' => 'clients::client.show',
+    ]);
   }
 
   protected $customIndexVariables = [

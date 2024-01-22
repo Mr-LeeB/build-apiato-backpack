@@ -26,7 +26,7 @@ class FindItemTask extends Task
         $this->repository = App::make($repository);
         try {
             if ($field == 'id') {
-                return $this->repository->find((array) $data);
+                return $this->repository->find((array) $data)->first();
             }
             return $this->repository->where($field, 'like', "%{$data}%")->get();
         } catch (Exception $exception) {

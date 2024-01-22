@@ -29,7 +29,7 @@ class UserController extends WebController
             return redirect('login')->with('status', $e->getMessage());
         }
 
-        return is_array($result) ? redirect('login')->with($result) : redirect('dashboard');
+        return is_array($result) ? redirect('login')->with($result) : redirect('admin/user');
     }
 
     /**
@@ -39,6 +39,10 @@ class UserController extends WebController
     {
 
         $result = Apiato::call('Authentication@WebLogoutAction');
+
+        if ($request->ajax()) {
+            return response()->json(['message' => 'Successfully logged out']);
+        }
 
         return redirect('logout')->with(['result' => $result]);
     }

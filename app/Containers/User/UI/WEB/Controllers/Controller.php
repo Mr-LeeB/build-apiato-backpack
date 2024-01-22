@@ -41,7 +41,7 @@ class Controller extends WebController
     use \App\Ship\CustomContainer\Controllers\Operations\DeleteOperation;
     use \App\Ship\CustomContainer\Controllers\Operations\BulkDeleteOperation;
 
-    protected function setup()
+    public function setup()
     {
         $this->setModel(User::class);
         CRUD::setRoute(config('custom.base.route_prefix') . '/user');
@@ -82,30 +82,35 @@ class Controller extends WebController
 
     public function setupCreateOperation()
     {
-        CRUD::setFields([
-            'name' => [
-                'label' => 'Name',
-                'type' => 'text',
-                'name' => 'name',
-            ],
-            'email' => [
-                'label' => 'Email',
-                'type' => 'email',
-                'name' => 'email',
-            ],
-            'password' => [
-                'label' => 'Password',
-                'type' => 'password',
-                'name' => 'password',
-            ],
-            'password_confirmation' => [
-                'label' => 'Password Confirmation',
-                'type' => 'password',
-                'name' => 'password_confirmation',
-            ],
-        ]);
+        // CRUD::setFields([
+        //     'name' => [
+        //         'label' => 'Name',
+        //         'type' => 'text',
+        //         'name' => 'name',
+        //     ],
+        //     'email' => [
+        //         'label' => 'Email',
+        //         'type' => 'email',
+        //         'name' => 'email',
+        //     ],
+        //     'password' => [
+        //         'label' => 'Password',
+        //         'type' => 'password',
+        //         'name' => 'password',
+        //     ],
+        //     'password_confirmation' => [
+        //         'label' => 'Password Confirmation',
+        //         'type' => 'password',
+        //         'name' => 'password_confirmation',
+        //     ],
+        // ]);
 
-        // CRUD::setFromDB();
+        CRUD::setFromDB();
+    }
+
+    public function setupUpdateOperation()
+    {
+        $this->setupCreateOperation();
     }
 
     protected $customIndexVariables = [
