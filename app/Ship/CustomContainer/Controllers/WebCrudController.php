@@ -350,7 +350,7 @@ class WebCrudController extends AbstractWebController
 
         // Create a new request with the desired parameters
         $newRequest = $originalRequest->duplicate(null, [
-            'page' => request()->input('start') !== 0 ? request()->input('start') / request()->input('length') : 1,
+            'page' => request()->input('start') !== 0 ? request()->input('start') / request()->input('length') + 1: 1,
             'limit' => request()->input('length') !== '-1' ? request()->input('length') : $totalRows,
             'orderBy' => $orderBy,
             'sortedBy' => $sortedBy,
