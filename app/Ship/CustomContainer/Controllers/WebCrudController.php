@@ -344,6 +344,8 @@ class WebCrudController extends AbstractWebController
         //     }
         // }
 
+        // $search = rtrim($search, ';');
+
         // dump(request()->all());
         // Create a new request with the desired parameters
         $newRequest = $originalRequest->duplicate(null, [

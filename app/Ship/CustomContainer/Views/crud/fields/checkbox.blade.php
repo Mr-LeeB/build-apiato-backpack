@@ -3,13 +3,17 @@
 @include('customcontainer::crud.fields.inc.wrapper_start')
 @include('customcontainer::crud.fields.inc.translatable_icon')
 <div class="checkbox">
-    <input type="hidden" name="{{ $field['name'] }}" value="{{ $field['value'] ?? ($field['default'] ?? 0) }}">
-    <input type="checkbox" data-init-function="bpFieldInitCheckbox"
-        @if ($field['value'] ?? ($field['default'] ?? false)) checked="checked" @endif
-        @if (isset($field['attributes'])) @foreach ($field['attributes'] as $attribute => $value)
+    <label class="checkbox-label">
+        <input type="hidden" name="{{ $field['name'] }}" value="{{ $field['value'] ?? ($field['default'] ?? 0) }}">
+        <input type="checkbox" data-init-function="bpFieldInitCheckbox"
+            @if ($field['value'] ?? ($field['default'] ?? false)) checked="checked" @endif
+            @if (isset($field['attributes'])) @foreach ($field['attributes'] as $attribute => $value)
     			{{ $attribute }}="{{ $value }}"
         	  @endforeach @endif>
-    <label class="form-check-label font-weight-normal">{!! $field['label'] !!}</label>
+
+        {{ $field['label'] }}
+    </label>
+
 
     {{-- HINT --}}
     @if (isset($field['hint']))

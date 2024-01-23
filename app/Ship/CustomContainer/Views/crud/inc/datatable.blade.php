@@ -23,6 +23,10 @@
                 paging: true,
                 lengthChange: true,
                 pageLength: $dtDefaultPageLength,
+                fixedColumns: {
+                  left: 0,
+                  right: 1
+                },
                 lengthMenu: [
                     [10, 25, 50, 100, -1],
                     [10, 25, 50, 100, "All"]
