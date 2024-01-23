@@ -322,8 +322,6 @@ class WebCrudController extends AbstractWebController
         }
 
         if ($request->expectsJson()) {
-            // dd($items);
-
             return response()->json([
                 'draw' => 1,
                 'recordsTotal' => $totalRows,
@@ -342,8 +340,22 @@ class WebCrudController extends AbstractWebController
         // Get the original request
         $originalRequest = request();
 
+        $draw = request()->input('draw');
+
+        $orderBy = request()->input('order') ? request()->input('columns')[request()->input('order')[0]['column']]['data'] : 'id';
+
+        $sortedBy = request()->input('order') ? request()->input('order')[0]['dir'] : 'desc';
+
+        $searchValue = request()->input('search')['value'];
+
         // Create a new request with the desired parameters
-        $newRequest = $originalRequest->duplicate(null, ['page' => 2, 'limit' => 100]);
+        $newRequest = $originalRequest->duplicate(null, [
+            'page' => request()->input('start') !== 0 ? request()->input('start') / request()->input('length') : 1,
+            'limit' => request()->input('length') !== '-1' ? request()->input('length') : $totalRows,
+            'orderBy' => $orderBy,
+            'sortedBy' => $sortedBy,
+            'search' => $searchValue,
+        ]);
 
         // Replace the original request with the new one
         request()->replace($newRequest->input());
@@ -351,7 +363,7 @@ class WebCrudController extends AbstractWebController
         $items = App::make(GetAllItemAction::class)->run($this->repository, new DataTransporter($newRequest->all()));
 
         return response()->json([
-            'draw' => 1,
+            'draw' => $draw,
             'recordsTotal' => $totalRows,
             'recordsFiltered' => $totalRows,
             'data' => $items->toArray()['data'],
