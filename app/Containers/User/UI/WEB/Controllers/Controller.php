@@ -48,35 +48,35 @@ class Controller extends WebController
     }
     public function setupListOperation()
     {
-        CRUD::setColumns([
-            'id' => [
-                'label' => 'ID',
-                'type' => 'number',
-                'name' => 'id',
-            ],
-            'name' => [
-                'label' => 'Name',
-                'type' => 'text',
-                'name' => 'name',
-            ],
-            'email' => [
-                'label' => 'Email',
-                'type' => 'email',
-                'name' => 'email',
-            ],
-            'created_at' => [
-                'label' => 'Created At',
-                'type' => 'date',
-                'name' => 'created_at',
-            ],
-            'updated_at' => [
-                'label' => 'Updated At',
-                'type' => 'date',
-                'name' => 'updated_at',
-            ],
-        ]);
+        // CRUD::setColumns([
+        //     'id' => [
+        //         'label' => 'ID',
+        //         'type' => 'number',
+        //         'name' => 'id',
+        //     ],
+        //     'name' => [
+        //         'label' => 'Name',
+        //         'type' => 'text',
+        //         'name' => 'name',
+        //     ],
+        //     'email' => [
+        //         'label' => 'Email',
+        //         'type' => 'email',
+        //         'name' => 'email',
+        //     ],
+        //     'created_at' => [
+        //         'label' => 'Created At',
+        //         'type' => 'date',
+        //         'name' => 'created_at',
+        //     ],
+        //     'updated_at' => [
+        //         'label' => 'Updated At',
+        //         'type' => 'date',
+        //         'name' => 'updated_at',
+        //     ],
+        // ]);
 
-        // CRUD::setFromDB();
+        CRUD::setFromDB();
 
     }
 

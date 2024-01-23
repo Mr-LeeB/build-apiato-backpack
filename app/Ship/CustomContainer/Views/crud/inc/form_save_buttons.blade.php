@@ -4,5 +4,5 @@
         <span data-value="Save"> Save </span>
     </button>
     <a href="{{ url()->previous() }}" class="btn btn-default"><span class="la la-ban"></span>
-        &nbsp; Cancle</a>
+        &nbsp; Cancel</a>
 </div>

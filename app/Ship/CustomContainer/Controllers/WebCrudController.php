@@ -311,7 +311,6 @@ class WebCrudController extends AbstractWebController
         $request = resolve($this->request['getAll']);
 
         $crud = $this->crud;
-        $totalRows = $this->crud->model->count();
 
         $items = App::make(GetAllItemAction::class)->run($this->repository, new DataTransporter($request));
 
@@ -319,15 +318,6 @@ class WebCrudController extends AbstractWebController
         if (!empty($this->customIndexVariables)) {
 
             $customs = $this->appendCustomVariables(GetAllItemAction::class);
-        }
-
-        if ($request->expectsJson()) {
-            return response()->json([
-                'draw' => 1,
-                'recordsTotal' => $totalRows,
-                'recordsFiltered' => $totalRows,
-                'data' => $items->toArray()['data'],
-            ]);
         }
 
         return view($this->views['list'], compact(['crud']));
@@ -347,10 +337,17 @@ class WebCrudController extends AbstractWebController
         $sortedBy = request()->input('order') ? request()->input('order')[0]['dir'] : 'desc';
 
         $searchValue = request()->input('search')['value'];
+        // $search = '';
+        // if ($searchValue !== '') {
+        //     foreach ($this->crud->columns as $value) {
+        //         $search .= $value['name'] . ':' . $searchValue . ';';
+        //     }
+        // }
 
+        // dump(request()->all());
         // Create a new request with the desired parameters
         $newRequest = $originalRequest->duplicate(null, [
-            'page' => request()->input('start') !== 0 ? request()->input('start') / request()->input('length') : 1,
+            'page' => request()->input('start') !== 0 ? request()->input('start') / request()->input('length') + 1 : 1,
             'limit' => request()->input('length') !== '-1' ? request()->input('length') : $totalRows,
             'orderBy' => $orderBy,
             'sortedBy' => $sortedBy,
@@ -364,8 +361,8 @@ class WebCrudController extends AbstractWebController
 
         return response()->json([
             'draw' => $draw,
-            'recordsTotal' => $totalRows,
-            'recordsFiltered' => $totalRows,
+            'recordsTotal' => $items->total(),
+            'recordsFiltered' => $items->total(),
             'data' => $items->toArray()['data'],
         ]);
     }

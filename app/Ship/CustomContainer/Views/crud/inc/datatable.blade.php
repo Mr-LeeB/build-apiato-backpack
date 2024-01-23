@@ -292,9 +292,7 @@
                                 }
                             });
                             // Remove header checked box
-                            const headerCheckbox = container.querySelectorAll(
-                                '[type="checkbox"]')[0];
-                            headerCheckbox.checked = false;
+                            $('input[data-kt-check="true"]').prop('checked', false);
                         });
                     } else if (result.dismiss === 'cancel') {
                         Swal.fire({
@@ -406,7 +404,5 @@
                 return xhr.setRequestHeader('X-XSRF-TOKEN', token);
             }
         });
-
-        // $("#tableproduct_paginate")
     });
 </script>

@@ -11,7 +11,6 @@ class CreateItemAction extends Action
 {
     public function run($repository, DataTransporter $data)
     {
-
         $result = App::make(CreateItemTask::class)->run($repository, array_filter($data->toArray()));
 
         return $result;

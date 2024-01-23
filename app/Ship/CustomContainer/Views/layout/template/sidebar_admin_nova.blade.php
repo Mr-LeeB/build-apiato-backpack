@@ -38,7 +38,7 @@
             'label' => 'Products',
             'children' => [
                 [
-                    'label' => 'Users fake BP',
+                    'label' => 'Product fake BP',
                     'url' => '/admin/product',
                 ],
                 [
