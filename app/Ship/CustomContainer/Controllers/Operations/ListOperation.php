@@ -26,7 +26,7 @@ trait ListOperation
             'operation' => 'list',
         ]);
 
-        Route::post($segment . 'search', [
+        Route::post($segment . '/search', [
             'as' => $routeName . '.search',
             'uses' => $controller . '@search',
             'operation' => 'list',

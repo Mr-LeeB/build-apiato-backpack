@@ -36,7 +36,7 @@
 
             {{-- @include('customcontainer::crud.inc.grouped_errors') --}}
 
-            <form method="post" action="{{ url($crud->route) }}{{ isset($item) ? '/' . $item->id . '/edit' : '/store' }}">
+            <form method="post" action="{{ url($crud->route) }}{{ isset($item) ? '/' . $item->id . '/update' : '/store' }}">
                 {!! csrf_field() !!}
                 @if (isset($item))
                     {{ method_field('PUT') }}

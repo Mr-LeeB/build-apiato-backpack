@@ -32,7 +32,6 @@
                 fixedHeader: true,
                 processing: true,
                 order: [], //Initial no order.
-                // serverSide: true,
                 aaSorting: [],
                 rowId: 'id',
                 select: {
@@ -40,14 +39,17 @@
                     selector: 'td:first-child input[type="checkbox"]',
                     className: 'row-selected'
                 },
+                serverSide: true,
                 ajax: {
-                    url: "{!! url($crud->route) . '?' . Request::getQueryString() !!}",
-                    type: 'GET',
+                    url: "{!! url($crud->route) . '/search?' . Request::getQueryString() !!}",
+                    type: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
                     error: function(xhr) {
                         console.log(xhr.status + ': ' + xhr.statusText);
                     }
                 },
-                deferRender: true,
                 columns: [{
                         data: 'id',
                     },

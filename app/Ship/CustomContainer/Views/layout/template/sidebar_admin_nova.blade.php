@@ -13,6 +13,15 @@
 @php
     $menus = [
         [
+            'label' => 'Admin',
+            'children' => [
+                [
+                    'label' => 'Dashboard',
+                    'url' => '/admin/dashboard',
+                ],
+            ],
+        ],
+        [
             'label' => 'Users',
             'children' => [
                 [
