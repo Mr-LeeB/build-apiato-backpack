@@ -60,7 +60,7 @@
                     </div>
                     <div class="card-toolbar">
                         <div id="datatable_info_stack" class="mr-2"> </div>
-                        
+
                         <!--begin::Toolbar-->
                         <div class="d-flex justify-content-end ml-2" data-kt-docs-table-toolbar="base">
                             <!--begin::Add customer-->
@@ -102,7 +102,7 @@
                                         </div>
                                     </th>
                                     @foreach ($crud->columns as $column)
-                                        <th class="font-weight-bold font-size-lg">
+                                        <th class="font-weight-bold font-size-lg" data-visible-in-modal="true">
                                             {{ $column['label'] }}
                                         </th>
                                     @endforeach

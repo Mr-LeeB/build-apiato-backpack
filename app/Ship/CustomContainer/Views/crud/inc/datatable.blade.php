@@ -23,17 +23,17 @@
                 paging: true,
                 lengthChange: true,
                 pageLength: $dtDefaultPageLength,
-                fixedColumns: {
-                  left: 0,
-                  right: 1
-                },
+                // fixedColumns: {
+                //     left: 0,
+                //     right: 1
+                // },
                 lengthMenu: [
                     [10, 25, 50, 100, -1],
                     [10, 25, 50, 100, "All"]
                 ],
                 autoWidth: false,
                 scrollX: true,
-                fixedHeader: true,
+                // fixedHeader: true,
                 processing: true,
                 order: [], //Initial no order.
                 aaSorting: [],
@@ -52,6 +52,47 @@
                     },
                     error: function(xhr) {
                         console.log(xhr.status + ': ' + xhr.statusText);
+                    }
+                },
+                responsive: {
+                    details: {
+                        display: $.fn.dataTable.Responsive.display.modal({
+                            header: function(row) {
+                                // show the content of the first column
+                                // as the modal header
+                                // var data = row.data();
+                                // return data[0];
+                                return '';
+                            }
+                        }),
+                        renderer: function(api, rowIdx, columns) {
+                            var data = $.map(columns, function(col, i) {
+                                var columnHeading = datatable.columns().header()[col
+                                    .columnIndex];
+
+                                // hide columns that have VisibleInModal false
+                                if ($(columnHeading).attr('data-visible-in-modal') ==
+                                    'false') {
+                                    return '';
+                                }
+
+                                return '<tr data-dt-row="' + col.rowIndex +
+                                    '" data-dt-column="' + col
+                                    .columnIndex + '">' +
+                                    '<td style="vertical-align:top; border:none;"><strong>' +
+                                    col.title
+                                    .trim() + ':' + '<strong></td> ' +
+                                    '<td style="padding-left:10px;padding-bottom:10px; border:none;">' +
+                                    col.data + '</td>' +
+                                    '</tr>';
+                            }).join('');
+
+                            return data ?
+                                $('<table class="table table-striped mb-0">').append('<tbody>' +
+                                    data +
+                                    '</tbody>') :
+                                false;
+                        },
                     }
                 },
                 columns: [{
