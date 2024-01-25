@@ -33,6 +33,7 @@ class Controller extends WebController
 
   protected function setupListOperation()
   {
+    // $this->crud->enableDetailRow();
   //   CRUD::setColumns([
   //     'name' => [
   //         'label' => 'Name',

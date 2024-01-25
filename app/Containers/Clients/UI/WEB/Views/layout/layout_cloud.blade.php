@@ -1228,8 +1228,13 @@
     <script src={{ asset("/theme/base/assets/js/pages/features/miscellaneous/blockui.js?v=7.0.3") }}
     <iframe id="_hjSafeContext_94917652" title="_hjSafeContext" tabindex="-1" aria-hidden="true" src="about:blank" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
     <script src={{ asset("theme/base/js/utils.js") }}></script>
+
+    // Datatable stuff
     <script src={{ asset("theme/base/nova_assets/plugins/custom/datatables/datatables.bundle.js") }}></script>
     <link href={{ asset("theme/base/nova_assets/plugins/custom/datatables/datatables.bundle.css") }} rel="stylesheet" type="text/css" />
+
+
+
     <!--end::Page Scripts-->
     <script src={{ asset("theme/base/assets/js/pages/crud/forms/widgets/select2.js?v=7.0.3") }}></script>
 

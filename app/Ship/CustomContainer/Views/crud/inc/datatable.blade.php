@@ -33,7 +33,7 @@
                 ],
                 autoWidth: false,
                 scrollX: true,
-                // fixedHeader: true,
+                fixedHeader: true,
                 processing: true,
                 order: [], //Initial no order.
                 aaSorting: [],
@@ -44,6 +44,7 @@
                     className: 'row-selected'
                 },
                 serverSide: true,
+                responsive: true,
                 ajax: {
                     url: "{!! url($crud->route) . '/search?' . Request::getQueryString() !!}",
                     type: 'POST',
@@ -136,7 +137,7 @@
                                     <div class="dropdown-menu px-1" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item btn btn-primary mb-1 d-flex justify-content-center" href="{!! url($crud->route) !!}/${data.id}/show">Show</a>
                                         <a class="dropdown-item btn btn-success mb-1 d-flex justify-content-center" href="{!! url($crud->route) !!}/${data.id}/edit">Edit</a>
-                                        <a class="dropdown-item btn btn-danger d-flex justify-content-center" data-kt-docs-table-filter="delete_row" data-id="${data.id}">Delete</a>
+                                        <a class="dropdown-item btn btn-danger d-flex justify-content-center" data-kt-docs-table-filter="delete_row" data-id="${data.id}" data-name="${data.name}">Delete</a>
                                     </div>
                                 </div>
                             `;
@@ -165,8 +166,14 @@
                 d.addEventListener('click', function(e) {
                     e.preventDefault();
 
+                    let customerName;
                     // Get row name
-                    const customerName = 'this Item';
+                    if (typeof d.getAttribute('data-name') !== 'undefined') {
+                      customerName = d.dataset.name;
+                    }
+                    else {
+                      customerName = d.getAttribute('data-id');
+                    }
 
                     // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
                     Swal.fire({
