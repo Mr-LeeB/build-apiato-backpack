@@ -52,9 +52,9 @@
 {{-- ########################################## --}}
 {{-- Extra CSS and JS for this particular field --}}
 {{-- If a field type is shown multiple times on a form, the CSS and JS will only be loaded once --}}
-@if ($crud->fieldTypeNotLoaded($field))
+
     @php
-        $crud->markFieldTypeAsLoaded($field);
+        //$crud->markFieldTypeAsLoaded($field);
     @endphp
 
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
@@ -74,10 +74,10 @@
         <script>
             function bpFieldInitSelect2Element(element) {
                 // element will be a jQuery wrapped DOM node
-                if (!element.hasClass("select2-hidden-accessible")) 
+                if (!element.hasClass("select2-hidden-accessible"))
                 {
                     let $isFieldInline = element.data('field-is-inline');
-                    
+
                     element.select2({
                         theme: "bootstrap",
                         dropdownParent: $isFieldInline ? $('#inline-create-dialog .modal-content') : document.body
@@ -87,6 +87,6 @@
         </script>
     @endpush
 
-@endif
+
 {{-- End of Extra CSS and JS --}}
 {{-- ########################################## --}}

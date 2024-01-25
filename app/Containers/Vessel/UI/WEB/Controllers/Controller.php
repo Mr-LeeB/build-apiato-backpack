@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Containers\Clients\UI\WEB\Controllers;
+namespace App\Containers\Vessel\UI\WEB\Controllers;
 
 use App\Containers\Authorization\Actions\GetAllRolesAction;
 use App\Containers\Authorization\Models\Permission;
@@ -72,6 +72,22 @@ class Controller extends WebController
     //     'label' => 'Mật khẩu',
     //   ]
     // ]);
+    // CRUD::setFromDB();
+    CRUD::setFields([
+        'Test' => [
+          'name' => 'id',
+          'label' => 'Test',
+          'type' => 'select2',
+          'model' => User::class,
+          'attribute' => 'name',
+          'allows_null' => true,
+        ]
+    ]);
+
+  }
+
+  public function setupUpdateOperation() {
+    $this->setupCreateOperation();
   }
 
   public function setup()
@@ -81,7 +97,7 @@ class Controller extends WebController
     $this->setViews([
       'list' => 'clients::client.show',
     ]);
-    CRUD::setRoute(config('custom.base.route_prefix') . '/client');
+    CRUD::setRoute(config('custom.base.route_prefix') . '/vessel');
   }
 
   protected $customIndexVariables = [

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Containers\Clients\UI\WEB\Requests;
+namespace App\Containers\Vessel\UI\WEB\Requests;
 
 use App\Ship\Parents\Requests\Request;
 
 /**
- * Class GetAllClientsRequest.
+ * Class GetAllVesselRequest.
  */
-class CreateClientsRequest extends Request
+class StoreVesselRequest extends Request
 {
 
     /**
