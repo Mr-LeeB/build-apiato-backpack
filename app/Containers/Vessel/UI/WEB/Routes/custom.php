@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
   'prefix' => config('custom.base.route_prefix', 'admin'),
-    'namespace' => '\App\Containers\Clients\UI\WEB\Controllers',
+    'namespace' => '\App\Containers\Vessel\UI\WEB\Controllers',
     'middleware' => ['auth:web'],
 ], function () { // custom admin routes
-    Route::crud('client', 'Controller');
+    Route::crud('vessel', 'Controller');
 }); // this should be the absolute last line of this file

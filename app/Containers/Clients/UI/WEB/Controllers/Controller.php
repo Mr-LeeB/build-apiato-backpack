@@ -83,8 +83,8 @@ class Controller extends WebController
 
   public function setup()
   {
-    // $this->setModel(Clients::class);
-    $this->setModel(Vessel::class);
+    $this->setModel(Clients::class);
+    // $this->setModel(Vessel::class);
     $this->setViews([
       'list' => 'clients::client.show',
     ]);

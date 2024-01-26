@@ -33,7 +33,7 @@
                 ],
                 autoWidth: false,
                 scrollX: true,
-                fixedHeader: true,
+                // fixedHeader: true,
                 processing: true,
                 order: [], //Initial no order.
                 aaSorting: [],
@@ -125,11 +125,11 @@
                     },
                     {
                         responsivePriority: 1,
-                        targets: 0
+                        targets: [0, 1]
                     },
                     {
-                        responsivePriority: 2,
-                        targets: -1
+                        responsivePriority: 1,
+                        targets: [-1, -2]
                     },
                     {
                         targets: -1,
@@ -368,6 +368,9 @@
             });
         }
 
+
+
+
         // Toggle toolbars
         var toggleToolbars = function() {
             // Define variables
@@ -421,47 +424,60 @@
             }
         };
     })();
+
+
     $(document).ready(function() {
         DatatableHtmlTableDemo.init();
 
-        $('[data-action-create-item]').click(function() {
-            var baseUrl = window.location.origin;
-            var actionPath = $(this).data('action-create-item');
-            window.location.href = baseUrl + '/' + actionPath;
+        $('.table-responsive').resize(function(e) {
+            console.log('Div resized');
         });
 
+    $(window).resize(function() {
+        $($.fn.dataTable.tables(true)).DataTable()
+            .columns.adjust()
+            .fixedColumns().relayout()
+            .scroller.measure();
+    });
 
-        // create the reset button
-        var crudTableResetButton =
-            `<a href="{{ url($crud->route) }}" class="ml-1" id="crudTable_reset_button">
+    $('[data-action-create-item]').click(function() {
+        var baseUrl = window.location.origin;
+        var actionPath = $(this).data('action-create-item');
+        window.location.href = baseUrl + '/' + actionPath;
+    });
+
+
+    // create the reset button
+    var crudTableResetButton =
+        `<a href="{{ url($crud->route) }}" class="ml-1" id="crudTable_reset_button">
                 <i class="flaticon2-reload cursor-pointer reset_params" data-toggle="tooltip" title="Reset" />
             </a> `;
 
-        $('#datatable_info_stack').append(crudTableResetButton);
+    $('#datatable_info_stack').append(crudTableResetButton);
 
-        // when clicking in reset button we clear the localStorage for datatables.
-        $('#crudTable_reset_button').on('click', function() {
+    // when clicking in reset button we clear the localStorage for datatables.
+    $('#crudTable_reset_button').on('click', function() {
 
-            //clear the filters
-            if (localStorage.getItem('{{ Str::slug($crud->getRoute()) }}_list_url')) {
-                localStorage.removeItem('{{ Str::slug($crud->getRoute()) }}_list_url');
-            }
-            if (localStorage.getItem('{{ Str::slug($crud->getRoute()) }}_list_url_time')) {
-                localStorage.removeItem('{{ Str::slug($crud->getRoute()) }}_list_url_time');
-            }
+        //clear the filters
+        if (localStorage.getItem('{{ Str::slug($crud->getRoute()) }}_list_url')) {
+            localStorage.removeItem('{{ Str::slug($crud->getRoute()) }}_list_url');
+        }
+        if (localStorage.getItem('{{ Str::slug($crud->getRoute()) }}_list_url_time')) {
+            localStorage.removeItem('{{ Str::slug($crud->getRoute()) }}_list_url_time');
+        }
 
-            //clear the table sorting/ordering/visibility
-            if (localStorage.getItem('DataTables_tableproduct_/{{ $crud->getRoute() }}')) {
-                localStorage.removeItem('DataTables_tableproduct_/{{ $crud->getRoute() }}');
-            }
-        });
+        //clear the table sorting/ordering/visibility
+        if (localStorage.getItem('DataTables_tableproduct_/{{ $crud->getRoute() }}')) {
+            localStorage.removeItem('DataTables_tableproduct_/{{ $crud->getRoute() }}');
+        }
+    });
 
-        // make sure AJAX requests include XSRF token
-        $.ajaxPrefilter(function(options, originalOptions, xhr) {
-            var token = $('meta[name="csrf_token"]').attr('content');
-            if (token) {
-                return xhr.setRequestHeader('X-XSRF-TOKEN', token);
-            }
-        });
+    // make sure AJAX requests include XSRF token
+    $.ajaxPrefilter(function(options, originalOptions, xhr) {
+        var token = $('meta[name="csrf_token"]').attr('content');
+        if (token) {
+            return xhr.setRequestHeader('X-XSRF-TOKEN', token);
+        }
+    });
     });
 </script>
