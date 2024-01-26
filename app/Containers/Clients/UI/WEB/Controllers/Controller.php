@@ -72,6 +72,13 @@ class Controller extends WebController
     //     'label' => 'Mật khẩu',
     //   ]
     // ]);
+
+    CRUD::setFromDB();
+  }
+
+  protected function setupUpdateOperation()
+  {
+    $this->setupCreateOperation();
   }
 
   public function setup()

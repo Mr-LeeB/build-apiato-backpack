@@ -124,6 +124,14 @@
                         }
                     },
                     {
+                        responsivePriority: 1,
+                        targets: 0
+                    },
+                    {
+                        responsivePriority: 2,
+                        targets: -1
+                    },
+                    {
                         targets: -1,
                         data: null,
                         orderable: false,
@@ -131,7 +139,7 @@
                         render: function(data, type, row) {
                             return `
                                 <div class="dropdown">
-                                    <button class="btn btn-light btn-active-light-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button class="btn btn-light-info btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Action
                                     </button>
                                     <div class="dropdown-menu px-1" aria-labelledby="dropdownMenuButton">
@@ -169,10 +177,9 @@
                     let customerName;
                     // Get row name
                     if (typeof d.getAttribute('data-name') !== 'undefined') {
-                      customerName = d.dataset.name;
-                    }
-                    else {
-                      customerName = d.getAttribute('data-id');
+                        customerName = d.dataset.name;
+                    } else {
+                        customerName = d.getAttribute('data-id');
                     }
 
                     // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
@@ -186,7 +193,7 @@
                         cancelButtonText: "No, cancel",
                         customClass: {
                             confirmButton: "btn fw-bold btn-danger",
-                            cancelButton: "btn fw-bold btn-active-light-primary"
+                            cancelButton: "btn fw-bold btn-secondary"
                         }
                     }).then(function(result) {
                         if (result.value) {
@@ -288,7 +295,7 @@
                     cancelButtonText: "No, cancel",
                     customClass: {
                         confirmButton: "btn fw-bold btn-danger",
-                        cancelButton: "btn fw-bold btn-active-light-primary"
+                        cancelButton: "btn fw-bold btn-secondary"
                     },
                 }).then(function(result) {
                     if (result.value) {
