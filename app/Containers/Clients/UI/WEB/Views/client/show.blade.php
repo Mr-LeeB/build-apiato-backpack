@@ -55,7 +55,7 @@
 
 @section('content')
     <div name="contentDisplay" class="container-fluid">
-        <div class="card card-custom gutter-b">
+        <div class="card card-custom gutter-b" id="resizeElement">
 
             <div class="card-header">
                 <div class="card-title">
