@@ -15,9 +15,12 @@ class CreateProductTables extends Migration
 
       $table->increments('id');
 
-      $table->string('name')->unique()->nullable();
-      $table->string('description')->nullable();
+      $table->string('name', 255)->unique()->nullable();
+      $table->string('description', 4096)->nullable();
       $table->string('image')->nullable();
+
+      $table->integer('user_id')->unsigned();
+      $table->foreign('user_id')->references('id')->on('users');
 
       $table->timestamps();
       //$table->softDeletes();

@@ -208,7 +208,6 @@ class Apiato
     {
         $word = preg_replace('/(?!^)[[:upper:]][[:lower:]]/', '$0',
             preg_replace('/(?!^)[[:upper:]]+/', $splitter . '$0', $word));
-
         return $uppercase ? ucwords($word) : $word;
     }
 

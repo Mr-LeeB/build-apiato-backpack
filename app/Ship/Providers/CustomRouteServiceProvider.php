@@ -11,7 +11,7 @@ class CustomRouteServiceProvider extends ServiceProvider
 {
 
     // public $customRoutesFilePath = '/app/Containers/Product/UI/WEB/Routes/custom.php';
-    public $customRoutesFilePath = '/app/Containers/Client/UI/WEB/Routes/custom.php';
+    public $customRoutesFilePath = '/app/Containers/User/UI/WEB/Routes/custom.php';
 
     /**
      * Bootstrap services.
@@ -70,8 +70,8 @@ class CustomRouteServiceProvider extends ServiceProvider
             // as passed to the Route::group() statements
             $routeName = '';
 
-            // dd($this->getGroupStack());
             if ($this->hasGroupStack()) {
+                // dump($this->getGroupStack());
                 foreach ($this->getGroupStack() as $key => $groupStack) {
                     if (isset($groupStack['name'])) {
                         if (is_array($groupStack['name'])) {
@@ -113,5 +113,3 @@ class CustomRouteServiceProvider extends ServiceProvider
 }
 
 
-
-?>

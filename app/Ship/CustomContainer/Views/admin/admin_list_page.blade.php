@@ -95,18 +95,19 @@
                             style="width: 100%">
                             <thead>
                                 <tr class="fw-semibold fs-6 text-gray-800">
-                                    <th class="w-10px pe-2 align-items-center">
+                                    <th class="w-10px pe-2 align-items-center" data-priority='1'>
                                         <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
                                             <input class="form-check-input" type="checkbox" data-kt-check="true"
                                                 data-kt-check-target="#tableproduct .form-check-input" value="1" />
                                         </div>
                                     </th>
+
                                     @foreach ($crud->columns as $column)
-                                        <th class="font-weight-bold font-size-lg" data-visible-in-modal="true">
+                                        <th class="font-weight-bold font-size-lg">
                                             {{ $column['label'] }}
                                         </th>
                                     @endforeach
-                                    <th class="text-end min-w-100px">Actions</th>
+                                    <th class="text-end min-w-100px" data-priority='1'>Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="text-gray-600 fw-semibold">

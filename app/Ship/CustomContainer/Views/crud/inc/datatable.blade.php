@@ -95,6 +95,24 @@
                         },
                     }
                 },
+                stateSave: true,
+                /*
+                    if developer forced field into table 'visibleInTable => true' we make sure when saving datatables state
+                    that it reflects the developer decision.
+                */
+
+                stateSaveParams: function(settings, data) {
+
+                    localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url_time',
+                        data.time);
+
+                    data.columns.forEach(function(item, index) {
+                        var columnHeading = datatable.columns().header()[index];
+                        if ($(columnHeading).attr('data-visible-in-table') == 'true') {
+                            return item.visible = true;
+                        }
+                    });
+                },
                 columns: [{
                         data: 'id',
                     },
