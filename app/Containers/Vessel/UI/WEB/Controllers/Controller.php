@@ -72,18 +72,7 @@ class Controller extends WebController
     //     'label' => 'Mật khẩu',
     //   ]
     // ]);
-    // CRUD::setFromDB();
-    CRUD::setFields([
-        'Test' => [
-          'name' => 'id',
-          'label' => 'Test',
-          'type' => 'select2',
-          'model' => User::class,
-          'attribute' => 'name',
-          'allows_null' => true,
-        ]
-    ]);
-
+    CRUD::setFromDB();
   }
 
   public function setupUpdateOperation() {
