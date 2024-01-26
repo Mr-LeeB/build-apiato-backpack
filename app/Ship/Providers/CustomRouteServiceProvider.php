@@ -10,8 +10,7 @@ use Illuminate\Support\ServiceProvider;
 class CustomRouteServiceProvider extends ServiceProvider
 {
 
-    // public $customRoutesFilePath = '/app/Containers/Product/UI/WEB/Routes/custom.php';
-    public $customRoutesFilePath = '/app/Containers/User/UI/WEB/Routes/custom.php';
+    public $customRoutesFilePath = '/app/Ship/CustomContainer/Routes/custom.php';
 
     /**
      * Bootstrap services.
@@ -20,7 +19,8 @@ class CustomRouteServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
-        $this->setupCustomRoutes($this->app->router);
+        // load the custom routes file
+        $this->setupCustomRoutes($router);
     }
 
     /**
@@ -71,7 +71,6 @@ class CustomRouteServiceProvider extends ServiceProvider
             $routeName = '';
 
             if ($this->hasGroupStack()) {
-                // dump($this->getGroupStack());
                 foreach ($this->getGroupStack() as $key => $groupStack) {
                     if (isset($groupStack['name'])) {
                         if (is_array($groupStack['name'])) {
@@ -96,7 +95,6 @@ class CustomRouteServiceProvider extends ServiceProvider
             $namespacedController = $groupNamespace . $controller;
 
             $controllerInstance = App::make($namespacedController);
-
             return $controllerInstance->setupRoutes($name, $routeName, $controller);
         });
     }

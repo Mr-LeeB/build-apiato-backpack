@@ -11,7 +11,6 @@ use App\Ship\CustomContainer\Actions\UpdateItemAction;
 use App\Ship\Parents\Requests\Request;
 use App\Ship\Transporters\DataTransporter;
 use Hash;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -449,7 +448,6 @@ class WebCrudController extends AbstractWebController
     public function edit()
     {
         $request = resolve($this->request['edit']);
-
         try {
             $item = App::make(FindItemAction::class)->run($this->repository, 'id', new DataTransporter($request));
         } catch (\Exception $e) {

@@ -37,7 +37,6 @@
 
         //Get max created_at
         // $latest_entry = DB::table('clients')->max('created_at');
-
     @endphp
 @endsection
 
@@ -54,7 +53,7 @@
 
 @section('content')
     <div name="contentDisplay" class="container-fluid">
-        <div class="card card-custom gutter-b">
+        <div class="card card-custom gutter-b" id="resizeelement">
 
             <div class="card-header">
                 <div class="card-title">

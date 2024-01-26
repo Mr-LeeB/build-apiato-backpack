@@ -21,9 +21,7 @@ class FindItemAction extends Action
      */
     public function run($repository, $field, DataTransporter $data)
     {
-
         $item = App::make(FindItemTask::class)->run($repository, $field, $data->$field);
-
         if (!$item) {
             throw new NotFoundException();
         }

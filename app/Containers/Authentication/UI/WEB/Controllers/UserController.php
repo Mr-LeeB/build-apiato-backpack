@@ -29,7 +29,7 @@ class UserController extends WebController
             return redirect('login')->with('status', $e->getMessage());
         }
 
-        return is_array($result) ? redirect('login')->with($result) : redirect('admin/user');
+        return is_array($result) ? redirect('login')->with($result) : redirect('admin/dashboard');
     }
 
     /**

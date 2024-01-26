@@ -428,12 +428,29 @@
     $(document).ready(function() {
         DatatableHtmlTableDemo.init();
 
+        // $(window).resize(function() {
+        //     console.log("Window has been resized!");
+        //     // Add your resize logic here
+        // });
+
+        var element = document.querySelector('#resizeelement');
+
+        var resizeObserver = new ResizeObserver(function(entries) {
+            for (let entry of entries) {
+                $($.fn.dataTable.tables(true)).DataTable()
+                    .columns.adjust()
+                    .fixedColumns().relayout()
+                    .scroller.measure();
+            }
+        });
+
+        resizeObserver.observe(element);
+
         $('[data-action-create-item]').click(function() {
             var baseUrl = window.location.origin;
             var actionPath = $(this).data('action-create-item');
             window.location.href = baseUrl + '/' + actionPath;
         });
-
 
         // create the reset button
         var crudTableResetButton =
