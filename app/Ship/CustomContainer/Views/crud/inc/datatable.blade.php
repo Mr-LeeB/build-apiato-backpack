@@ -44,6 +44,7 @@
                     className: 'row-selected'
                 },
                 serverSide: true,
+                responsive: true,
                 ajax: {
                     url: "{!! url($crud->route) . '/search?' . Request::getQueryString() !!}",
                     type: 'POST',
@@ -141,6 +142,14 @@
                         }
                     },
                     {
+                        responsivePriority: 1,
+                        targets: [0, 1]
+                    },
+                    {
+                        responsivePriority: 1,
+                        targets: [-1, -2]
+                    },
+                    {
                         targets: -1,
                         data: null,
                         orderable: false,
@@ -148,13 +157,13 @@
                         render: function(data, type, row) {
                             return `
                                 <div class="dropdown">
-                                    <button class="btn btn-light btn-active-light-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button class="btn btn-light-info btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Action
                                     </button>
                                     <div class="dropdown-menu px-1" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item btn btn-primary mb-1 d-flex justify-content-center" href="{!! url($crud->route) !!}/${data.id}/show">Show</a>
                                         <a class="dropdown-item btn btn-success mb-1 d-flex justify-content-center" href="{!! url($crud->route) !!}/${data.id}/edit">Edit</a>
-                                        <a class="dropdown-item btn btn-danger d-flex justify-content-center" data-kt-docs-table-filter="delete_row" data-id="${data.id}">Delete</a>
+                                        <a class="dropdown-item btn btn-danger d-flex justify-content-center" data-kt-docs-table-filter="delete_row" data-id="${data.id}" data-name="${data.name}">Delete</a>
                                     </div>
                                 </div>
                             `;
@@ -183,8 +192,13 @@
                 d.addEventListener('click', function(e) {
                     e.preventDefault();
 
+                    let customerName;
                     // Get row name
-                    const customerName = 'this Item';
+                    if (typeof d.getAttribute('data-name') !== 'undefined') {
+                        customerName = d.dataset.name;
+                    } else {
+                        customerName = d.getAttribute('data-id');
+                    }
 
                     // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
                     Swal.fire({
@@ -197,7 +211,7 @@
                         cancelButtonText: "No, cancel",
                         customClass: {
                             confirmButton: "btn fw-bold btn-danger",
-                            cancelButton: "btn fw-bold btn-active-light-primary"
+                            cancelButton: "btn fw-bold btn-secondary"
                         }
                     }).then(function(result) {
                         if (result.value) {
@@ -299,7 +313,7 @@
                     cancelButtonText: "No, cancel",
                     customClass: {
                         confirmButton: "btn fw-bold btn-danger",
-                        cancelButton: "btn fw-bold btn-active-light-primary"
+                        cancelButton: "btn fw-bold btn-secondary"
                     },
                 }).then(function(result) {
                     if (result.value) {
@@ -372,6 +386,9 @@
             });
         }
 
+
+
+
         // Toggle toolbars
         var toggleToolbars = function() {
             // Define variables
@@ -425,17 +442,15 @@
             }
         };
     })();
+
+
     $(document).ready(function() {
         DatatableHtmlTableDemo.init();
 
-        // $(window).resize(function() {
-        //     console.log("Window has been resized!");
-        //     // Add your resize logic here
-        // });
-
-        var element = document.querySelector('#resizeelement');
+        var element = document.querySelector('#resizeElement');
 
         var resizeObserver = new ResizeObserver(function(entries) {
+          console.log('change');
             for (let entry of entries) {
                 $($.fn.dataTable.tables(true)).DataTable()
                     .columns.adjust()

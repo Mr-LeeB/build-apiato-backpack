@@ -3,6 +3,7 @@
 @section('title')
     {{ 'CHI CẬP NHẬT' }}
     {!! '<i class="far fa-eye text-success"></i> <i class="far fa-eye text-warning"></i>' !!}
+    {!! '<button id="clickme">Click Me</button>' !!}
 @endsection
 
 @section('css')
@@ -53,7 +54,7 @@
 
 @section('content')
     <div name="contentDisplay" class="container-fluid">
-        <div class="card card-custom gutter-b" id="resizeelement">
+        <div class="card card-custom gutter-b" id="resizeElement">
 
             <div class="card-header">
                 <div class="card-title">
