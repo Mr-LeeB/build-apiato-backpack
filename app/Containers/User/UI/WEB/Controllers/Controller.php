@@ -36,6 +36,7 @@ use App\Ship\CustomContainer\Library\CrudPanel\CrudPanelFacade as CRUD;
 class Controller extends WebController
 {
     use \App\Ship\CustomContainer\Controllers\Operations\ListOperation;
+    use \App\Ship\CustomContainer\Controllers\Operations\ShowOperation;
     use \App\Ship\CustomContainer\Controllers\Operations\CreateOperation;
     use \App\Ship\CustomContainer\Controllers\Operations\UpdateOperation;
     use \App\Ship\CustomContainer\Controllers\Operations\DeleteOperation;

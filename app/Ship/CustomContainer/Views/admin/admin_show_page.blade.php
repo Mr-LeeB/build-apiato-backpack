@@ -39,7 +39,7 @@
                 <div class="card no-padding no-border">
                     <table class="table table-striped mb-0">
                         <tbody>
-                            @foreach ($crud->columns as $column)
+                            @foreach ($crud->columns() as $column)
                                 <tr>
                                     <td>
                                         <strong>{!! $column['label'] !!}:</strong>
@@ -61,7 +61,7 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            
+
                         </tbody>
                     </table>
                 </div><!-- /.box-body -->

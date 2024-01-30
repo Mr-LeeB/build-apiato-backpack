@@ -5,7 +5,7 @@
 
 <div class="card">
     <div class="card-body row">
-        @include('customcontainer::crud.inc.show_fields', ['fields' => $crud->fields])
+        @include('customcontainer::crud.inc.show_fields', ['fields' => $crud->fields()])
     </div>
 </div>
 

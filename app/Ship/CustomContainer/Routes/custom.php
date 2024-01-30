@@ -14,4 +14,5 @@ Route::group([
     'middleware' => ['web'],
 ], function () { // custom admin routes
     Route::get('dashboard', 'AdminController@dashboard')->name('custom.dashboard');
+    Route::get('/', 'AdminController@redirect')->name('custom');
 }); // this should be the absolute last line of this file

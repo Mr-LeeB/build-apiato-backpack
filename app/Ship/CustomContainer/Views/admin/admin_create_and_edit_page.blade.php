@@ -7,6 +7,7 @@
 @php
     // dd($errors);
     // dd(get_defined_vars()['__data']);
+    // dd($crud->fields());
 
     $view_load_theme = 'base';
 @endphp
@@ -44,8 +45,8 @@
                 <!-- load the view from the application if it exists, otherwise load the one in the package -->
 
                 @include('customcontainer::crud.form_content', [
-                    'fields' => $crud->fields,
-                    'action' => $crud->currentOperation,
+                    'fields' => $crud->fields(),
+                    'action' => $crud->getCurrentOperation(),
                 ])
 
                 @include('customcontainer::crud.inc.form_save_buttons')

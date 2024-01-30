@@ -7,7 +7,7 @@
     		>
 </span>
 
-<script>
+{{-- <script>
 	if (typeof addOrRemoveCrudCheckedItem != 'function') {
 	  function addOrRemoveCrudCheckedItem(element) {
 	  	crud.lastCheckedItem = false;
@@ -109,4 +109,4 @@
 	crud.addFunctionToDataTablesDrawEventQueue('markCheckboxAsCheckedIfPreviouslySelected');
 	crud.addFunctionToDataTablesDrawEventQueue('addBulkActionMainCheckboxesFunctionality');
 	crud.addFunctionToDataTablesDrawEventQueue('enableOrDisableBulkButtons');
-</script>
+</script> --}}

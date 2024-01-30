@@ -26,7 +26,7 @@ class WebCrudController extends AbstractWebController
     ];
 
     protected $crud;
-
+    public $data = [];
     private $columns = [];
 
     private $fields = [];
@@ -94,6 +94,8 @@ class WebCrudController extends AbstractWebController
             $this->crud->setModel($this->model);
             $this->crud->setRepository($this->repository);
             $this->crud->setTitle($this->crud->makeLabel($this->crud->getModel()->getTable()));
+
+            $this->setupDefaults();
             $this->setupConfigurationForCurrentOperation();
 
             return $next($request);
@@ -192,10 +194,29 @@ class WebCrudController extends AbstractWebController
 
     }
 
+    /**
+     * Load defaults for all operations.
+     * Allow developers to insert default settings by creating a method
+     * that looks like setupOperationNameDefaults.
+     */
+    protected function setupDefaults()
+    {
+        preg_match_all('/(?<=^|;)setup([^;]+?)Defaults(;|$)/', implode(';', get_class_methods($this)), $matches);
+
+        if (count($matches[1])) {
+            foreach ($matches[1] as $methodName) {
+                $this->{'setup' . $methodName . 'Defaults'}();
+            }
+        }
+    }
+
     protected function setupConfigurationForCurrentOperation()
     {
         $operationName = $this->crud->getCurrentOperation();
         $setupClassName = 'setup' . Str::studly($operationName) . 'Operation';
+
+        $this->crud->applyConfigurationFromSettings($operationName);
+
         if (method_exists($this, $setupClassName)) {
             $this->$setupClassName();
         }
@@ -331,9 +352,11 @@ class WebCrudController extends AbstractWebController
 
         $draw = request()->input('draw');
 
-        $orderBy = request()->input('order') ? request()->input('columns')[request()->input('order')[0]['column']]['data'] : 'id';
+        $orderColumn = !is_null(request()->input('order')) ? array_slice($this->crud->columns(), request()->input('order')[0]['column'], 1) : 'id';
 
-        $sortedBy = request()->input('order') ? request()->input('order')[0]['dir'] : 'desc';
+        $orderBy = $orderColumn != 'id' ? reset($orderColumn)['name'] : $orderColumn;
+
+        $sortedBy = request()->input('order') != null ? request()->input('order')[0]['dir'] : 'desc';
 
         $searchValue = request()->input('search')['value'];
         // $search = '';
@@ -345,7 +368,6 @@ class WebCrudController extends AbstractWebController
 
         // $search = rtrim($search, ';');
 
-        // dump(request()->all());
         // Create a new request with the desired parameters
         $newRequest = $originalRequest->duplicate(null, [
             'page' => request()->input('start') !== 0 ? request()->input('start') / request()->input('length') + 1 : 1,
@@ -360,16 +382,54 @@ class WebCrudController extends AbstractWebController
 
         $items = App::make(GetAllItemAction::class)->run($this->repository, new DataTransporter($newRequest->all()));
 
-        return response()->json([
-            'draw' => $draw,
-            'recordsTotal' => $items->total(),
-            'recordsFiltered' => $items->total(),
-            'data' => $items->toArray()['data'],
-        ]);
+        // return response()->json([
+        //     'draw' => $draw,
+        //     'recordsTotal' => $items->total(),
+        //     'recordsFiltered' => $items->total(),
+        //     'data' => $items->toArray()['data'],
+        // ]);
+        return $this->crud->getEntriesAsJsonForDatatables(collect($items->items()), $items->total(), $items->total(), $draw);
     }
     public function show()
     {
         $callByAjax = false;
+        $setFromDb = $this->crud->get('show.setFromDb');
+        // set columns from db
+        if ($setFromDb) {
+            $this->crud->setFromDb(false, true);
+        }
+
+        // cycle through columns
+        foreach ($this->crud->columns() as $key => $column) {
+
+            // remove any autoset relationship columns
+            if (array_key_exists('model', $column) && array_key_exists('autoset', $column) && $column['autoset']) {
+                $this->crud->removeColumn($column['key']);
+            }
+
+            // remove any autoset table columns
+            if ($column['type'] == 'table' && array_key_exists('autoset', $column) && $column['autoset']) {
+                $this->crud->removeColumn($column['key']);
+            }
+
+            // remove the row_number column, since it doesn't make sense in this context
+            if ($column['type'] == 'row_number') {
+                $this->crud->removeColumn($column['key']);
+            }
+
+            // remove columns that have visibleInShow set as false
+            if (isset($column['visibleInShow'])) {
+                if ((is_callable($column['visibleInShow']) && $column['visibleInShow']($this->data['entry']) === false) || $column['visibleInShow'] === false) {
+                    $this->crud->removeColumn($column['key']);
+                }
+            }
+
+            // remove the character limit on columns that take it into account
+            if (in_array($column['type'], ['text', 'email', 'model_function', 'model_function_attribute', 'phone', 'row_number', 'select'])) {
+                $this->crud->modifyColumn($column['key'], ['limit' => ($column['limit'] ?? 999)]);
+            }
+        }
+
         foreach ($this->fieldsFind as $value) {
             $request = resolve($this->request['findBy' . ucfirst($value)]);
             try {
@@ -461,22 +521,24 @@ class WebCrudController extends AbstractWebController
             return redirect()->back()->withErrors($e->getMessage());
         }
 
-        foreach ($this->crud->fields as &$field) {
+        $fields = $this->crud->fields();
+
+        foreach ($fields as &$field) {
             // set the value
             if (!isset($field['value'])) {
-
                 $field['value'] = $item->{$field['name']};
             }
         }
 
         // always have a hidden input for the entry id
-        if (!array_key_exists('id', $this->crud->fields)) {
-            $fields['id'] = [
+        if (!array_key_exists('id', $this->crud->fields())) {
+            $this->crud->addField([
                 'name' => 'id',
-                'value' => $item->id,
                 'type' => 'hidden',
-            ];
+                'value' => $item->getKey(),
+            ]);
         }
+        $this->crud->setOperationSetting('fields', $fields);
 
         $crud = $this->crud;
         // dd($crud);

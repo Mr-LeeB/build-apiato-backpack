@@ -20,12 +20,6 @@ trait ListOperation
             'operation' => 'list',
         ]);
 
-        Route::get($segment . '/{id}/show', [
-            'as' => $routeName . '.show',
-            'uses' => $controller . '@show',
-            'operation' => 'list',
-        ]);
-
         Route::post($segment . '/search', [
             'as' => $routeName . '.search',
             'uses' => $controller . '@search',

@@ -87,7 +87,7 @@ if (!function_exists('maximumServerUploadSizeInBytes')) {
 </div>
 <div class="btn-group">
     <div class="btn btn-light btn-sm btn-file">
-        {{ trans('backpack::crud.choose_file') }} <input type="file" accept="image/*" data-handle="uploadImage"
+        {{ trans('crud.choose_file') }} <input type="file" accept="image/*" data-handle="uploadImage"
             @include('customcontainer::crud.fields.inc.attributes')>
         <input type="hidden" data-handle="hiddenImage" name="{{ $field['name'] }}"
             data-value-prefix="{{ $field['prefix'] }}" value="{{ $value }}">

@@ -21,4 +21,16 @@ class AdminController extends AbstractWebController
     {
         return view('customcontainer::admin.dashboard')->with('crud', $this->crud);
     }
+
+
+    /**
+     * Redirect to the dashboard.
+     *
+     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+     */
+    public function redirect()
+    {
+        // The '/admin' route is not to be used as a page, because it breaks the menu's active state.
+        return redirect(custom_url('dashboard'));
+    }
 }

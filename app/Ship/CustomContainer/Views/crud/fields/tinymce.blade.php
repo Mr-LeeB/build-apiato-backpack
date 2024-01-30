@@ -61,7 +61,7 @@
             function elFinderBrowser(callback, value, meta) {
                 tinymce.activeEditor.windowManager.openUrl({
                     title: 'elFinder 2.0',
-                    url: '{{ backpack_url('elfinder/tinymce5') }}',
+                    url: '{{ custom_url('elfinder/tinymce5') }}',
                     width: 900,
                     height: 460,
                     onMessage: function(dialogApi, details) {

@@ -35,7 +35,7 @@
                 scrollX: true,
                 // fixedHeader: true,
                 processing: true,
-                order: [], //Initial no order.
+                // order: [], //Initial no order.
                 aaSorting: [],
                 rowId: 'id',
                 select: {
@@ -61,9 +61,9 @@
                             header: function(row) {
                                 // show the content of the first column
                                 // as the modal header
-                                // var data = row.data();
-                                // return data[0];
-                                return '';
+                                var data = row.data();
+                                return 'Details of ' + data[0];
+                                // return '';
                             }
                         }),
                         renderer: function(api, rowIdx, columns) {
@@ -114,62 +114,6 @@
                         }
                     });
                 },
-                columns: [{
-                        data: 'id',
-                    },
-                    @foreach ($crud->columns as $column)
-                        {
-                            data: '{{ $column['name'] }}',
-                            @if (isset($column['type']) && $column['type'] == 'date')
-                                render: function(data, type, row) {
-                                    return moment(data).format('DD/MM/YYYY')
-                                },
-                            @endif
-                            'className': 'min-w-100px'
-                        },
-                    @endforeach {
-                        data: null
-                    },
-                ],
-                columnDefs: [{
-                        targets: 0,
-                        orderable: false,
-                        render: function(_, _, data) {
-                            return `
-                        <div class="form-check form-check-sm form-check-custom form-check-solid">
-                            <input class="form-check-input" type="checkbox" value="${data.id}" />
-                        </div>`;
-                        }
-                    },
-                    {
-                        responsivePriority: 1,
-                        targets: [0, 1]
-                    },
-                    {
-                        responsivePriority: 1,
-                        targets: [-1, -2]
-                    },
-                    {
-                        targets: -1,
-                        data: null,
-                        orderable: false,
-                        className: 'text-end font-weight-bold font-size-lg',
-                        render: function(data, type, row) {
-                            return `
-                                <div class="dropdown">
-                                    <button class="btn btn-light-info btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Action
-                                    </button>
-                                    <div class="dropdown-menu px-1" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item btn btn-primary mb-1 d-flex justify-content-center" href="{!! url($crud->route) !!}/${data.id}/show">Show</a>
-                                        <a class="dropdown-item btn btn-success mb-1 d-flex justify-content-center" href="{!! url($crud->route) !!}/${data.id}/edit">Edit</a>
-                                        <a class="dropdown-item btn btn-danger d-flex justify-content-center" data-kt-docs-table-filter="delete_row" data-id="${data.id}" data-name="${data.name}">Delete</a>
-                                    </div>
-                                </div>
-                            `;
-                        },
-                    },
-                ],
                 dom: "<'row hidden'<'col-sm-6'i><'col-sm-6 d-print-none'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row mt-2 d-print-none '<'col-sm-12 col-md-4'l><'col-sm-0 col-md-4 text-center'B><'col-sm-12 col-md-4 'p>>",
@@ -331,7 +275,7 @@
                                     "tbody [type='checkbox']:checked"
                                 )
                             ).map((e) => {
-                                return e.closest("tr").getAttribute("id");
+                                return $(e).data('primary-key-value');
                             });
 
                             // call ajax delete all selected rows
@@ -386,9 +330,6 @@
             });
         }
 
-
-
-
         // Toggle toolbars
         var toggleToolbars = function() {
             // Define variables
@@ -432,7 +373,8 @@
                 // Re-init functions on every datatable reload
                 $('input[data-kt-check="true"]').change(function() {
                     // When it changes, set the checked property of all checkboxes in the table to match its checked property
-                    $('#tableproduct .form-check-input').prop('checked', $(this).prop('checked'));
+                    $('#tableproduct .crud_bulk_actions_row_checkbox').prop('checked', $(this).prop(
+                        'checked'));
 
                     // Then update the toolbar
                     setTimeout(function() {
@@ -450,7 +392,6 @@
         var element = document.querySelector('#resizeElement');
 
         var resizeObserver = new ResizeObserver(function(entries) {
-          console.log('change');
             for (let entry of entries) {
                 $($.fn.dataTable.tables(true)).DataTable()
                     .columns.adjust()

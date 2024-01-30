@@ -10,6 +10,7 @@ use App\Containers\Product\UI\WEB\Requests\GetAllProductRequest;
 use App\Containers\Product\UI\WEB\Requests\FindProductByIdRequest;
 use App\Containers\Product\UI\WEB\Requests\SortRequest;
 use App\Containers\Product\UI\WEB\Requests\UpdateProductRequest;
+use App\Containers\User\Models\User;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 use App\Ship\Transporters\DataTransporter;
@@ -24,6 +25,7 @@ use App\Ship\CustomContainer\Library\CrudPanel\CrudPanelFacade as CRUD;
 class Controller extends WebController
 {
     use \App\Ship\CustomContainer\Controllers\Operations\ListOperation;
+    use \App\Ship\CustomContainer\Controllers\Operations\ShowOperation;
     use \App\Ship\CustomContainer\Controllers\Operations\CreateOperation;
     use \App\Ship\CustomContainer\Controllers\Operations\UpdateOperation;
     use \App\Ship\CustomContainer\Controllers\Operations\DeleteOperation;
@@ -37,12 +39,85 @@ class Controller extends WebController
 
     public function setupListOperation()
     {
-        CRUD::setFromDB();
+        CRUD::addColumns([
+            'name' => [
+                'label' => 'Name',
+                'type' => 'text',
+                'name' => 'name',
+            ],
+            'description' => [
+                'label' => 'Description',
+                'type' => 'text',
+                'name' => 'description',
+            ],
+            // 'image' => [
+            //     'label' => 'Image',
+            //     'type' => 'image',
+            //     'name' => 'image',
+            // ],
+            'user_id' => [
+                'label' => 'User',
+                'type' => 'select',
+                'name' => 'user_id',
+                'entity' => 'user',
+                'attribute' => 'name',
+                'model' => User::class,
+            ],
+        ]);
+
+        // CRUD::addColumn([
+        //     'name' => 'name',
+        //     'type' => 'text',
+        //     'label' => 'Name',
+        // ]);
+        // CRUD::addColumn([
+        //     'name' => 'description',
+        //     'type' => 'text',
+        //     'label' => 'Description',
+        // ]);
+        CRUD::addColumn([
+            'name' => 'image',
+            'type' => 'image',
+            'label' => 'Image',
+        ]);
+        // CRUD::addColumn([
+        //     'name' => 'user_id',
+        //     'type' => 'select',
+        //     'label' => 'User',
+        //     'entity' => 'user',
+        //     'attribute' => 'name',
+        //     'model' => User::class,
+        // ]);
     }
 
     public function setupCreateOperation()
     {
-        CRUD::setFromDB();
+        CRUD::addFields([
+            'name' => [
+                'label' => 'Name',
+                'type' => 'text',
+                'name' => 'name',
+            ],
+            'description' => [
+                'label' => 'Description',
+                'type' => 'text',
+                'name' => 'description',
+            ],
+            'image' => [
+                'label' => 'Image',
+                'type' => 'image',
+                'name' => 'image',
+            ],
+            'user_id' => [
+                'label' => 'User',
+                'type' => 'select',
+                'name' => 'user_id',
+                'entity' => 'user',
+                'attribute' => 'name',
+                'model' => User::class,
+                'allows_null' => 'true',
+            ],
+        ]);
     }
 
     public function setupUpdateOperation()

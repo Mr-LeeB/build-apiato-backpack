@@ -51,7 +51,7 @@
 
 @section('content')
     <div class="col-12" id="manage_item">
-        <div class="card card-custom card-fit" id="resizeelement">
+        <div class="card card-custom card-fit" id="resizeElement">
             <div class="card-header">
                 <div class="card-title">
                     <h3>{{ __('Danh sách ') . $crud->title }} </h3>
@@ -92,19 +92,37 @@
                     <table id="tableproduct" class="table table-striped table-row-bordered gy-5 gs-7" style="width: 100%">
                         <thead>
                             <tr class="fw-semibold fs-6 text-gray-800">
-                                <th class="w-10px pe-2 align-items-center" data-priority='1'>
-                                    <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
-                                        <input class="form-check-input" type="checkbox" data-kt-check="true"
-                                            data-kt-check-target="#tableproduct .form-check-input" value="1" />
-                                    </div>
+                                @foreach ($crud->columns() as $column)
+                                    <th data-orderable="{{ var_export($column['orderable'], true) }}"
+                                        data-priority="{{ $column['priority'] }}"
+                                        @if (isset($column['exportOnlyField']) && $column['exportOnlyField'] === true) data-visible="false"
+                                            data-visible-in-table="false"
+                                            data-can-be-visible-in-table="false"
+                                            data-visible-in-modal="false"
+                                            data-visible-in-export="true"
+                                            data-force-export="true"
+                                        @else
+                                            data-visible-in-table="{{ var_export($column['visibleInTable'] ?? false) }}"
+                                            data-visible="{{ var_export($column['visibleInTable'] ?? true) }}"
+                                            data-can-be-visible-in-table="true"
+                                            data-visible-in-modal="{{ var_export($column['visibleInModal'] ?? true) }}"
+                                            @if (isset($column['visibleInExport']))
+                                                @if ($column['visibleInExport'] === false)
+                                                    data-visible-in-export="false"
+                                                    data-force-export="false"
+                                                @else
+                                                    data-visible-in-export="true"
+                                                    data-force-export="true" @endif
+                                    @else data-visible-in-export="true" data-force-export="false" @endif
+                                @endif
+                                class="font-weight-bold font-size-lg">
+                                {!! $column['label'] !!}
                                 </th>
-
-                                @foreach ($crud->columns as $column)
-                                    <th class="font-weight-bold font-size-lg">
-                                        {{ $column['label'] }}
-                                    </th>
                                 @endforeach
-                                <th class="text-end min-w-100px" data-priority='1'>Actions</th>
+                                <th class="text-end min-w-100px font-weight-bold font-size-lg" data-orderable='false'
+                                    data-priority='1'>
+                                    Actions
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-600 fw-semibold">
